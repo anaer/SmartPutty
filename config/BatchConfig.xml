@@ -6,64 +6,29 @@
 		<description>记事本</description>
 	</batch>
 	<batch type="menu">
-		<path>D:\SingleWare\luyten-0.5.0.exe</path>
+		<path>C:\Program Files\SingleWare\luyten-0.5.0.exe</path>
 		<argument></argument>
 		<description>Java反编译-luyten</description>
 	</batch>
-
 	<batch type="menu">
-		<path>D:\SingleWare\jd-gui.exe</path>
+		<path>C:\Program Files\SingleWare\jd-gui.exe</path>
 		<argument></argument>
 		<description>jd-gui</description>
 	</batch>
-
 	<batch type="seperator"></batch>
-
 	<batch type="menu">
-		<path>D:\Beyond Compare 4.0.6\BCompare.exe</path>
+		<path>C:\Program Files\KDiff3\kdiff3.exe</path>
 		<argument></argument>
-		<description>BCompare</description>
+		<description>kdiff3</description>
 	</batch>
 	<batch type="menu">
-		<path>D:\DBFCommander\DBFCommander.exe</path>
+		<path>C:\Program Files\SQLyog\SQLyog.exe</path>
 		<argument></argument>
-		<description>DBFCommander</description>
+		<description>SQLyog</description>
 	</batch>
 	<batch type="menu">
-		<path>D:\TeamViewer\TeamViewer.exe</path>
-		<argument></argument>
-		<description>TeamViewer</description>
-	</batch>
-	<batch type="menu">
-		<path>D:\LibreOffice 5\program\soffice.exe</path>
-		<argument></argument>
-		<description>soffice</description>
-	</batch>
-	<batch type="menu">
-		<path>D:\Navicat Premium\navicat.exe</path>
-		<argument></argument>
-		<description>navicat</description>
-	</batch>
-
-	<batch type="menu">
-		<path>D:\Everything\Everything.exe</path>
+		<path>C:\Program Files\Everything\Everything.exe</path>
 		<argument></argument>
 		<description>Everything</description>
-	</batch>
-	<batch type="menu">
-		<path>D:\FileZilla FTP Client\filezilla.exe</path>
-		<argument></argument>
-		<description>filezilla</description>
-	</batch>
-	<batch type="menu">
-		<path>D:\eclipse\eclipse.exe</path>
-		<argument></argument>
-		<description>eclipse</description>
-	</batch>
-
-	<batch type="menu">
-		<path>D:\redis-64.3.0.503\redis-server.exe</path>
-		<argument></argument>
-		<description>本机redis服务器</description>
 	</batch>
 </batches>
