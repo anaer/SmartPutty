@@ -1,14 +1,69 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <batches>
 	<batch type="menu">
 		<path>notepad.exe</path>
 		<argument></argument>
-		<desciption>notepad</desciption>
+		<description>记事本</description>
 	</batch>
-	<batch type="seperator"></batch>
 	<batch type="menu">
-		<path>yong1</path>
-		<argument>mkyong1</argument>
-		<desciption>mook kim1</desciption>
+		<path>D:\SingleWare\luyten-0.5.0.exe</path>
+		<argument></argument>
+		<description>Java反编译-luyten</description>
+	</batch>
+
+	<batch type="menu">
+		<path>D:\SingleWare\jd-gui.exe</path>
+		<argument></argument>
+		<description>jd-gui</description>
+	</batch>
+
+	<batch type="seperator"></batch>
+
+	<batch type="menu">
+		<path>D:\Beyond Compare 4.0.6\BCompare.exe</path>
+		<argument></argument>
+		<description>BCompare</description>
+	</batch>
+	<batch type="menu">
+		<path>D:\DBFCommander\DBFCommander.exe</path>
+		<argument></argument>
+		<description>DBFCommander</description>
+	</batch>
+	<batch type="menu">
+		<path>D:\TeamViewer\TeamViewer.exe</path>
+		<argument></argument>
+		<description>TeamViewer</description>
+	</batch>
+	<batch type="menu">
+		<path>D:\LibreOffice 5\program\soffice.exe</path>
+		<argument></argument>
+		<description>soffice</description>
+	</batch>
+	<batch type="menu">
+		<path>D:\Navicat Premium\navicat.exe</path>
+		<argument></argument>
+		<description>navicat</description>
+	</batch>
+
+	<batch type="menu">
+		<path>D:\Everything\Everything.exe</path>
+		<argument></argument>
+		<description>Everything</description>
+	</batch>
+	<batch type="menu">
+		<path>D:\FileZilla FTP Client\filezilla.exe</path>
+		<argument></argument>
+		<description>filezilla</description>
+	</batch>
+	<batch type="menu">
+		<path>D:\eclipse\eclipse.exe</path>
+		<argument></argument>
+		<description>eclipse</description>
+	</batch>
+
+	<batch type="menu">
+		<path>D:\redis-64.3.0.503\redis-server.exe</path>
+		<argument></argument>
+		<description>本机redis服务器</description>
 	</batch>
 </batches>

@@ -1,0 +1,64 @@
+<assembly>
+	<id>bin</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<!-- 从目标目录拷贝文件去压缩 -->
+		<fileSet>
+			<directory>target</directory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/lib</directory>
+			<outputDirectory>/lib</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/config</directory>
+			<outputDirectory>/config</outputDirectory>
+		</fileSet>
+
+		<!-- 从源目录拷贝文件去压缩 -->
+		<fileSet>
+			<directory>config</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>/config</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>database</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>/database</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>doc</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>/doc</outputDirectory>
+		</fileSet>
+
+		<fileSet>
+			<directory>icon</directory>
+			<includes>
+				<include>*</include>
+			</includes>
+			<outputDirectory>/icon</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>/</directory>
+			<includes>
+				<include>README.md</include>
+				<include>start.bat</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>

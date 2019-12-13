@@ -1,2 +1,8 @@
-bin/
-sessiondb.lck
+*.log
+/bin/
+/logs/
+/target/
+/.vscode/
+.classpath
+.project
+sessiondb.*
