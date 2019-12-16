@@ -56,7 +56,7 @@
 			<directory>/</directory>
 			<includes>
 				<include>README.md</include>
-				<include>start.bat</include>
+				<include>Start.bat</include>
 			</includes>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
