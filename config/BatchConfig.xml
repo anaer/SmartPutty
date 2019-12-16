@@ -15,7 +15,7 @@
 		<argument></argument>
 		<description>jd-gui</description>
 	</batch>
-	<batch type="seperator"></batch>
+	<batch type="separator"></batch>
 	<batch type="menu">
 		<path>C:\Program Files\KDiff3\kdiff3.exe</path>
 		<argument></argument>

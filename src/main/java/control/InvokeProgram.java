@@ -382,7 +382,7 @@ public class InvokeProgram extends Thread {
 
         try {
             Runtime.getRuntime().exec(cmd);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage());
             log.error(ExceptionUtils.getStackTrace(ex));
         }

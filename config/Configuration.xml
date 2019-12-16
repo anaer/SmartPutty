@@ -9,12 +9,12 @@
 <entry key="WindowPositionSize">-8,-8,1936,1056</entry>
 <entry key="ViewConnectionBar">false</entry>
 <entry key="ViewBottomQuickBar">false</entry>
-<entry key="Dictionary">http://dict.youdao.com/w/eng/</entry>
 <entry key="ShowWelcomePage">false</entry>
+<entry key="Dictionary">http://dict.youdao.com/w/eng/</entry>
 <entry key="WindowsBaseDrive">C:</entry>
 <entry key="ViewUtilitiesBar">false</entry>
 <entry key="ScpExecutable">C:\Program Files\WinSCP\WinSCP.exe</entry>
-<entry key="PuttyExecutable">C:\Program Files\Putty\PUTTY.EXE</entry>
-<entry key="PlinkExecutable">C:\Program Files\Putty\PLINK.EXE</entry>
 <entry key="DefaultPuttyUsername">root</entry>
+<entry key="PlinkExecutable">C:\Program Files\Putty\PLINK.EXE</entry>
+<entry key="PuttyExecutable">C:\Program Files\Putty\PUTTY.EXE</entry>
 </properties>
