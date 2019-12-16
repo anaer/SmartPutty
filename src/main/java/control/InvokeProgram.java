@@ -2,7 +2,6 @@ package control;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;

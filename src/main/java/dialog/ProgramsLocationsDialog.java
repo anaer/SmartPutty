@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,11 +20,10 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import constants.ButtonImage;
 import enums.ProgramEnum;
+import lombok.extern.slf4j.Slf4j;
 import ui.MainFrame;
 
 /**
@@ -31,8 +32,8 @@ import ui.MainFrame;
  *
  * @author Carlos SS
  */
+@Slf4j
 public class ProgramsLocationsDialog implements SelectionListener, MouseListener {
-    private static final Logger logger = LoggerFactory.getLogger(ProgramsLocationsDialog.class);
     final private Shell         dialog;
     /**
      * 保存按钮.
@@ -144,6 +145,18 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         editText.setText(path);
         editText.setLayoutData(gd2);
 
+        // 编辑框内容修改时, 添加到临时变量配置中
+        editText.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(ModifyEvent e) {
+                if (StringUtils.isNotBlank(program.getProperty())) {
+                    tmpPropConfig.put(program.getProperty(), editText.getText());
+                }
+            }
+
+        });
+
         GridData gd3 = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd3.widthHint = 50;
         gd3.heightHint = 20;
@@ -157,9 +170,6 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
                 String path = searchProgramDialog(program);
                 if (StringUtils.isNotBlank(path)) {
                     editText.setText(path);
-                }
-                if (StringUtils.isNotBlank(program.getProperty())) {
-                    tmpPropConfig.put(program.getProperty(), path);
                 }
             }
 
@@ -188,7 +198,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
     @Override
     public void widgetSelected(SelectionEvent e) {
         if (e.getSource() == saveButton) {
-            logger.info("保存设置项.");
+            log.info("保存设置项.");
             // Save changes to configuration:
             if (!tmpPropConfig.isEmpty()) {
                 for (Entry<String, String> entry : tmpPropConfig.entrySet()) {
