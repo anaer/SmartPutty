@@ -28,13 +28,14 @@ public enum ProgramEnum {
     /**
      * keygen程序.
      */
-    KEYGEN("Key generator", "", "KeyGeneratorExecutable", new String[] { "*.exe" },
-           new String[] { "Key generator (*.exe)" }),
+    KEYGEN("Key generator", "", "KeyGeneratorExecutable", new String[] { "puttygen.exe" },
+           new String[] { "Key generator (puttygen.exe)" }),
 
     /**
      * winscp程序.
      */
-    WINSCP("Winscp", "", "ScpExecutable", new String[] { "*.exe" }, new String[] { "scp(*.exe)" }),
+    WINSCP("Winscp", "", "ScpExecutable", new String[] { "winscp.exe" },
+           new String[] { "scp(winscp.exe)" }),
 
     /**
      * vpc程序.

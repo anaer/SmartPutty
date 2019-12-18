@@ -80,7 +80,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         tableNameColumn.setText("Name");
 
         TableColumn tableHostColumn = new TableColumn(table, SWT.NONE);
-        tableHostColumn.setWidth(100);
+        tableHostColumn.setWidth(125);
         tableHostColumn.setText("Host");
 
         TableColumn tablePortColumn = new TableColumn(table, SWT.NONE);
@@ -92,11 +92,11 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         tableUserColumn.setText("User");
 
         TableColumn tableTimeColumn = new TableColumn(table, SWT.NONE);
-        tableTimeColumn.setWidth(75);
+        tableTimeColumn.setWidth(65);
         tableTimeColumn.setText("Protocol");
 
         TableColumn sessionColumn = new TableColumn(table, SWT.NONE);
-        sessionColumn.setWidth(90);
+        sessionColumn.setWidth(75);
         sessionColumn.setText("Session");
 
         loadTable();
