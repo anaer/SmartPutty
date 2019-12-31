@@ -5,7 +5,7 @@
 	<version>1.1.11</version>
 	<properties>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
-		<cn.hutool.version>5.0.7</cn.hutool.version>
+		<cn.hutool.version>5.1.0</cn.hutool.version>
 		<commons-codec.version>1.13</commons-codec.version>
 		<commons-io.version>2.6</commons-io.version>
 		<commons-net.version>3.6</commons-net.version>
@@ -112,6 +112,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<!-- 清单文件，设置入口类和classpath -->
