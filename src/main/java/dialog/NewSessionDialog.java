@@ -42,7 +42,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
     private MainFrame         mainFrame;
     private Shell             dialog;
     private Combo             comboHost, comboUser, comboProtocol, comboSession;
-    private Text              textPassword, textKey, textName;
+    private Text              textPassword, textKey, textName, textPort;
     private Button            buttonFile, buttonOk, buttonCancel, buttonShow;
 
     public NewSessionDialog(MainFrame mainFrame, OpenSessionDialog sessionDialog, String type) {
@@ -105,6 +105,13 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
         index++;
         label = new Label(dialog, SWT.NONE);
+        label.setText("Port");
+        label.setBounds(0, index * y / 6, x / 3, y / 6);
+        textPort = new Text(dialog, SWT.BORDER);
+        textPort.setBounds(x / 3, index * y / 6, 3 * x / 6, y / 6);
+
+        index++;
+        label = new Label(dialog, SWT.NONE);
         label.setText("SSH Key");
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         textKey = new Text(dialog, SWT.BORDER);
@@ -157,6 +164,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             ConfigSession session = sessionDialog.getCurrentSelectSession();
             if (session != null) {
                 textName.setText(session.getName());
+                textPort.setText(session.getPort());
                 comboHost.setText(session.getHost());
                 comboUser.setText(session.getUser());
                 comboProtocol.setText(session.getProtocol().getName());
@@ -249,6 +257,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String user = comboUser.getText();
             String password = textPassword.getText();
             String file = textKey.getText().trim();
+            String port = StringUtils.defaultIfBlank(textPort.getText(), "22");
             ProtocolEnum protocol = ProtocolEnum.values()[comboProtocol.getSelectionIndex()];
 
             String sessionProfile = "";
@@ -261,7 +270,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             }
 
             if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(user) && protocol != null) {
-                ConfigSession session = new ConfigSession(name, host, "22", user, protocol, file,
+                ConfigSession session = new ConfigSession(name, host, port, user, protocol, file,
                     password, sessionProfile);
                 dialog.dispose();
                 MainFrame.dbm.insertCSession(session);
