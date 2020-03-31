@@ -139,7 +139,7 @@ public class DbManager {
     }
 
     public List<ConfigSession> getAllCSessions() {
-        String sql = "SELECT *  FROM CSESSION";
+        String sql = "SELECT *  FROM CSESSION order by name";
         return qryCSession(sql);
     }
 
