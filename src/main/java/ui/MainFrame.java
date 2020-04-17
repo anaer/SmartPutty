@@ -350,7 +350,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         // Path:
         new Label(quickBottomGroup, SWT.RIGHT).setText("Path");
         pathItem = new Text(quickBottomGroup, SWT.BORDER);
-        pathItem.setText("");
+        pathItem.setText("/");
         pathItem.setLayoutData(new RowData(250, 20));
 
         win2UnixButton = new Button(quickBottomGroup, SWT.PUSH);

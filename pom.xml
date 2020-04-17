@@ -2,19 +2,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SmartPutty</groupId>
 	<artifactId>SmartPutty</artifactId>
-	<version>1.1.13</version>
+	<version>1.1.14</version>
 	<properties>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
-		<cn.hutool.version>5.2.5</cn.hutool.version>
-		<commons-codec.version>1.13</commons-codec.version>
+		<cn.hutool.version>5.3.0</cn.hutool.version>
+		<commons-codec.version>1.14</commons-codec.version>
 		<commons-io.version>2.6</commons-io.version>
 		<commons-net.version>3.6</commons-net.version>
-		<junit.version>4.12</junit.version>
-		<org.apache.commons.version>3.9</org.apache.commons.version>
+		<junit.version>4.13</junit.version>
+		<org.apache.commons.version>3.10</org.apache.commons.version>
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.hsqldb.version>2.5.0</org.hsqldb.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
-		<org.projectlombok.version>1.18.10</org.projectlombok.version>
+		<org.projectlombok.version>1.18.12</org.projectlombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
