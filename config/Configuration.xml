@@ -3,18 +3,18 @@
 <properties>
 <comment>SmartPutty configuration file</comment>
 <entry key="KeyGeneratorExecutable">C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE</entry>
-<entry key="Version">1.1.14</entry>
+<entry key="Version">1.1.15</entry>
 <entry key="WaitForInitTime">200</entry>
 <entry key="MinttyExecutable">D:\Git\usr\bin\mintty.exe</entry>
-<entry key="WindowPositionSize">2115,169,1292,709</entry>
+<entry key="WindowPositionSize">195,267,1292,709</entry>
 <entry key="ViewConnectionBar">false</entry>
 <entry key="ViewBottomQuickBar">false</entry>
-<entry key="ShowWelcomePage">false</entry>
 <entry key="Dictionary">http://dict.youdao.com/w/eng/</entry>
+<entry key="ShowWelcomePage">false</entry>
 <entry key="WindowsBaseDrive">C:</entry>
 <entry key="ViewUtilitiesBar">false</entry>
 <entry key="ScpExecutable">C:\Program Files\WinSCP\WinSCP.exe</entry>
-<entry key="DefaultPuttyUsername">root</entry>
-<entry key="PlinkExecutable">C:\ProgramData\chocolatey\bin\PLINK.EXE</entry>
 <entry key="PuttyExecutable">C:\ProgramData\chocolatey\bin\PUTTY.EXE</entry>
+<entry key="PlinkExecutable">C:\ProgramData\chocolatey\bin\PLINK.EXE</entry>
+<entry key="DefaultPuttyUsername">root</entry>
 </properties>

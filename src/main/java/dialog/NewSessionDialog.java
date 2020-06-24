@@ -109,6 +109,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         textPort = new Text(dialog, SWT.BORDER);
         textPort.setBounds(x / 3, index * y / 6, 3 * x / 6, y / 6);
+        textPort.setText("22");
 
         index++;
         label = new Label(dialog, SWT.NONE);
