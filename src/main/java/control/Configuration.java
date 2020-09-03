@@ -54,8 +54,8 @@ public class Configuration {
     }
 
     public void loadFeatureToggle() {
-        try {
-            featureToggleProps.load(new FileInputStream(ConstantValue.CONFIG_FEATURE_TOGGLE_FILE));
+        try (FileInputStream fis = new FileInputStream(ConstantValue.CONFIG_FEATURE_TOGGLE_FILE)) {
+            featureToggleProps.load(fis);
         } catch (IOException e) {
             logger.error("加载特性开关配置失败.", e);
         }
@@ -63,9 +63,7 @@ public class Configuration {
 
     /** Save program configuration. */
     public void saveConfiguration() {
-        try {
-            FileOutputStream fos = new FileOutputStream(ConstantValue.CONFIG_FILE);
-
+        try (FileOutputStream fos = new FileOutputStream(ConstantValue.CONFIG_FILE)) {
             prop.setProperty(WAIT_FOR_INIT_TIME, prop.getProperty(WAIT_FOR_INIT_TIME));
             // Main window viewable toolbars:
             prop.setProperty(VIEW_UTILITIES_BAR, String.valueOf(getUtilitiesBarVisible()));
@@ -78,7 +76,6 @@ public class Configuration {
             prop.setProperty("WindowPositionSize", getWindowPositionSizeString());
 
             prop.storeToXML(fos, "SmartPutty configuration file");
-            fos.close();
         } catch (IOException e) {
             logger.error("保存应用程序配置失败.", e);
         }
@@ -86,8 +83,7 @@ public class Configuration {
 
     /** Load program configuration. */
     private void loadConfiguration() {
-        try {
-            FileInputStream fis = new FileInputStream(ConstantValue.CONFIG_FILE);
+        try (FileInputStream fis = new FileInputStream(ConstantValue.CONFIG_FILE)) {
             prop.loadFromXML(fis);
         } catch (InvalidPropertiesFormatException e) {
             logger.error("错误的配置文件格式.", e);

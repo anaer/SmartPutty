@@ -125,14 +125,14 @@ public class InvokeProgram extends Thread {
                 args += String.format(" -P %s ", port);
             }
         }
-        log.debug("Putty parameters: " + args);
+        log.debug("Putty parameters: {}" , args);
 
         return args;
     }
 
     private static String setMinttyParameters(ConfigSession session) {
         String args = " --dir ~";
-        log.debug("Mintty parameters: " + args);
+        log.debug("Mintty parameters: {}" , args);
         return args;
     }
 
@@ -189,16 +189,11 @@ public class InvokeProgram extends Thread {
         if (hWndAlert.intValue() != 0) {
             int waitingForOperation = 10000;
             while (waitingForOperation > 0) {
-                try {
-                    if (OS.FindWindow(null, new TCHAR(0, PUTTY_SECURITY_ALERT, true)) == 0) {
-                        break;
-                    }
-
-                    Thread.sleep(500);
-                    waitingForOperation -= 500;
-                } catch (InterruptedException e) {
-                    log.error("休眠500ms失败:{}", e);
+                if (OS.FindWindow(null, new TCHAR(0, PUTTY_SECURITY_ALERT, true)) == 0) {
+                    break;
                 }
+                ThreadUtil.safeSleep(500);
+                waitingForOperation -= 500;
             }
         }
 
@@ -208,11 +203,7 @@ public class InvokeProgram extends Thread {
         while (count > 0
                 && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
             int waitingTime = Integer.parseInt(MainFrame.configuration.getWaitForInitTime());
-            try {
-                Thread.sleep(waitingTime);
-            } catch (InterruptedException e) {
-                log.error("休眠失败:{}", e);
-            }
+            ThreadUtil.safeSleep(waitingTime);
             count--;
         }
         if (count == 0) {

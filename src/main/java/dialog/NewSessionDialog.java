@@ -171,7 +171,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 comboProtocol.setText(session.getProtocol().getName());
                 textKey.setText(session.getKey());
                 textPassword.setText(session.getPassword());
-                log.info("保存的会话配置:" + session.getSession());
+                log.info("保存的会话配置:{}" , session.getSession());
 
                 if (ProtocolEnum.SSH2 == session.getProtocol()
                         || ProtocolEnum.SSH == session.getProtocol()) {
@@ -266,7 +266,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 int index = comboSession.getSelectionIndex();
                 if (index >= 0) {
                     sessionProfile = comboSession.getItem(index);
-                    log.info("当前选择会话配置:" + sessionProfile);
+                    log.info("当前选择会话配置:{}" , sessionProfile);
                 }
             }
 

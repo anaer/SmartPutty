@@ -62,10 +62,9 @@ public class DbManager {
             DatabaseMetaData meta = conn.getMetaData();
             ResultSet result = meta.getTables(null, null, null, str);
             while (result.next()) {
-                log.debug("Database Meta:   " + result.getString("TABLE_CAT") + ", "
-                        + result.getString("TABLE_SCHEM") + ", " + result.getString("TABLE_NAME")
-                        + ", " + result.getString("TABLE_TYPE") + ", "
-                        + result.getString("REMARKS"));
+                log.debug("Database Meta: {}, {}, {}, {}, {}", result.getString("TABLE_CAT"),
+                    result.getString("TABLE_SCHEM"), result.getString("TABLE_NAME"),
+                    result.getString("TABLE_TYPE"), result.getString("REMARKS"));
 
                 if ("CSESSION".equals(result.getString("TABLE_NAME"))) {
                     existCSessionTable = true;
@@ -97,7 +96,7 @@ public class DbManager {
         String protocol = configSession.getProtocol().name();
         String session = configSession.getSession();
         String key = configSession.getKey();
-        String password = new String(base64.encode(configSession.getPassword().getBytes()));
+        String password = String.valueOf(base64.encode(configSession.getPassword().getBytes()));
         if (host.isEmpty() || port.isEmpty() || user.isEmpty() || protocol.isEmpty()) {
             MessageDialog.openWarning(MainFrame.SHELL, "Warning",
                 "host,port,user,protocol should not be set to null");
@@ -170,7 +169,7 @@ public class DbManager {
                     ConfigSession confSession = new ConfigSession(rs.getString("Name"),
                         rs.getString("Host"), rs.getString("Port"), rs.getString("Username"),
                         protocol, rs.getString("Key"),
-                        new String(base64.decode(rs.getString("Password"))),
+                        String.valueOf(base64.decode(rs.getString("Password"))),
                         rs.getString("Session"));
                     result.add(confSession);
                 } else {

@@ -35,7 +35,7 @@ public class RegistryUtils {
         try {
             initPuttyDefaultSettings();
             for (Map.Entry<String, Object> e : readPuttyDefaultSettings().entrySet()) {
-                log.debug(e.getKey() + " : " + e.getValue());
+                log.debug("{} : {}", e.getKey(), e.getValue());
             }
 
         } catch (Exception ex) {
@@ -101,7 +101,7 @@ public class RegistryUtils {
         Object obj = null;
         try {
             String cmd = String.format("reg query %s /v %s", location, key);
-            log.debug(cmd);
+            log.debug("{}", cmd);
             String output = RuntimeUtil.execForStr(cmd);
             String[] parsed = output.trim().split("\\s+");
 
@@ -120,7 +120,7 @@ public class RegistryUtils {
             } else if (parsed.length == 3) {
                 obj = "";
             } else {
-                log.debug("query result: " + Arrays.deepToString(parsed));
+                log.debug("query result: {}", Arrays.deepToString(parsed));
             }
 
             return obj;

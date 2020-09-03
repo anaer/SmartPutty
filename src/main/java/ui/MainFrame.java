@@ -23,7 +23,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.graphics.Color;
+// import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -692,7 +692,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         }
 
         Composite composite = new Composite(folder, SWT.EMBEDDED);
-        composite.setBackground(new Color(display, 0, 0, 0));
+        // composite.setBackground(new Color(display, 0, 0, 0));
         item.setControl(composite);
         item.setData("TYPE", "session");
         folder.setSelection(item);
