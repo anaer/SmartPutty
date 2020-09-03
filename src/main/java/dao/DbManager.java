@@ -13,9 +13,9 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.net.util.Base64;
 import org.eclipse.jface.dialogs.MessageDialog;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.collection.CollectionUtil;
 import enums.ProtocolEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ public class DbManager {
 
     private static DbManager    manager;
     private Connection          conn;
-    private Base64              base64        = new Base64();
     private boolean             existCSessionTable;
 
     private DbManager() {
@@ -96,7 +95,7 @@ public class DbManager {
         String protocol = configSession.getProtocol().name();
         String session = configSession.getSession();
         String key = configSession.getKey();
-        String password = String.valueOf(base64.encode(configSession.getPassword().getBytes()));
+        String password = Base64.encode(configSession.getPassword());
         if (host.isEmpty() || port.isEmpty() || user.isEmpty() || protocol.isEmpty()) {
             MessageDialog.openWarning(MainFrame.SHELL, "Warning",
                 "host,port,user,protocol should not be set to null");
@@ -168,8 +167,7 @@ public class DbManager {
                 if (Objects.nonNull(protocol)) {
                     ConfigSession confSession = new ConfigSession(rs.getString("Name"),
                         rs.getString("Host"), rs.getString("Port"), rs.getString("Username"),
-                        protocol, rs.getString("Key"),
-                        String.valueOf(base64.decode(rs.getString("Password"))),
+                        protocol, rs.getString("Key"), Base64.decodeStr(rs.getString("Password")),
                         rs.getString("Session"));
                     result.add(confSession);
                 } else {
