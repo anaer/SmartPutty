@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -30,14 +31,16 @@ import ui.MainFrame;
  */
 @Slf4j
 public class DbManager {
-    private static final String DATABASE_PATH = "database\\sessiondb";
-
     private static DbManager    manager;
     private Connection          conn;
     private boolean             existCSessionTable;
 
     private DbManager() {
         try {
+            String dbPath = MainFrame.configuration.getDatabasePath();
+            if(StringUtils.isBlank(dbPath)){
+                dbPath = "config\\sessiondb";
+            }
             String driver = "org.hsqldb.jdbcDriver";
             String protocol = "jdbc:hsqldb:";
             Class.forName(driver).newInstance();
@@ -49,7 +52,7 @@ public class DbManager {
             props.put("jdbc.strict_md", "false");
             props.put("jdbc.get_column_name", "false");
             props.put("shutdown", "true");
-            conn = DriverManager.getConnection(protocol + DATABASE_PATH, props);
+            conn = DriverManager.getConnection(protocol + dbPath, props);
             log.debug("Connect to Database");
         } catch (Exception e) {
             log.error("初始化数据库连接异常.", e);

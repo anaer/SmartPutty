@@ -38,21 +38,11 @@ public class ConstantValue {
         .getScreenSize().width;
 
     /**
-     *  配置文件.
-     */
-    public static final String CONFIG_FILE                = Paths.get("config", "Configuration.xml")
-        .toString();
-
-    /**
      * 自定义菜单配置.
      */
     public static final String CONFIG_BATCH_FILE          = Paths.get("config", "BatchConfig.xml")
         .toString();
 
-    /**
-     * 功能开关配置.
-     */
-    public static final String CONFIG_FEATURE_TOGGLE_FILE = Paths
-        .get("config", "FeatureToggle.properties").toString();
-
+    public static final String APP_CONFIG_FILE            = Paths.get("config", "app.setting")
+        .toString();
 }

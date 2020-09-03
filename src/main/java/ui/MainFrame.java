@@ -4,7 +4,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +22,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -692,7 +690,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         }
 
         Composite composite = new Composite(folder, SWT.EMBEDDED);
-        composite.setBackground(new Color(display, 0, 0, 0));
         item.setControl(composite);
         item.setData("TYPE", "session");
         folder.setSelection(item);
@@ -768,9 +765,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         // Close in-memory database:
         dbm.closeDB();
-
-        // Save configuration:
-        configuration.saveConfiguration();
     }
 
     /**
@@ -796,14 +790,14 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
     /** Check the feature toggle, dispose the features who equals to "false". */
     private void applyFeatureToggle() {
-        Properties props = configuration.getFeatureToggleProps();
-        boolean bVnc = "true".equalsIgnoreCase(props.getProperty("vnc", "true"));
+        Boolean bVnc = configuration.getFeatureToggle("vnc");
+        // boolean bVnc = "true".equalsIgnoreCase(props.getProperty("vnc", "true"));
         if (!bVnc) {
             this.vncPopItem.dispose();
             this.itemVNC.dispose();
         }
 
-        boolean bTransfer = "true".equalsIgnoreCase(props.getProperty("transfer", "true"));
+        Boolean bTransfer = configuration.getFeatureToggle("transfer");
         if (!bTransfer) {
             this.transferPopItem.dispose();
         }

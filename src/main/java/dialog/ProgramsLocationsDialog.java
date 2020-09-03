@@ -207,7 +207,6 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
                 // 设置完成后, 清空临时配置项
                 tmpPropConfig.clear();
             }
-            MainFrame.configuration.saveConfiguration();
 
             dialog.dispose();
         } else if (e.getSource() == cancelButton) {

@@ -1,20 +1,15 @@
 package control;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Rectangle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import cn.hutool.setting.Setting;
 import constants.ConstantValue;
 import enums.ProgramEnum;
 import ui.MainFrame;
@@ -33,65 +28,30 @@ public class Configuration {
 
     private static final String                 VIEW_CONNECTION_BAR = "ViewConnectionBar";
 
+    private static final String VIEW_BOTTOM_QUICK_BAR = "ViewBottomQuickBar";
+
+
+    private static final String GROUP_CONFIGURATION = "configuration";
+
+    private static final String GROUP_FEATURE = "feature";
+
+    private static final String GROUP_PROGRAM = "program";
+
     private static final String                 VERSION             = "Version";
 
-    /** 日志. */
-    private static final Logger                 logger              = LoggerFactory
-        .getLogger(Configuration.class);
-
-    private final Properties                    prop;
-    private final Properties                    featureToggleProps;
+    private final Setting setting;
 
     private final List<HashMap<String, String>> batchConfigListMap;
 
     /** Constructor: */
     public Configuration() {
-        this.prop = new Properties();
-        this.featureToggleProps = new Properties();
-        loadConfiguration();
-        loadFeatureToggle();
         this.batchConfigListMap = ReadXmlFile.parse(new File(ConstantValue.CONFIG_BATCH_FILE));
+        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE), Charset.defaultCharset(), true);
+        this.setting.autoLoad(true);
     }
 
-    public void loadFeatureToggle() {
-        try (FileInputStream fis = new FileInputStream(ConstantValue.CONFIG_FEATURE_TOGGLE_FILE)) {
-            featureToggleProps.load(fis);
-        } catch (IOException e) {
-            logger.error("加载特性开关配置失败.", e);
-        }
-    }
-
-    /** Save program configuration. */
-    public void saveConfiguration() {
-        try (FileOutputStream fos = new FileOutputStream(ConstantValue.CONFIG_FILE)) {
-            prop.setProperty(WAIT_FOR_INIT_TIME, prop.getProperty(WAIT_FOR_INIT_TIME));
-            // Main window viewable toolbars:
-            prop.setProperty(VIEW_UTILITIES_BAR, String.valueOf(getUtilitiesBarVisible()));
-            prop.setProperty(VIEW_CONNECTION_BAR, String.valueOf(getConnectionBarVisible()));
-            // Putty and Plink paths:
-            prop.setProperty("PuttyExecutable", getProgramPath(ProgramEnum.PUTTY));
-            prop.setProperty("PlinkExecutable", getProgramPath(ProgramEnum.PLINK));
-            prop.setProperty("KeyGeneratorExecutable", getProgramPath(ProgramEnum.KEYGEN));
-            // Main windows position and size:
-            prop.setProperty("WindowPositionSize", getWindowPositionSizeString());
-
-            prop.storeToXML(fos, "SmartPutty configuration file");
-        } catch (IOException e) {
-            logger.error("保存应用程序配置失败.", e);
-        }
-    }
-
-    /** Load program configuration. */
-    private void loadConfiguration() {
-        try (FileInputStream fis = new FileInputStream(ConstantValue.CONFIG_FILE)) {
-            prop.loadFromXML(fis);
-        } catch (InvalidPropertiesFormatException e) {
-            logger.error("错误的配置文件格式.", e);
-        } catch (IOException e) {
-            logger.error("加载配置文件失败.", e);
-        }
-
-        // prop.list(System.out); //DEBUG
+    public Boolean getFeatureToggle(String feature){
+        return setting.getBool(feature, GROUP_FEATURE, false);
     }
 
     /** Get methods: */
@@ -100,11 +60,11 @@ public class Configuration {
     }
 
     public String getWaitForInitTime() {
-        return (String) prop.get(WAIT_FOR_INIT_TIME);
+        return setting.get(GROUP_CONFIGURATION, WAIT_FOR_INIT_TIME);
     }
 
     public String getSmartPuttyVersion() {
-        return (String) prop.get(VERSION);
+        return setting.get(GROUP_CONFIGURATION, VERSION);
     }
 
     /**
@@ -113,8 +73,7 @@ public class Configuration {
      * @return
      */
     public Boolean getUtilitiesBarVisible() {
-        String value = (String) prop.get(VIEW_UTILITIES_BAR);
-        return StringUtils.isEmpty(value) || BooleanUtils.toBoolean(value);
+        return setting.getBool(VIEW_UTILITIES_BAR, GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -123,8 +82,7 @@ public class Configuration {
      * @return
      */
     public Boolean getConnectionBarVisible() {
-        String value = (String) prop.get(VIEW_CONNECTION_BAR);
-        return StringUtils.isEmpty(value) || BooleanUtils.toBoolean(value);
+        return setting.getBool(VIEW_CONNECTION_BAR, GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -133,8 +91,7 @@ public class Configuration {
      * @return
      */
     public Boolean getBottomQuickBarVisible() {
-        String value = (String) prop.get("ViewBottomQuickBar");
-        return StringUtils.isEmpty(value) || BooleanUtils.toBoolean(value);
+        return setting.getBool(VIEW_BOTTOM_QUICK_BAR, GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -149,7 +106,7 @@ public class Configuration {
         String property = program.getProperty();
         if (StringUtils.isNotBlank(property)) {
             // 2. 如果配置属性不为空, 从配置文件中获取配置项
-            value = (String) prop.get(property);
+            value = setting.get(GROUP_PROGRAM, property);
         }
         // 3. 如果配置值为空, 取默认的path
         return StringUtils.isEmpty(value) ? program.getPath() : value;
@@ -161,7 +118,7 @@ public class Configuration {
      * @return
      */
     public String getDictionaryBaseUrl() {
-        String value = (String) prop.get("Dictionary");
+        String value = setting.get(GROUP_CONFIGURATION, "Dictionary");
         return StringUtils.isEmpty(value) ? "http://dict.youdao.com/w/eng/" : value;
     }
 
@@ -171,18 +128,15 @@ public class Configuration {
      * @return
      */
     public String getDefaultPuttyUsername() {
-        String value = (String) prop.get("DefaultPuttyUsername");
+        String value = setting.get(GROUP_CONFIGURATION, "DefaultPuttyUsername");
         return StringUtils.isEmpty(value) ? "" : value;
     }
 
-    /**
-     * Get feature toggle config, we can config to enable/disable features by editing config/FeatureToggle.properties
-     *
-     * @return
-     */
-    public Properties getFeatureToggleProps() {
-        return featureToggleProps;
+    public String getDatabasePath() {
+        String value = setting.get(GROUP_CONFIGURATION, "DatabasePath");
+        return StringUtils.isEmpty(value) ? "" : value;
     }
+
 
     /**
      * Customize win path base prefix when converting path from linux and windows.
@@ -190,7 +144,7 @@ public class Configuration {
      * @return
      */
     public String getWinPathBaseDrive() {
-        String value = (String) prop.get("WindowsBaseDrive");
+        String value = setting.get(GROUP_CONFIGURATION, "WindowsBaseDrive");
         return StringUtils.isEmpty(value) ? "C:/" : value;
     }
 
@@ -200,7 +154,7 @@ public class Configuration {
      * @return
      */
     public Boolean getWelcomePageVisible() {
-        String value = (String) prop.get("ShowWelcomePage");
+        String value = setting.get(GROUP_CONFIGURATION, "ShowWelcomePage");
         return StringUtils.isEmpty(value) || BooleanUtils.toBoolean(value);
     }
 
@@ -211,7 +165,8 @@ public class Configuration {
      */
     public Rectangle getWindowPositionSize() {
         // Split comma-separated values by x, y, width, height:
-        String[] array = ((String) prop.get("WindowPositionSize")).split(",");
+        String[] array = setting.get(GROUP_CONFIGURATION, "WindowPositionSize").split(",");
+
 
         // If there aren't enough pieces of information...
         if (array.length < 4) {
@@ -248,7 +203,7 @@ public class Configuration {
      * @param visible
      */
     public void setUtilitiesBarVisible(String visible) {
-        prop.setProperty(VIEW_UTILITIES_BAR, visible);
+        setting.set(GROUP_CONFIGURATION, VIEW_UTILITIES_BAR, visible);
     }
 
     /**
@@ -257,11 +212,11 @@ public class Configuration {
      * @param visible
      */
     public void setConnectionBarVisible(String visible) {
-        prop.setProperty(VIEW_CONNECTION_BAR, visible);
+        setting.set(GROUP_CONFIGURATION, VIEW_CONNECTION_BAR, visible);
     }
 
     public void setBottomQuickBarVisible(String visible) {
-        prop.setProperty("ViewBottomQuickBar", visible);
+        setting.set(GROUP_CONFIGURATION, VIEW_BOTTOM_QUICK_BAR, visible);
     }
 
     /**
@@ -270,15 +225,15 @@ public class Configuration {
      * @param visible
      */
     public void setWelcomePageVisible(String visible) {
-        prop.setProperty("ShowWelcomePage", visible);
+        setting.set(GROUP_CONFIGURATION, "ShowWelcomePage", visible);
     }
 
     public void setProperty(String key, String value) {
-        prop.setProperty(key, value);
+        setting.set(GROUP_CONFIGURATION, key, value);
     }
 
     public String getProperty(String key, String defaultValue) {
-        String value = (String) prop.get(key);
+        String value = setting.get(GROUP_CONFIGURATION, key);
         return StringUtils.isEmpty(value) ? defaultValue : value;
     }
 }
