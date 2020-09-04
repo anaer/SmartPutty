@@ -57,7 +57,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     public OpenSessionDialog(MainFrame mainFrame, Shell parent) {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         this.mainFrame = mainFrame;
-        this.dbm = DbManager.getDBManagerInstance();
+        this.dbm = DbManager.getDbManagerInstance();
         init();
     }
 
@@ -152,7 +152,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
     public void loadTable() {
         table.removeAll();
-        List<ConfigSession> sessions = dbm.getAllCSessions();
+        List<ConfigSession> sessions = dbm.getAllSessions();
         for (ConfigSession session : sessions) {
             TableItem tableItem = new TableItem(table, SWT.NONE);
             tableItem.setData("session", session);
@@ -171,7 +171,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         ArrayList<ConfigSession> sessions = new ArrayList<>();
         for (TableItem tableItem : tableItems) {
             ConfigSession csession = dbm
-                .queryCSessionBySession((ConfigSession) tableItem.getData("session"));
+                .querySessionBySession((ConfigSession) tableItem.getData("session"));
             if (csession != null) {
                 sessions.add(csession);
             }
@@ -190,7 +190,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         TableItem[] tableItems = table.getSelection();
         if (tableItems != null) {
             ConfigSession csession = dbm
-                .queryCSessionBySession((ConfigSession) tableItems[0].getData("session"));
+                .querySessionBySession((ConfigSession) tableItems[0].getData("session"));
             InvokeProgram.invokeSinglePutty(csession);
             dialog.dispose();
         }
@@ -220,7 +220,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
             TableItem[] tableItems = table.getSelection();
             for (TableItem item : tableItems) {
                 ConfigSession session = (ConfigSession) item.getData("session");
-                dbm.deleteCSession(session);
+                dbm.deleteSession(session);
             }
             loadTable();
         } else if (e.getSource() == puttyWindow) {

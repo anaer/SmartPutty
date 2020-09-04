@@ -52,11 +52,11 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         dialog.setImage(ButtonImage.NEW_IMAGE);
         dialog.setSize(400, 160);
         dialog.setText("New Session Dialog");
-        MainFrame.dbm = DbManager.getDBManagerInstance();
+        MainFrame.dbm = DbManager.getDbManagerInstance();
         Rectangle rect = dialog.getBounds();
         int x = rect.width;
         int y = rect.height;
-        List<ConfigSession> sessions = MainFrame.dbm.getAllCSessions();
+        List<ConfigSession> sessions = MainFrame.dbm.getAllSessions();
 
         int index = 0;
         Label label = new Label(dialog, SWT.NONE);
@@ -202,7 +202,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String host = comboHost.getText();
             if (StringUtils.isNotBlank(host)) {
                 comboUser.removeAll();
-                List<ConfigSession> sessions = MainFrame.dbm.queryCSessionByHost(host);
+                List<ConfigSession> sessions = MainFrame.dbm.querySessionByHost(host);
                 for (ConfigSession item : sessions) {
                     comboUser.add(item.getUser());
                 }
@@ -222,7 +222,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String host = comboHost.getText();
             String user = comboUser.getText();
             if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(user)) {
-                List<ConfigSession> sessions = MainFrame.dbm.queryCSessionByHostUser(host, user);
+                List<ConfigSession> sessions = MainFrame.dbm.querySessionByHostUser(host, user);
                 if (sessions.size() == 1) {
                     comboProtocol.setText(sessions.get(0).getProtocol().getName());
                     textPassword.setText(sessions.get(0).getPassword());
@@ -235,7 +235,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String host = comboHost.getText();
             String user = comboUser.getText();
             String protocol = comboProtocol.getText();
-            ConfigSession session = MainFrame.dbm.queryCSessionByHostUserProtocol(host, user,
+            ConfigSession session = MainFrame.dbm.querySessionByHostUserProtocol(host, user,
                 protocol);
             if (session != null) {
                 textPassword.setText(session.getPassword());
@@ -274,7 +274,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 ConfigSession session = new ConfigSession(name, host, port, user, protocol, file,
                     password, sessionProfile);
                 dialog.dispose();
-                MainFrame.dbm.insertCSession(session);
+                MainFrame.dbm.insertSession(session);
                 if (sessionDialog != null) {
                     sessionDialog.loadTable();
                 }

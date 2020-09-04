@@ -5,7 +5,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -118,8 +117,7 @@ public class Configuration {
      * @return
      */
     public String getDictionaryBaseUrl() {
-        String value = setting.get(GROUP_CONFIGURATION, "Dictionary");
-        return StringUtils.isEmpty(value) ? "http://dict.youdao.com/w/eng/" : value;
+        return getProperty("Dictionary", "http://dict.youdao.com/w/eng/");
     }
 
     /**
@@ -128,13 +126,11 @@ public class Configuration {
      * @return
      */
     public String getDefaultPuttyUsername() {
-        String value = setting.get(GROUP_CONFIGURATION, "DefaultPuttyUsername");
-        return StringUtils.isEmpty(value) ? "" : value;
+        return getProperty("DefaultPuttyUsername", "");
     }
 
     public String getDatabasePath() {
-        String value = setting.get(GROUP_CONFIGURATION, "DatabasePath");
-        return StringUtils.isEmpty(value) ? "" : value;
+        return getProperty("DatabasePath", "config/sessiondb");
     }
 
 
@@ -144,8 +140,7 @@ public class Configuration {
      * @return
      */
     public String getWinPathBaseDrive() {
-        String value = setting.get(GROUP_CONFIGURATION, "WindowsBaseDrive");
-        return StringUtils.isEmpty(value) ? "C:/" : value;
+        return getProperty("WindowsBaseDrive", "C:/");
     }
 
     /**
@@ -154,8 +149,7 @@ public class Configuration {
      * @return
      */
     public Boolean getWelcomePageVisible() {
-        String value = setting.get(GROUP_CONFIGURATION, "ShowWelcomePage");
-        return StringUtils.isEmpty(value) || BooleanUtils.toBoolean(value);
+        return setting.getBool("ShowWelcomePage", GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -165,13 +159,11 @@ public class Configuration {
      */
     public Rectangle getWindowPositionSize() {
         // Split comma-separated values by x, y, width, height:
-        String[] array = setting.get(GROUP_CONFIGURATION, "WindowPositionSize").split(",");
-
+        String[] array = getProperty("WindowPositionSize", "").split(",");
 
         // If there aren't enough pieces of information...
         if (array.length < 4) {
             array = new String[4];
-
             // Set default safety values:
             array[0] = String.valueOf(ConstantValue.SCREEN_WIDTH / 6);
             array[1] = String.valueOf(ConstantValue.SCREEN_HEIGHT / 6);
@@ -233,7 +225,6 @@ public class Configuration {
     }
 
     public String getProperty(String key, String defaultValue) {
-        String value = setting.get(GROUP_CONFIGURATION, key);
-        return StringUtils.isEmpty(value) ? defaultValue : value;
+        return setting.getStr(key, GROUP_CONFIGURATION, defaultValue);
     }
 }

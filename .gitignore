@@ -9,3 +9,4 @@ sessiondb.*
 .settings/
 .factorypath
 .project
+.pmdCache

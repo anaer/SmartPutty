@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -33,14 +32,11 @@ import ui.MainFrame;
 public class DbManager {
     private static DbManager    manager;
     private Connection          conn;
-    private boolean             existCSessionTable;
+    private boolean             existSessionTable;
 
     private DbManager() {
         try {
             String dbPath = MainFrame.configuration.getDatabasePath();
-            if(StringUtils.isBlank(dbPath)){
-                dbPath = "config\\sessiondb";
-            }
             String driver = "org.hsqldb.jdbcDriver";
             String protocol = "jdbc:hsqldb:";
             Class.forName(driver).newInstance();
@@ -53,7 +49,7 @@ public class DbManager {
             props.put("jdbc.get_column_name", "false");
             props.put("shutdown", "true");
             conn = DriverManager.getConnection(protocol + dbPath, props);
-            log.debug("Connect to Database");
+            log.debug("Connect to Database:{}", dbPath);
         } catch (Exception e) {
             log.error("初始化数据库连接异常.", e);
             MessageDialog.openError(null, "错误", "数据库连接异常.");
@@ -69,11 +65,11 @@ public class DbManager {
                     result.getString("TABLE_TYPE"), result.getString("REMARKS"));
 
                 if ("CSESSION".equals(result.getString("TABLE_NAME"))) {
-                    existCSessionTable = true;
+                    existSessionTable = true;
                 }
             }
             result.close();
-            if (!existCSessionTable) {
+            if (!existSessionTable) {
                 String sql = "CREATE TABLE CSession(Name varchar(100), Host varchar(50), Port varchar(10), Username varchar(50), Protocol varchar(10), Key varchar(100), Password varchar(50), Session varchar(50), PRIMARY KEY (Host,Port,Username,Protocol))";
                 state.execute(sql);
             }
@@ -83,14 +79,14 @@ public class DbManager {
         }
     }
 
-    public static DbManager getDBManagerInstance() {
+    public static DbManager getDbManagerInstance() {
         if (manager == null) {
             manager = new DbManager();
         }
         return manager;
     }
 
-    public void insertCSession(ConfigSession configSession) {
+    public void insertSession(ConfigSession configSession) {
         String name = configSession.getName();
         String host = configSession.getHost();
         String port = configSession.getPort();
@@ -104,9 +100,9 @@ public class DbManager {
                 "host,port,user,protocol should not be set to null");
             return;
         }
-        if (isCSessionExist(configSession)) {
+        if (isSessionExist(configSession)) {
             log.info("session已存在, 先删除当前session.");
-            deleteCSession(configSession);
+            deleteSession(configSession);
         }
 
         String sql = "INSERT INTO CSession VALUES('" + name + "','" + host + "','" + port + "','"
@@ -124,8 +120,8 @@ public class DbManager {
      *
      * @param csession
      */
-    public void deleteCSession(ConfigSession csession) {
-        if (!isCSessionExist(csession)) {
+    public void deleteSession(ConfigSession csession) {
+        if (!isSessionExist(csession)) {
             return;
         }
 
@@ -139,19 +135,19 @@ public class DbManager {
         }
     }
 
-    public List<ConfigSession> getAllCSessions() {
+    public List<ConfigSession> getAllSessions() {
         String sql = "SELECT *  FROM CSESSION order by name";
-        return qryCSession(sql);
+        return qrySession(sql);
     }
 
-    public List<ConfigSession> queryCSessionByHost(String host) {
+    public List<ConfigSession> querySessionByHost(String host) {
         String sql = "SELECT *  FROM CSESSION WHERE host='" + host + "'";
-        return qryCSession(sql);
+        return qrySession(sql);
     }
 
-    public List<ConfigSession> queryCSessionByHostUser(String host, String user) {
+    public List<ConfigSession> querySessionByHostUser(String host, String user) {
         String sql = "SELECT * FROM CSESSION WHERE HOST='" + host + "' AND USERname='" + user + "'";
-        return qryCSession(sql);
+        return qrySession(sql);
     }
 
     /**
@@ -160,7 +156,7 @@ public class DbManager {
      * @param sql
      * @return
      */
-    private List<ConfigSession> qryCSession(String sql) {
+    private List<ConfigSession> qrySession(String sql) {
         List<ConfigSession> result = new ArrayList<>();
         try (Statement state = conn.createStatement(); ResultSet rs = state.executeQuery(sql);) {
             while (rs.next()) {
@@ -190,30 +186,27 @@ public class DbManager {
      * @param sql
      * @return
      */
-    public ConfigSession getCSession(String sql) {
-        List<ConfigSession> list = qryCSession(sql);
+    public ConfigSession getSession(String sql) {
+        List<ConfigSession> list = qrySession(sql);
         return CollectionUtil.getFirst(list);
 
     }
 
-    public ConfigSession queryCSessionByHostUserProtocol(String host, String user,
+    public ConfigSession querySessionByHostUserProtocol(String host, String user,
                                                          String protocol) {
-        String sql = String.format(
-            "SELECT *  FROM CSESSION WHERE HOST='%s' AND USERNAME='%s' AND PROTOCOL='%s'", host,
-            user, protocol);
-        // String sql = "SELECT * FROM CSESSION WHERE host='121.196.192.154' AND NAME='yds-sit' AND PROTOCOL='SSH2' ";
+        String sql = String.format( "SELECT *  FROM CSESSION WHERE HOST='%s' AND USERNAME='%s' AND PROTOCOL='%s'", host, user, protocol);
 
-        return getCSession(sql);
+        return getSession(sql);
     }
 
-    public ConfigSession queryCSessionBySession(ConfigSession session) {
+    public ConfigSession querySessionBySession(ConfigSession session) {
         String host = session.getHost();
         String user = session.getUser();
         String protocol = session.getProtocol().name();
-        return queryCSessionByHostUserProtocol(host, user, protocol);
+        return querySessionByHostUserProtocol(host, user, protocol);
     }
 
-    private boolean isCSessionExist(ConfigSession csession) {
+    private boolean isSessionExist(ConfigSession csession) {
         boolean isExist = false;
         String sql = "SELECT * FROM CSESSION WHERE host='" + csession.getHost() + "' AND port='"
                 + csession.getPort() + "' AND username='" + csession.getUser() + "' AND protocol='"
@@ -229,7 +222,7 @@ public class DbManager {
         return isExist;
     }
 
-    public void closeDB() {
+    public void closeDb() {
         try {
             conn.close();
             log.debug("Committed transaction and closed connection");

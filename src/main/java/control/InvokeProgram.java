@@ -144,11 +144,12 @@ public class InvokeProgram extends Thread {
     public void invokePutty(ConfigSession session) {
         String args = setPuttyParameters(session);
 
-        // Mount command-line Putty parameters:
+        // tab标签展示名称
         String tabDisplayName = String.format("%s@%s", session.getName(), session.getHost());
 
         String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
         String name = getFileNameWithoutSuffix(path);
+
         Number hHeap = OS.GetProcessHeap();
         TCHAR buffer = new TCHAR(0, path, true);
         int byteCount = buffer.length() * TCHAR.sizeof;
@@ -178,9 +179,7 @@ public class InvokeProgram extends Thread {
         }
 
         if (!result) {
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR",
-                String.format("Failed cmd: %s %s",
-                    MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY), args));
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR", String.format("Failed cmd: %s %s", path, args));
             return;
         }
 
@@ -207,14 +206,11 @@ public class InvokeProgram extends Thread {
             count--;
         }
         if (count == 0) {
-            MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR",
-                String.format("Failed cmd: %s %s",
-                    MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY), args));
+            MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR", String.format("Failed cmd: %s %s", path, args));
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
         // 隐藏标题栏
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
-            oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
@@ -351,7 +347,7 @@ public class InvokeProgram extends Thread {
         String path = MainFrame.configuration.getProgramPath(program);
         if (StringUtils.isNotBlank(path)) {
             // 2. 如果路径不为空, 执行应用程序
-            runCMD(path, arg);
+            exec(path, arg);
         }
     }
 
@@ -361,10 +357,10 @@ public class InvokeProgram extends Thread {
      * @param program
      * @param arg
      */
-    public static void runCMD(String program, String arg) {
+    public static void exec(String program, String arg) {
         String cmd;
 
-        if (arg != null) {
+        if (StringUtils.isNotBlank(arg)) {
             cmd = program + " " + arg;
         } else {
             cmd = program;
@@ -373,7 +369,7 @@ public class InvokeProgram extends Thread {
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception ex) {
-            MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage());
+            MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage()); 
             log.error(ExceptionUtils.getStackTrace(ex));
         }
     }

@@ -84,7 +84,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
     private Menu                popupMenu;
     private ToolItem            itemNew, itemOpen, itemRemoteDesk, itemCapture, itemCalculator,
-            itemVNC, itemNotePad, itemKenGen, itemHelp;
+            itemVnc, itemNotePad, itemKenGen, itemHelp;
     private CTabFolder          folder;
     private CTabItem            welcomeItem, dictItem;
     private ToolBar             utilitiesToolbar;
@@ -115,7 +115,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         SHELL.addShellListener(this);
 
         // Get dbManager instance:
-        dbm = DbManager.getDBManagerInstance();
+        dbm = DbManager.getDbManagerInstance();
         bar.setSelection(3);
         // Main menu:
         createMainMenu(SHELL);
@@ -173,18 +173,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         tabNextItem.setImage(ButtonImage.DICT_IMAGE);
         tabNextItem.setAccelerator(SWT.CTRL + SWT.SHIFT + 'N');
         tabNextItem.addSelectionListener(this);
-
-        // captureItem = new MenuItem(fileMenu, SWT.PUSH);
-        // captureItem.setText("Capture\tCtrl+C");
-        // captureItem.setImage(MImage.captureImage);
-        // captureItem.addSelectionListener(this);
-
-        // remoteDesktopItem = new MenuItem(fileMenu, SWT.PUSH);
-        // remoteDesktopItem.setText("Remote Desktop\tCtrl+R");
-        // remoteDesktopItem.setImage(MImage.RemoteDeskImage);
-        // remoteDesktopItem.setAccelerator(SWT.CTRL + 'R');
-        // remoteDesktopItem.addSelectionListener(this);
-
+     
         // Separator:
         new MenuItem(fileMenu, SWT.SEPARATOR);
 
@@ -240,14 +229,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 new MenuItem(applicationMenu, SWT.SEPARATOR);
                 continue;
             }
-            String path = menuHashMap.get("path") == null ? "N/A" : menuHashMap.get("path");
-            String argument = menuHashMap.get("argument") == null ? "N/A"
-                : menuHashMap.get("argument");
-            String description = menuHashMap.get("description") == null ? "N/A"
-                : menuHashMap.get("description");
+            String path =StringUtils.defaultIfBlank(menuHashMap.get("path"), "N/A");
+            String argument =StringUtils.defaultIfBlank(menuHashMap.get("argument"), "N/A");
+            String description =StringUtils.defaultIfBlank(menuHashMap.get("description"), "N/A");
             MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
             menuItem.setText(description);
-            // menuItem.setToolTipText(path + " " + argument);
             menuItem.setData("path", path);
             menuItem.setData("argument", argument);
             menuItem.setData("description", description);
@@ -426,11 +412,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         itemCalculator.setImage(ButtonImage.CALC_IMAGE);
         itemCalculator.addSelectionListener(this);
 
-        itemVNC = new ToolItem(utilitiesToolbar, SWT.PUSH);
-        itemVNC.setText("VNC");
-        itemVNC.setToolTipText("open VNC");
-        itemVNC.setImage(ButtonImage.VPC_IMAGE);
-        itemVNC.addSelectionListener(this);
+        itemVnc = new ToolItem(utilitiesToolbar, SWT.PUSH);
+        itemVnc.setText("VNC");
+        itemVnc.setToolTipText("open VNC");
+        itemVnc.setImage(ButtonImage.VPC_IMAGE);
+        itemVnc.addSelectionListener(this);
 
         itemNotePad = new ToolItem(utilitiesToolbar, SWT.PUSH);
         itemNotePad.setText("NotePad");
@@ -738,11 +724,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         InvokeProgram.invokeSinglePutty(session);
     }
 
-    private void openVNCSession() {
+    private void openVncSession() {
         CTabItem item = folder.getSelection();
-        if (item.getData("session") == null) {
-            return;
-        }
         ConfigSession session = (ConfigSession) item.getData("session");
         if (session != null) {
             String host = session.getHost();
@@ -764,7 +747,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         }
 
         // Close in-memory database:
-        dbm.closeDB();
+        dbm.closeDb();
     }
 
     /**
@@ -794,7 +777,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         // boolean bVnc = "true".equalsIgnoreCase(props.getProperty("vnc", "true"));
         if (!bVnc) {
             this.vncPopItem.dispose();
-            this.itemVNC.dispose();
+            this.itemVnc.dispose();
         }
 
         Boolean bTransfer = configuration.getFeatureToggle("transfer");
@@ -870,14 +853,14 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             SHELL.setMinimized(true);
         } else if (e.getSource() == itemCalculator) {
             InvokeProgram.runProgram(ProgramEnum.CALCULATOR, null);
-        } else if (e.getSource() == itemVNC) {
+        } else if (e.getSource() == itemVnc) {
             InvokeProgram.runProgram(ProgramEnum.VNC, null);
         } else if (e.getSource() == itemNotePad) {
             InvokeProgram.runProgram(ProgramEnum.NOTEPAD, null);
         } else if (e.getSource() == tabNextItem) {
             switchTab();
         } else if (e.getSource() == itemKenGen) {
-            InvokeProgram.runCMD(configuration.getProgramPath(ProgramEnum.KEYGEN), null);
+            InvokeProgram.exec(configuration.getProgramPath(ProgramEnum.KEYGEN), null);
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
             showWelcomeTab(ConstantValue.HOME_URL);
         } else if (e.getSource() == aboutItem) {
@@ -911,7 +894,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         } else if (e.getSource() == sftpMenuItem) {
             openWinscp("sftp");
         } else if (e.getSource() == vncPopItem) {
-            openVNCSession();
+            openVncSession();
             // folder
         } else if (e.getSource() == folder) {
             if (folder.getSelection().getData("hwnd") != null) {
@@ -922,7 +905,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 && "dynamicApplication".equals(((MenuItem) e.getSource()).getData("type"))) {
             String path = ((MenuItem) e.getSource()).getData("path").toString();
             String argument = ((MenuItem) e.getSource()).getData("argument").toString();
-            InvokeProgram.runCMD(path, argument);
+            InvokeProgram.exec(path, argument);
         } else if (e.getSource() == connectButton) {
             // String protocol = protocolCombo.getText().toLowerCase(); //
             // Putty wants lower case!
