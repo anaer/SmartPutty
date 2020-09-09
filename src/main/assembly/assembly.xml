@@ -20,7 +20,6 @@
 			<directory>target/config</directory>
 			<outputDirectory>/config</outputDirectory>
 		</fileSet>
-
 		<!-- 从源目录拷贝文件去压缩 -->
 		<fileSet>
 			<directory>config</directory>
@@ -30,21 +29,12 @@
 			<outputDirectory>/config</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>database</directory>
-			<includes>
-				<include>*</include>
-			</includes>
-			<outputDirectory>/database</outputDirectory>
-		</fileSet>
-
-		<fileSet>
 			<directory>doc</directory>
 			<includes>
 				<include>*</include>
 			</includes>
 			<outputDirectory>/doc</outputDirectory>
 		</fileSet>
-
 		<fileSet>
 			<directory>icon</directory>
 			<includes>
