@@ -59,11 +59,8 @@ public class DbManager {
             String[] str = { "TABLE" };
             DatabaseMetaData meta = conn.getMetaData();
             ResultSet result = meta.getTables(null, null, null, str);
+            // 检查是否存在CSESSION表
             while (result.next()) {
-                log.debug("Database Meta: {}, {}, {}, {}, {}", result.getString("TABLE_CAT"),
-                    result.getString("TABLE_SCHEM"), result.getString("TABLE_NAME"),
-                    result.getString("TABLE_TYPE"), result.getString("REMARKS"));
-
                 if ("CSESSION".equals(result.getString("TABLE_NAME"))) {
                     existSessionTable = true;
                 }

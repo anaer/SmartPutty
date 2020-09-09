@@ -34,12 +34,8 @@ public class RegistryUtils {
     public static void createPuttyKeys() {
         try {
             initPuttyDefaultSettings();
-            for (Map.Entry<String, Object> e : readPuttyDefaultSettings().entrySet()) {
-                log.debug("{} : {}", e.getKey(), e.getValue());
-            }
-
         } catch (Exception ex) {
-            log.error(ex.getMessage());
+            log.error("初始化Putty默认配置异常.", ex);
         }
     }
 
