@@ -141,7 +141,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         Text editText = new Text(dialog, SWT.BORDER);
 
         // Get current value.
-        String path = MainFrame.configuration.getProperty(program.getProperty(), program.getPath());
+        String path = MainFrame.configuration.getProgramProperty(program.getProperty(), program.getPath());
         editText.setText(path);
         editText.setLayoutData(gd2);
 
@@ -202,8 +202,9 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
             // Save changes to configuration:
             if (!tmpPropConfig.isEmpty()) {
                 for (Entry<String, String> entry : tmpPropConfig.entrySet()) {
-                    MainFrame.configuration.setProperty(entry.getKey(), entry.getValue());
+                    MainFrame.configuration.setProgramProperty(entry.getKey(), entry.getValue());
                 }
+                MainFrame.configuration.saveSetting();
                 // 设置完成后, 清空临时配置项
                 tmpPropConfig.clear();
             }

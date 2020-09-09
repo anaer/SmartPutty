@@ -227,4 +227,16 @@ public class Configuration {
     public String getProperty(String key, String defaultValue) {
         return setting.getStr(key, GROUP_CONFIGURATION, defaultValue);
     }
+
+    public void setProgramProperty(String key, String value) {
+        setting.set(GROUP_PROGRAM, key, value);
+    }
+
+    public String getProgramProperty(String key, String defaultValue) {
+        return setting.getStr(key, GROUP_PROGRAM, defaultValue);
+    }
+
+    public void saveSetting(){
+        setting.store(setting.getSettingPath());
+    }
 }
