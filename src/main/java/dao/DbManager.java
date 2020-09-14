@@ -196,11 +196,20 @@ public class DbManager {
         return getSession(sql);
     }
 
+    public ConfigSession querySessionByHostUserProtocol(String host, String port, String user,
+                                                         String protocol) {
+        String sql = String.format( "SELECT *  FROM CSESSION WHERE HOST='%s' AND PORT = '%s' AND USERNAME='%s' AND PROTOCOL='%s'", host, port, user, protocol);
+
+        return getSession(sql);
+    }
+    
+
     public ConfigSession querySessionBySession(ConfigSession session) {
         String host = session.getHost();
         String user = session.getUser();
+        String port = session.getPort();
         String protocol = session.getProtocol().name();
-        return querySessionByHostUserProtocol(host, user, protocol);
+        return querySessionByHostUserProtocol(host, port, user, protocol);
     }
 
     private boolean isSessionExist(ConfigSession csession) {

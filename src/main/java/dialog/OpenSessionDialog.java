@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.TableItem;
 import constants.ButtonImage;
 import control.InvokeProgram;
 import dao.DbManager;
+import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import ui.MainFrame;
 
@@ -27,6 +28,7 @@ import ui.MainFrame;
  * @author lvcn
  * @version $Id: OpenSessionDialog.java, v 1.0 Jul 22, 2019 3:45:59 PM lvcn Exp $
  */
+@Slf4j
 public class OpenSessionDialog implements SelectionListener, MouseListener {
     private MainFrame mainFrame = null;
     private Shell     dialog    = null;
@@ -170,6 +172,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         TableItem[] tableItems = table.getSelection();
         ArrayList<ConfigSession> sessions = new ArrayList<>();
         for (TableItem tableItem : tableItems) {
+            log.info("session:{}", tableItem.getData("session"));
             ConfigSession csession = dbm
                 .querySessionBySession((ConfigSession) tableItem.getData("session"));
             if (csession != null) {
