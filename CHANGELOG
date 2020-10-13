@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.17] - 2020-10-13
+
+- 修改hutool版本为5.4.4
+- 添加maven插件git-commit-id-plugin
+
+### Changed
+
+
 ## [1.1.16] - 2020-09-09
 
 ### Changed
