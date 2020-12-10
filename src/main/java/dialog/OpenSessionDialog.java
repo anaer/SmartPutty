@@ -2,6 +2,7 @@ package dialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -194,8 +195,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         if (tableItems != null) {
             ConfigSession csession = dbm
                 .querySessionBySession((ConfigSession) tableItems[0].getData("session"));
-            InvokeProgram.invokeSinglePutty(csession);
-            dialog.dispose();
+            if (Objects.nonNull(csession)) {
+                InvokeProgram.invokeSinglePutty(csession);
+                dialog.dispose();
+            }
         }
     }
 
