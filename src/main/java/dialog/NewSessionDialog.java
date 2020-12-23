@@ -41,7 +41,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
     private OpenSessionDialog sessionDialog = null;
     private MainFrame         mainFrame;
     private Shell             dialog;
-    private Combo             comboHost, comboUser, comboProtocol, comboSession;
+    private Combo             comboHost, comboIntranet, comboUser, comboProtocol, comboSession;
     private Text              textPassword, textKey, textName, textPort;
     private Button            buttonFile, buttonOk, buttonCancel, buttonShow;
 
@@ -79,6 +79,21 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         }
         comboHost.setBounds(x / 3, index * y / 6, 2 * x / 3, y / 6);
         comboHost.addSelectionListener(this);
+
+        index++;
+        label = new Label(dialog, SWT.NONE);
+        label.setText("Intranet");
+        label.setBounds(0, index * y / 6, x / 3, y / 6);
+        comboIntranet = new Combo(dialog, SWT.None);
+        HashSet<String> intranetSet = new HashSet<String>();
+        for (ConfigSession item : sessions) {
+            intranetSet.add(item.getHost());
+        }
+        for (String item : intranetSet) {
+            comboIntranet.add(item);
+        }
+        comboIntranet.setBounds(x / 3, index * y / 6, 2 * x / 3, y / 6);
+        comboIntranet.addSelectionListener(this);
 
         index++;
         label = new Label(dialog, SWT.NONE);
@@ -167,11 +182,11 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 textName.setText(session.getName());
                 textPort.setText(session.getPort());
                 comboHost.setText(session.getHost());
+                comboIntranet.setText(session.getIntranet());
                 comboUser.setText(session.getUser());
                 comboProtocol.setText(session.getProtocol().getName());
                 textKey.setText(session.getKey());
                 textPassword.setText(session.getPassword());
-                log.info("保存的会话配置:{}" , session.getSession());
 
                 if (ProtocolEnum.SSH2 == session.getProtocol()
                         || ProtocolEnum.SSH == session.getProtocol()) {
@@ -255,6 +270,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         if (e.getSource() == buttonOk) {
             String name = textName.getText();
             String host = comboHost.getText();
+            String intranet = comboIntranet.getText();
             String user = comboUser.getText();
             String password = textPassword.getText();
             String file = textKey.getText().trim();
@@ -266,13 +282,13 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 int index = comboSession.getSelectionIndex();
                 if (index >= 0) {
                     sessionProfile = comboSession.getItem(index);
-                    log.info("当前选择会话配置:{}" , sessionProfile);
+                    log.info("当前选择会话配置:{}", sessionProfile);
                 }
             }
 
             if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(user) && protocol != null) {
-                ConfigSession session = new ConfigSession(name, host, port, user, protocol, file,
-                    password, sessionProfile);
+                ConfigSession session = new ConfigSession(name, host, intranet, port, user,
+                    protocol, file, password, sessionProfile);
                 dialog.dispose();
                 MainFrame.dbm.insertSession(session);
                 if (sessionDialog != null) {

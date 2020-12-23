@@ -173,7 +173,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         tabNextItem.setImage(ButtonImage.DICT_IMAGE);
         tabNextItem.setAccelerator(SWT.CTRL + SWT.SHIFT + 'N');
         tabNextItem.addSelectionListener(this);
-     
+
         // Separator:
         new MenuItem(fileMenu, SWT.SEPARATOR);
 
@@ -229,9 +229,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 new MenuItem(applicationMenu, SWT.SEPARATOR);
                 continue;
             }
-            String path =StringUtils.defaultIfBlank(menuHashMap.get("path"), "N/A");
-            String argument =StringUtils.defaultIfBlank(menuHashMap.get("argument"), "N/A");
-            String description =StringUtils.defaultIfBlank(menuHashMap.get("description"), "N/A");
+            String path = StringUtils.defaultIfBlank(menuHashMap.get("path"), "N/A");
+            String argument = StringUtils.defaultIfBlank(menuHashMap.get("argument"), "N/A");
+            String description = StringUtils.defaultIfBlank(menuHashMap.get("description"), "N/A");
             MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
             menuItem.setText(description);
             menuItem.setData("path", path);
@@ -920,7 +920,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                     "please select a putty session first!");
                 return;
             }
-            ConfigSession configSession = new ConfigSession(name, host, port, user, password,
+            ConfigSession configSession = new ConfigSession(name, host, "", port, user, password,
                 session);
             addSession(null, configSession);
         } else if (e.getSource() == win2UnixButton) {

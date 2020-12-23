@@ -125,14 +125,14 @@ public class InvokeProgram extends Thread {
                 args += String.format(" -P %s ", port);
             }
         }
-        log.debug("Putty parameters: {}" , args);
+        log.debug("Putty parameters: putty {}", args);
 
         return args;
     }
 
     private static String setMinttyParameters(ConfigSession session) {
         String args = " --dir ~";
-        log.debug("Mintty parameters: {}" , args);
+        log.debug("Mintty parameters: {}", args);
         return args;
     }
 
@@ -145,7 +145,7 @@ public class InvokeProgram extends Thread {
         String args = setPuttyParameters(session);
 
         // tab标签展示名称
-        String tabDisplayName = String.format("%s@%s", session.getName(), session.getHost());
+        String tabDisplayName = String.format("%s@%s/%s", session.getName(), session.getHost(), session.getIntranet());
 
         String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
         String name = getFileNameWithoutSuffix(path);
@@ -179,7 +179,8 @@ public class InvokeProgram extends Thread {
         }
 
         if (!result) {
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR", String.format("Failed cmd: %s %s", path, args));
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR",
+                String.format("Failed cmd: %s %s", path, args));
             return;
         }
 
@@ -206,11 +207,13 @@ public class InvokeProgram extends Thread {
             count--;
         }
         if (count == 0) {
-            MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR", String.format("Failed cmd: %s %s", path, args));
+            MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR",
+                String.format("Failed cmd: %s %s", path, args));
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
         // 隐藏标题栏
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
+            oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
@@ -369,7 +372,7 @@ public class InvokeProgram extends Thread {
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception ex) {
-            MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage()); 
+            MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage());
             log.error(ExceptionUtils.getStackTrace(ex));
         }
     }

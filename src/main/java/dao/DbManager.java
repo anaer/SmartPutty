@@ -30,9 +30,9 @@ import ui.MainFrame;
  */
 @Slf4j
 public class DbManager {
-    private static DbManager    manager;
-    private Connection          conn;
-    private boolean             existSessionTable;
+    private static DbManager manager;
+    private Connection       conn;
+    private boolean          existSessionTable;
 
     private DbManager() {
         try {
@@ -67,7 +67,7 @@ public class DbManager {
             }
             result.close();
             if (!existSessionTable) {
-                String sql = "CREATE TABLE CSession(Name varchar(100), Host varchar(50), Port varchar(10), Username varchar(50), Protocol varchar(10), Key varchar(100), Password varchar(50), Session varchar(50), PRIMARY KEY (Host,Port,Username,Protocol))";
+                String sql = "CREATE TABLE CSession(Name varchar(100), Host varchar(50), Intranet varchar(50), Port varchar(10), Username varchar(50), Protocol varchar(10), Key varchar(100), Password varchar(50), Session varchar(50), PRIMARY KEY (Host,Port,Username,Protocol))";
                 state.execute(sql);
             }
 
@@ -86,6 +86,7 @@ public class DbManager {
     public void insertSession(ConfigSession configSession) {
         String name = configSession.getName();
         String host = configSession.getHost();
+        String intranet = configSession.getIntranet();
         String port = configSession.getPort();
         String user = configSession.getUser();
         String protocol = configSession.getProtocol().name();
@@ -102,8 +103,9 @@ public class DbManager {
             deleteSession(configSession);
         }
 
-        String sql = "INSERT INTO CSession VALUES('" + name + "','" + host + "','" + port + "','"
-                + user + "','" + protocol + "','" + key + "','" + password + "','" + session + "')";
+        String sql = "INSERT INTO CSession VALUES('" + name + "','" + host + "','" + intranet
+                + "','" + port + "','" + user + "','" + protocol + "','" + key + "','" + password
+                + "','" + session + "')";
 
         try (Statement state = conn.createStatement();) {
             state.execute(sql);
@@ -162,9 +164,9 @@ public class DbManager {
                 // 过滤协议不存在的数据
                 if (Objects.nonNull(protocol)) {
                     ConfigSession confSession = new ConfigSession(rs.getString("Name"),
-                        rs.getString("Host"), rs.getString("Port"), rs.getString("Username"),
-                        protocol, rs.getString("Key"), Base64.decodeStr(rs.getString("Password")),
-                        rs.getString("Session"));
+                        rs.getString("Host"), rs.getString("Intranet"), rs.getString("Port"),
+                        rs.getString("Username"), protocol, rs.getString("Key"),
+                        Base64.decodeStr(rs.getString("Password")), rs.getString("Session"));
                     result.add(confSession);
                 } else {
                     log.error("{}协议不支持.", proc);
@@ -189,20 +191,22 @@ public class DbManager {
 
     }
 
-    public ConfigSession querySessionByHostUserProtocol(String host, String user,
-                                                         String protocol) {
-        String sql = String.format( "SELECT *  FROM CSESSION WHERE HOST='%s' AND USERNAME='%s' AND PROTOCOL='%s'", host, user, protocol);
+    public ConfigSession querySessionByHostUserProtocol(String host, String user, String protocol) {
+        String sql = String.format(
+            "SELECT *  FROM CSESSION WHERE HOST='%s' AND USERNAME='%s' AND PROTOCOL='%s'", host,
+            user, protocol);
 
         return getSession(sql);
     }
 
     public ConfigSession querySessionByHostUserProtocol(String host, String port, String user,
-                                                         String protocol) {
-        String sql = String.format( "SELECT *  FROM CSESSION WHERE HOST='%s' AND PORT = '%s' AND USERNAME='%s' AND PROTOCOL='%s'", host, port, user, protocol);
+                                                        String protocol) {
+        String sql = String.format(
+            "SELECT *  FROM CSESSION WHERE HOST='%s' AND PORT = '%s' AND USERNAME='%s' AND PROTOCOL='%s'",
+            host, port, user, protocol);
 
         return getSession(sql);
     }
-    
 
     public ConfigSession querySessionBySession(ConfigSession session) {
         String host = session.getHost();
