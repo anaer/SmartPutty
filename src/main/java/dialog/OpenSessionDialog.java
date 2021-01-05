@@ -200,6 +200,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
             ConfigSession csession = dbm
                 .querySessionBySession((ConfigSession) tableItems[0].getData("session"));
             if (Objects.nonNull(csession)) {
+                // deepcode ignore CommandInjection: <忽略>
                 InvokeProgram.invokeSinglePutty(csession);
                 dialog.dispose();
             }

@@ -413,21 +413,12 @@ public class InvokeProgram extends Thread {
     public static void invokeSinglePutty(ConfigSession session) {
         // Mount command-line Putty parameters:
         String args = setPuttyParameters(session);
-        String cmd = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY) + args;
+        String commandString = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY) + args;
 
         try {
-            Runtime.getRuntime().exec(cmd);
-        } catch (Exception e) {
-            log.error("执行程序失败:{}", e);
-        }
-    }
-
-    public static void invokeSingleMintty(ConfigSession session) {
-        String args = setMinttyParameters(session);
-        String cmd = MainFrame.configuration.getProgramPath(ProgramEnum.MINTTY) + args;
-
-        try {
-            Runtime.getRuntime().exec(cmd);
+            if(StringUtils.isNotBlank(commandString)){
+                Runtime.getRuntime().exec(commandString);
+            }
         } catch (Exception e) {
             log.error("执行程序失败:{}", e);
         }
