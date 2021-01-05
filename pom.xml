@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SmartPutty</groupId>
 	<artifactId>SmartPutty</artifactId>
-	<version>1.1.19</version>
+	<version>1.1.20</version>
 	<properties>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
 		<cn.hutool.version>5.5.6</cn.hutool.version>

@@ -1,6 +1,6 @@
 [configuration]
 0 = 基础配置项
-Version = 1.1.19
+Version = 1.1.20
 WaitForInitTime = 200
 WindowPositionSize = -8,32,1936,1056
 ViewConnectionBar = false
