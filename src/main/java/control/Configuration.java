@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Rectangle;
 
 import cn.hutool.setting.Setting;
+import constants.ConfigConstant;
 import constants.ConstantValue;
 import enums.ProgramEnum;
 import ui.MainFrame;
@@ -21,49 +22,41 @@ import utils.ReadXmlFile;
  * @version $Id: Configuration.java, v 1.0 Jul 22, 2019 3:44:47 PM lvcn Exp $
  */
 public class Configuration {
-    private static final String                 WAIT_FOR_INIT_TIME  = "WaitForInitTime";
 
-    private static final String                 VIEW_UTILITIES_BAR  = "ViewUtilitiesBar";
-
-    private static final String                 VIEW_CONNECTION_BAR = "ViewConnectionBar";
-
-    private static final String VIEW_BOTTOM_QUICK_BAR = "ViewBottomQuickBar";
-
-
-    private static final String GROUP_CONFIGURATION = "configuration";
-
-    private static final String GROUP_FEATURE = "feature";
-
-    private static final String GROUP_PROGRAM = "program";
-
-    private static final String                 VERSION             = "Version";
-
-    private final Setting setting;
+    private final Setting                       setting;
 
     private final List<HashMap<String, String>> batchConfigListMap;
 
     /** Constructor: */
     public Configuration() {
         this.batchConfigListMap = ReadXmlFile.parse(new File(ConstantValue.CONFIG_BATCH_FILE));
-        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE), Charset.defaultCharset(), true);
+        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE),
+            Charset.defaultCharset(), true);
         this.setting.autoLoad(true);
     }
 
-    public Boolean getFeatureToggle(String feature){
-        return setting.getBool(feature, GROUP_FEATURE, false);
+    /**
+     * 获取功能开关.
+     * @param feature 功能名
+     * @return true/false
+     */
+    public Boolean getFeatureToggle(String feature) {
+        return setting.getBool(feature, ConfigConstant.GROUP_FEATURE, false);
     }
 
-    /** Get methods: */
+    /** 
+     * 获取自定义菜单配置.
+    */
     public List<HashMap<String, String>> getBatchConfig() {
         return this.batchConfigListMap;
     }
 
     public String getWaitForInitTime() {
-        return setting.get(GROUP_CONFIGURATION, WAIT_FOR_INIT_TIME);
+        return setting.get(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.WAIT_FOR_INIT_TIME);
     }
 
     public String getSmartPuttyVersion() {
-        return setting.get(GROUP_CONFIGURATION, VERSION);
+        return setting.get(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VERSION);
     }
 
     /**
@@ -72,7 +65,8 @@ public class Configuration {
      * @return
      */
     public Boolean getUtilitiesBarVisible() {
-        return setting.getBool(VIEW_UTILITIES_BAR, GROUP_CONFIGURATION, false);
+        return setting.getBool(ConfigConstant.VIEW_UTILITIES_BAR,
+            ConfigConstant.GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -81,7 +75,8 @@ public class Configuration {
      * @return
      */
     public Boolean getConnectionBarVisible() {
-        return setting.getBool(VIEW_CONNECTION_BAR, GROUP_CONFIGURATION, false);
+        return setting.getBool(ConfigConstant.VIEW_CONNECTION_BAR,
+            ConfigConstant.GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -90,7 +85,8 @@ public class Configuration {
      * @return
      */
     public Boolean getBottomQuickBarVisible() {
-        return setting.getBool(VIEW_BOTTOM_QUICK_BAR, GROUP_CONFIGURATION, false);
+        return setting.getBool(ConfigConstant.VIEW_BOTTOM_QUICK_BAR,
+            ConfigConstant.GROUP_CONFIGURATION, false);
     }
 
     /**
@@ -105,10 +101,10 @@ public class Configuration {
         String property = program.getProperty();
         if (StringUtils.isNotBlank(property)) {
             // 2. 如果配置属性不为空, 从配置文件中获取配置项
-            value = setting.get(GROUP_PROGRAM, property);
+            value = setting.get(ConfigConstant.GROUP_PROGRAM, property);
         }
         // 3. 如果配置值为空, 取默认的path
-        return StringUtils.isEmpty(value) ? program.getPath() : value;
+        return StringUtils.defaultIfEmpty(value, program.getPath());
     }
 
     /**
@@ -117,7 +113,7 @@ public class Configuration {
      * @return
      */
     public String getDictionaryBaseUrl() {
-        return getProperty("Dictionary", "http://dict.youdao.com/w/eng/");
+        return getProperty(ConfigConstant.DICTIONARY, "http://dict.youdao.com/w/eng/");
     }
 
     /**
@@ -126,13 +122,12 @@ public class Configuration {
      * @return
      */
     public String getDefaultPuttyUsername() {
-        return getProperty("DefaultPuttyUsername", "");
+        return getProperty(ConfigConstant.DEFAULT_PUTTY_USERNAME, "");
     }
 
     public String getDatabasePath() {
-        return getProperty("DatabasePath", "config/sessiondb");
+        return getProperty(ConfigConstant.DATABASE_PATH, "config/sessiondb");
     }
-
 
     /**
      * Customize win path base prefix when converting path from linux and windows.
@@ -140,7 +135,7 @@ public class Configuration {
      * @return
      */
     public String getWinPathBaseDrive() {
-        return getProperty("WindowsBaseDrive", "C:/");
+        return getProperty(ConfigConstant.WINDOWS_BASE_DRIVE, "C:/");
     }
 
     /**
@@ -149,7 +144,8 @@ public class Configuration {
      * @return
      */
     public Boolean getWelcomePageVisible() {
-        return setting.getBool("ShowWelcomePage", GROUP_CONFIGURATION, false);
+        return setting.getBool(ConfigConstant.SHOW_WELCOME_PAGE, ConfigConstant.GROUP_CONFIGURATION,
+            false);
     }
 
     /**
@@ -159,7 +155,7 @@ public class Configuration {
      */
     public Rectangle getWindowPositionSize() {
         // Split comma-separated values by x, y, width, height:
-        String[] array = getProperty("WindowPositionSize", "").split(",");
+        String[] array = getProperty(ConfigConstant.WINDOW_POSITION_SIZE, "").split(",");
 
         // If there aren't enough pieces of information...
         if (array.length < 4) {
@@ -195,7 +191,7 @@ public class Configuration {
      * @param visible
      */
     public void setUtilitiesBarVisible(String visible) {
-        setting.set(GROUP_CONFIGURATION, VIEW_UTILITIES_BAR, visible);
+        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VIEW_UTILITIES_BAR, visible);
     }
 
     /**
@@ -204,11 +200,13 @@ public class Configuration {
      * @param visible
      */
     public void setConnectionBarVisible(String visible) {
-        setting.set(GROUP_CONFIGURATION, VIEW_CONNECTION_BAR, visible);
+        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VIEW_CONNECTION_BAR,
+            visible);
     }
 
     public void setBottomQuickBarVisible(String visible) {
-        setting.set(GROUP_CONFIGURATION, VIEW_BOTTOM_QUICK_BAR, visible);
+        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VIEW_BOTTOM_QUICK_BAR,
+            visible);
     }
 
     /**
@@ -217,26 +215,26 @@ public class Configuration {
      * @param visible
      */
     public void setWelcomePageVisible(String visible) {
-        setting.set(GROUP_CONFIGURATION, "ShowWelcomePage", visible);
+        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.SHOW_WELCOME_PAGE, visible);
     }
 
     public void setProperty(String key, String value) {
-        setting.set(GROUP_CONFIGURATION, key, value);
+        setting.set(ConfigConstant.GROUP_CONFIGURATION, key, value);
     }
 
     public String getProperty(String key, String defaultValue) {
-        return setting.getStr(key, GROUP_CONFIGURATION, defaultValue);
+        return setting.getStr(key, ConfigConstant.GROUP_CONFIGURATION, defaultValue);
     }
 
     public void setProgramProperty(String key, String value) {
-        setting.set(GROUP_PROGRAM, key, value);
+        setting.set(ConfigConstant.GROUP_PROGRAM, key, value);
     }
 
     public String getProgramProperty(String key, String defaultValue) {
-        return setting.getStr(key, GROUP_PROGRAM, defaultValue);
+        return setting.getStr(key, ConfigConstant.GROUP_PROGRAM, defaultValue);
     }
 
-    public void saveSetting(){
+    public void saveSetting() {
         setting.store(setting.getSettingPath());
     }
 }
