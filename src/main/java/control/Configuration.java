@@ -171,8 +171,12 @@ public class Configuration {
             Integer.parseInt(array[2]), Integer.parseInt(array[3]));
     }
 
+
+
     /**
      * Get main window position and size in String format.
+     * 
+     * 获取窗口坐标位置
      *
      * @return
      */
@@ -183,6 +187,11 @@ public class Configuration {
         String height = String.valueOf(MainFrame.SHELL.getBounds().height);
 
         return x + "," + y + "," + width + "," + height;
+    }
+
+    public void setWindowPosisionSizeString(){
+        String position = getWindowPositionSizeString();
+        setProperty(ConfigConstant.WINDOW_POSITION_SIZE, position);
     }
 
     /**
@@ -236,5 +245,13 @@ public class Configuration {
 
     public void saveSetting() {
         setting.store(setting.getSettingPath());
+    }
+
+
+    public void saveBeforeClose(){
+        setWindowPosisionSizeString();
+        // 关闭前, 先关闭自动加载
+        this.setting.autoLoad(false);
+        saveSetting();
     }
 }

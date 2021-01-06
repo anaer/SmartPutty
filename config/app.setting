@@ -1,8 +1,9 @@
 [configuration]
-0 = 基础配置项
+0描述 = 基础配置项
+1以下为具体配置项 = -----------------------
 Version = 1.1.20
 WaitForInitTime = 200
-WindowPositionSize = -8,32,1936,1056
+WindowPositionSize = 2105,102,1936,1056
 ViewConnectionBar = false
 ViewBottomQuickBar = false
 Dictionary = http://dict.youdao.com/w/eng/
@@ -12,13 +13,13 @@ ViewUtilitiesBar = false
 DefaultPuttyUsername = root
 DatabasePath = C:\Program Files\SmartPutty\database\sessiondb
 [program]
-0 =  应用程序配置项
+0描述 = 应用程序配置项
 KeyGeneratorExecutable = C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE
 MinttyExecutable = D:\Git\usr\bin\mintty.exe
 ScpExecutable = C:\Program Files\WinSCP\WinSCP.exe
 PuttyExecutable = C:\ProgramData\chocolatey\bin\PUTTY.EXE
 PlinkExecutable = C:\ProgramData\chocolatey\bin\PLINK.EXE
 [feature]
-0 = 功能特性开关
+0描述 = 功能特性开关
 vnc = false
 transfer = true

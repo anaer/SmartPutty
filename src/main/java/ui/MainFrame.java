@@ -737,6 +737,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         }
     }
 
+    /**
+     * 关闭程序.
+     */
     public void disposeApp() {
         CTabItem[] items = folder.getItems();
         for (CTabItem item : items) {
@@ -748,6 +751,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         // Close in-memory database:
         dbm.closeDb();
+
+        // 关闭程序前, 保存窗口位置.
+        configuration.saveBeforeClose();
     }
 
     /**
