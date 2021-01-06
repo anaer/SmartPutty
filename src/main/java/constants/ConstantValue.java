@@ -18,6 +18,8 @@ public class ConstantValue {
      */
     public static final String MAIN_WINDOW_TITLE          = "Smart Putty";
 
+    public static final String PUTTY_SECURITY_ALERT = "PuTTY Security Alert";
+
     /**
      * 首页链接.
      */

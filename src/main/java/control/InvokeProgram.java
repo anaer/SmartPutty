@@ -29,12 +29,12 @@ import ui.MainFrame;
  */
 @Slf4j
 public class InvokeProgram extends Thread {
-    private static final String PUTTY_SECURITY_ALERT = "PuTTY Security Alert";
-    private Composite           composite;
-    private ConfigSession       session;
-    private CTabItem            tabItem;
+
+    private Composite      composite;
+    private ConfigSession  session;
+    private CTabItem       tabItem;
     /** 是否64位. */
-    private static boolean      is64                 = true;
+    private static boolean is64 = true;
 
     /** Constructor: */
     public InvokeProgram(Composite composite, CTabItem tabItem, ConfigSession session) {
@@ -112,7 +112,15 @@ public class InvokeProgram extends Thread {
                 args += String.format(" %s", host);
             }
         } else {
-            args = String.format(" %s %s -l %s ", protocol, host, user);
+            args = String.format(" %s %s ", protocol, host);
+
+            if (!port.isEmpty()) {
+                args += String.format(" -P %s ", port);
+            }
+
+            if (!user.isEmpty()) {
+                args += String.format(" -l \"%s\"", user);
+            }
 
             if (!password.isEmpty()) {
                 args += String.format(" -pw \"%s\"", password);
@@ -120,9 +128,6 @@ public class InvokeProgram extends Thread {
             // private key
             if (!file.isEmpty()) {
                 args += String.format(" -i \"%s\"", file);
-            }
-            if (!port.isEmpty()) {
-                args += String.format(" -P %s ", port);
             }
         }
         log.debug("Putty parameters: putty {}", args);
@@ -145,7 +150,8 @@ public class InvokeProgram extends Thread {
         String args = setPuttyParameters(session);
 
         // tab标签展示名称
-        String tabDisplayName = String.format("%s@%s/%s", session.getName(), session.getHost(), session.getIntranet());
+        String tabDisplayName = String.format("%s@%s/%s", session.getName(), session.getHost(),
+            session.getIntranet());
 
         String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
         String name = getFileNameWithoutSuffix(path);
@@ -185,11 +191,13 @@ public class InvokeProgram extends Thread {
         }
 
         // 如果有安全警告窗口 等待人工处理
-        Number hWndAlert = OS.FindWindow(null, new TCHAR(0, PUTTY_SECURITY_ALERT, true));
+        Number hWndAlert = OS.FindWindow(null,
+            new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
         if (hWndAlert.intValue() != 0) {
             int waitingForOperation = 10000;
             while (waitingForOperation > 0) {
-                if (OS.FindWindow(null, new TCHAR(0, PUTTY_SECURITY_ALERT, true)) == 0) {
+                if (OS.FindWindow(null,
+                    new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true)) == 0) {
                     break;
                 }
                 ThreadUtil.safeSleep(500);
@@ -323,7 +331,8 @@ public class InvokeProgram extends Thread {
     }
 
     public static void killPuttyWarningsAndErrs() {
-        Number hWndAlert = OS.FindWindow(null, new TCHAR(0, PUTTY_SECURITY_ALERT, true));
+        Number hWndAlert = OS.FindWindow(null,
+            new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
         if (hWndAlert.intValue() != 0) {
             killProcess(hWndAlert.intValue());
         }
@@ -361,6 +370,11 @@ public class InvokeProgram extends Thread {
      * @param arg
      */
     public static void exec(String program, String arg) {
+        if (StringUtils.isBlank(program)) {
+            log.warn("程序路径为空. 过滤执行.");
+            return;
+        }
+
         String cmd;
 
         if (StringUtils.isNotBlank(arg)) {
@@ -416,7 +430,7 @@ public class InvokeProgram extends Thread {
         String commandString = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY) + args;
 
         try {
-            if(StringUtils.isNotBlank(commandString)){
+            if (StringUtils.isNotBlank(commandString)) {
                 Runtime.getRuntime().exec(commandString);
             }
         } catch (Exception e) {
