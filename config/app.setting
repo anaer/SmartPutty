@@ -3,7 +3,7 @@
 1以下为具体配置项 = -----------------------
 Version = 1.1.20
 WaitForInitTime = 200
-WindowPositionSize = 2105,102,1936,1056
+WindowPositionSize = 320,180,1280,720
 ViewConnectionBar = false
 ViewBottomQuickBar = false
 Dictionary = http://dict.youdao.com/w/eng/

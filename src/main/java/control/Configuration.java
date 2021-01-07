@@ -2,12 +2,16 @@ package control;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import com.google.common.base.Joiner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Rectangle;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.setting.Setting;
 import constants.ConfigConstant;
 import constants.ConstantValue;
@@ -155,23 +159,21 @@ public class Configuration {
      */
     public Rectangle getWindowPositionSize() {
         // Split comma-separated values by x, y, width, height:
-        String[] array = getProperty(ConfigConstant.WINDOW_POSITION_SIZE, "").split(",");
+        String windowPositionSize = getProperty(ConfigConstant.WINDOW_POSITION_SIZE, "");
 
-        // If there aren't enough pieces of information...
+        int[] array = Arrays.stream(windowPositionSize.split(","))
+            .mapToInt(str -> Convert.toInt(str, 0)).toArray();
+
         if (array.length < 4) {
-            array = new String[4];
-            // Set default safety values:
-            array[0] = String.valueOf(ConstantValue.SCREEN_WIDTH / 6);
-            array[1] = String.valueOf(ConstantValue.SCREEN_HEIGHT / 6);
-            array[2] = String.valueOf(2 * ConstantValue.SCREEN_WIDTH / 3);
-            array[3] = String.valueOf(2 * ConstantValue.SCREEN_HEIGHT / 3);
+            array = new int[4];
+            array[0] = ConstantValue.SCREEN_WIDTH / 6;
+            array[1] = ConstantValue.SCREEN_HEIGHT / 6;
+            array[2] = 2 * ConstantValue.SCREEN_WIDTH / 3;
+            array[3] = 2 * ConstantValue.SCREEN_HEIGHT / 3;
         }
 
-        return new Rectangle(Integer.parseInt(array[0]), Integer.parseInt(array[1]),
-            Integer.parseInt(array[2]), Integer.parseInt(array[3]));
+        return new Rectangle(array[0], array[1], array[2], array[3]);
     }
-
-
 
     /**
      * Get main window position and size in String format.
@@ -186,10 +188,10 @@ public class Configuration {
         String width = String.valueOf(MainFrame.SHELL.getBounds().width);
         String height = String.valueOf(MainFrame.SHELL.getBounds().height);
 
-        return x + "," + y + "," + width + "," + height;
+        return Joiner.on(",").join(x, y, width, height);
     }
 
-    public void setWindowPosisionSizeString(){
+    public void setWindowPosisionSizeString() {
         String position = getWindowPositionSizeString();
         setProperty(ConfigConstant.WINDOW_POSITION_SIZE, position);
     }
@@ -247,8 +249,7 @@ public class Configuration {
         setting.store(setting.getSettingPath());
     }
 
-
-    public void saveBeforeClose(){
+    public void saveBeforeClose() {
         setWindowPosisionSizeString();
         // 关闭前, 先关闭自动加载
         this.setting.autoLoad(false);
