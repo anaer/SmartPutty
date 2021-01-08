@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
 import control.Configuration;
@@ -76,9 +77,10 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     public static final Shell   SHELL   = new Shell(display);
     public static Configuration configuration;
     private MenuItem            openItem, newItem, captureItem, remoteDesktopItem, exitItem,
-            aboutItem, welcomeMenuItem, reloadPopItem, clonePopItem, transferPopItem, scpMenuItem,
-            ftpMenuItem, sftpMenuItem, vncPopItem, openPuttyItem, configProgramsLocationsItem,
-            utilitiesBarMenuItem, connectionBarMenuItem, bottomQuickBarMenuItem;
+            aboutItem, welcomeMenuItem, copyTabNamePopItem, reloadPopItem, clonePopItem,
+            transferPopItem, scpMenuItem, ftpMenuItem, sftpMenuItem, vncPopItem, openPuttyItem,
+            configProgramsLocationsItem, utilitiesBarMenuItem, connectionBarMenuItem,
+            bottomQuickBarMenuItem;
 
     private MenuItem            tabNextItem;
 
@@ -568,23 +570,24 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     /** Tab popup menu. */
     private void createTabPopupMenu(Shell shell) {
         popupMenu = new Menu(shell, SWT.POP_UP);
+        copyTabNamePopItem = new MenuItem(popupMenu, SWT.PUSH);
+        copyTabNamePopItem.setText("copy Tab Name");
+        copyTabNamePopItem.setImage(ButtonImage.EDIT_IMAGE);
+        copyTabNamePopItem.addSelectionListener(this);
+
         reloadPopItem = new MenuItem(popupMenu, SWT.PUSH);
         reloadPopItem.setText("reload session");
         reloadPopItem.setImage(ButtonImage.RELOAD_IMAGE);
         reloadPopItem.addSelectionListener(this);
-
-        // openPuttyItem = new MenuItem(popupMenu, SWT.PUSH);
-        // openPuttyItem.setText("open in putty");
-        // openPuttyItem.setImage(MImage.puttyImage);
-        // // openPuttyItem.setToolTipText("Opens connection on a single
-        // window");
-        // openPuttyItem.addSelectionListener(this);
 
         clonePopItem = new MenuItem(popupMenu, SWT.PUSH);
         clonePopItem.setText("clone session");
         clonePopItem.setImage(ButtonImage.CLONE_IMAGE);
         clonePopItem.addSelectionListener(this);
 
+        /**
+         * 文件传输菜单 start
+         */
         transferPopItem = new MenuItem(popupMenu, SWT.CASCADE);
         transferPopItem.setText("transfer file");
         transferPopItem.setImage(ButtonImage.TRANSFER_IMAGE);
@@ -592,20 +595,18 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         Menu subMenu = new Menu(popupMenu);
         ftpMenuItem = new MenuItem(subMenu, SWT.PUSH);
         ftpMenuItem.setText("FTP");
-        // ftpMenuItem.setToolTipText("Simple FTP");
         ftpMenuItem.addSelectionListener(this);
 
         scpMenuItem = new MenuItem(subMenu, SWT.PUSH);
         scpMenuItem.setText("SCP");
-        // scpMenuItem.setToolTipText("FTP over SSH");
         scpMenuItem.addSelectionListener(this);
 
         sftpMenuItem = new MenuItem(subMenu, SWT.PUSH);
         sftpMenuItem.setText("SFTP");
-        // sftpMenuItem.setToolTipText("Secure FTP");
         sftpMenuItem.addSelectionListener(this);
 
         transferPopItem.setMenu(subMenu);
+        // 文件传输菜单 end
 
         vncPopItem = new MenuItem(popupMenu, SWT.PUSH);
         vncPopItem.setText("VNC");
@@ -693,6 +694,19 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         int hWnd = Integer.parseInt(String.valueOf(tabItem.getData("hwnd")));
         InvokeProgram.killProcess(hWnd);
         addSession(tabItem, (ConfigSession) tabItem.getData("session"));
+    }
+
+    /**
+     * 拷贝标签名称到剪贴板.
+     */
+    private void copyTabName() {
+        CTabItem tabItem = folder.getSelection();
+        if (tabItem.getData("hwnd") == null) {
+            return;
+        }
+
+        String tabName = tabItem.getText();
+        ClipboardUtil.setStr(tabName);
     }
 
     private void cloneSession() {
@@ -887,6 +901,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         } else if (e.getSource() == configProgramsLocationsItem) {
             new ProgramsLocationsDialog(SHELL);
             // menuItem
+        } else if (e.getSource() == copyTabNamePopItem) {
+            copyTabName();
         } else if (e.getSource() == reloadPopItem) {
             reloadSession();
         } else if (e.getSource() == openPuttyItem) {

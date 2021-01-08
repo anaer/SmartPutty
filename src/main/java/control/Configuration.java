@@ -202,7 +202,8 @@ public class Configuration {
      * @param visible
      */
     public void setUtilitiesBarVisible(String visible) {
-        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VIEW_UTILITIES_BAR, visible);
+        setting.setByGroup(ConfigConstant.VIEW_UTILITIES_BAR, ConfigConstant.GROUP_CONFIGURATION,
+            visible);
     }
 
     /**
@@ -211,12 +212,12 @@ public class Configuration {
      * @param visible
      */
     public void setConnectionBarVisible(String visible) {
-        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VIEW_CONNECTION_BAR,
+        setting.setByGroup(ConfigConstant.VIEW_CONNECTION_BAR, ConfigConstant.GROUP_CONFIGURATION,
             visible);
     }
 
     public void setBottomQuickBarVisible(String visible) {
-        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VIEW_BOTTOM_QUICK_BAR,
+        setting.setByGroup(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, ConfigConstant.GROUP_CONFIGURATION,
             visible);
     }
 
@@ -226,11 +227,12 @@ public class Configuration {
      * @param visible
      */
     public void setWelcomePageVisible(String visible) {
-        setting.set(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.SHOW_WELCOME_PAGE, visible);
+        setting.setByGroup(ConfigConstant.SHOW_WELCOME_PAGE, ConfigConstant.GROUP_CONFIGURATION,
+            visible);
     }
 
     public void setProperty(String key, String value) {
-        setting.set(ConfigConstant.GROUP_CONFIGURATION, key, value);
+        setting.setByGroup(key, ConfigConstant.GROUP_CONFIGURATION, value);
     }
 
     public String getProperty(String key, String defaultValue) {
@@ -238,7 +240,7 @@ public class Configuration {
     }
 
     public void setProgramProperty(String key, String value) {
-        setting.set(ConfigConstant.GROUP_PROGRAM, key, value);
+        setting.setByGroup(key, ConfigConstant.GROUP_PROGRAM, value);
     }
 
     public String getProgramProperty(String key, String defaultValue) {

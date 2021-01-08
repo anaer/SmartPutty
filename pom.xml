@@ -5,7 +5,7 @@
 	<version>1.1.20</version>
 	<properties>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
-		<cn.hutool.version>5.5.6</cn.hutool.version>
+		<cn.hutool.version>5.5.7</cn.hutool.version>
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-io.version>2.7</commons-io.version>
 		<commons-net.version>3.7</commons-net.version>
