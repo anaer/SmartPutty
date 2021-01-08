@@ -150,7 +150,7 @@ public class InvokeProgram extends Thread {
         String args = setPuttyParameters(session);
 
         // tab标签展示名称
-        String tabDisplayName = String.format("%s@%s/%s", session.getName(), session.getHost(),
+        String tabName = String.format("%s@%s(%s)", session.getName(), session.getHost(),
             session.getIntranet());
 
         String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
@@ -227,7 +227,7 @@ public class InvokeProgram extends Thread {
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
 
         if (hWnd.intValue() != 0) {
-            tabItem.setText(tabDisplayName);
+            tabItem.setText(tabName);
             tabItem.setData("hwnd", hWnd);
             tabItem.setData("session", session);
             setWindowFocus(hWnd);
