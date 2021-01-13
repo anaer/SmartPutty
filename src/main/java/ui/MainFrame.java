@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
 import control.Configuration;
@@ -83,6 +84,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             bottomQuickBarMenuItem;
 
     private MenuItem            tabNextItem;
+
+    /**
+     * 关闭所有putty进程.
+     * */
+    private MenuItem            killAllPuttyItem;
 
     private Menu                popupMenu;
     private ToolItem            itemNew, itemOpen, itemRemoteDesk, itemCapture, itemCalculator,
@@ -175,6 +181,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         tabNextItem.setImage(ButtonImage.DICT_IMAGE);
         tabNextItem.setAccelerator(SWT.CTRL + SWT.SHIFT + 'N');
         tabNextItem.addSelectionListener(this);
+
+        killAllPuttyItem = new MenuItem(fileMenu, SWT.PUSH);
+        killAllPuttyItem.setText("Kill All Putty");
+        killAllPuttyItem.setImage(ButtonImage.RELOAD_IMAGE);
+        killAllPuttyItem.addSelectionListener(this);
 
         // Separator:
         new MenuItem(fileMenu, SWT.SEPARATOR);
@@ -881,6 +892,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             InvokeProgram.runProgram(ProgramEnum.NOTEPAD, null);
         } else if (e.getSource() == tabNextItem) {
             switchTab();
+        } else if (e.getSource() == killAllPuttyItem) {
+            killAllPutty();
         } else if (e.getSource() == itemKenGen) {
             InvokeProgram.exec(configuration.getProgramPath(ProgramEnum.KEYGEN), null);
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
@@ -994,6 +1007,14 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
             CTabItem item = folder.getItem(index);
             folder.setSelection(item);
+        }
+    }
+
+    private void killAllPutty() {
+        try {
+            RuntimeUtil.exec("taskkill /F /IM Putty.exe");
+        } catch (Exception ex) {
+            log.error("关闭Putty异常.");
         }
     }
 
