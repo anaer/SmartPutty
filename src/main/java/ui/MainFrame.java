@@ -570,10 +570,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     /** Tab popup menu. */
     private void createTabPopupMenu(Shell shell) {
         popupMenu = new Menu(shell, SWT.POP_UP);
-        copyTabNamePopItem = new MenuItem(popupMenu, SWT.PUSH);
-        copyTabNamePopItem.setText("copy Tab Name");
-        copyTabNamePopItem.setImage(ButtonImage.EDIT_IMAGE);
-        copyTabNamePopItem.addSelectionListener(this);
 
         reloadPopItem = new MenuItem(popupMenu, SWT.PUSH);
         reloadPopItem.setText("reload session");
@@ -612,6 +608,12 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         vncPopItem.setText("VNC");
         vncPopItem.setImage(ButtonImage.VPC_IMAGE);
         vncPopItem.addSelectionListener(this);
+
+        // 拷贝标签名
+        copyTabNamePopItem = new MenuItem(popupMenu, SWT.PUSH);
+        copyTabNamePopItem.setText("copy Tab Name");
+        copyTabNamePopItem.setImage(ButtonImage.EDIT_IMAGE);
+        copyTabNamePopItem.addSelectionListener(this);
     }
 
     private void loadConfiguration() {
