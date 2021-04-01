@@ -248,7 +248,7 @@ public class Configuration {
     }
 
     public void saveSetting() {
-        setting.store(setting.getSettingPath());
+        setting.store(new File(ConstantValue.APP_CONFIG_FILE));
     }
 
     public void saveBeforeClose() {
