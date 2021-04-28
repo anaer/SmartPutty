@@ -71,41 +71,49 @@ import widgets.BorderLayout;
  * @date 2018/10/24
  */
 @Slf4j
-public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseListener,
-                       ShellListener {
-    public static Display       display = new Display();
-    public static DbManager     dbm;
-    public static final Shell   SHELL   = new Shell(display);
+public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
+    public static Display display = new Display();
+    public static DbManager dbm;
+    public static final Shell SHELL = new Shell(display);
     public static Configuration configuration;
-    private MenuItem            openItem, newItem, captureItem, remoteDesktopItem, exitItem,
-            aboutItem, welcomeMenuItem, copyTabNamePopItem, reloadPopItem, clonePopItem,
-            transferPopItem, scpMenuItem, ftpMenuItem, sftpMenuItem, vncPopItem, openPuttyItem,
-            configProgramsLocationsItem, utilitiesBarMenuItem, connectionBarMenuItem,
+    private MenuItem openItem, newItem, captureItem, remoteDesktopItem, exitItem, aboutItem, welcomeMenuItem,
+            copyTabNamePopItem, reloadPopItem, clonePopItem, transferPopItem, scpMenuItem, ftpMenuItem, sftpMenuItem,
+            vncPopItem, openPuttyItem, configProgramsLocationsItem, utilitiesBarMenuItem, connectionBarMenuItem,
             bottomQuickBarMenuItem;
 
-    private MenuItem            tabNextItem;
+    /**
+     * 关闭其他标签.
+     */
+    private MenuItem closeOtherTabsItem;
+
+    /**
+     * 关闭所有标签.
+     */
+    private MenuItem closeAllTabsItem;
+
+    private MenuItem tabNextItem;
 
     /**
      * 关闭所有putty进程.
      * */
-    private MenuItem            killAllPuttyItem;
+    private MenuItem killAllPuttyItem;
 
-    private Menu                popupMenu;
-    private ToolItem            itemNew, itemOpen, itemRemoteDesk, itemCapture, itemCalculator,
-            itemVnc, itemNotePad, itemKenGen, itemHelp;
-    private CTabFolder          folder;
-    private CTabItem            welcomeItem, dictItem;
-    private ToolBar             utilitiesToolbar;
-    private Group               connectGroup, quickBottomGroup;
+    private Menu popupMenu;
+    private ToolItem itemNew, itemOpen, itemRemoteDesk, itemCapture, itemCalculator, itemVnc, itemNotePad, itemKenGen,
+            itemHelp;
+    private CTabFolder folder;
+    private CTabItem welcomeItem, dictItem;
+    private ToolBar utilitiesToolbar;
+    private Group connectGroup, quickBottomGroup;
 
     /** Connect bar components. */
-    private Button              connectButton;
-    private Text                hostItem, portItem, usernameItem, passwordItem;
-    private Combo               sessionCombo;
+    private Button connectButton;
+    private Text hostItem, portItem, usernameItem, passwordItem;
+    private Combo sessionCombo;
 
     /** Bottom util bar components. */
-    private Text                pathItem, dictText;
-    private Button              win2UnixButton, unix2WinButton, openPathButton, dictButton;
+    private Text pathItem, dictText;
+    private Button win2UnixButton, unix2WinButton, openPathButton, dictButton;
 
     public MainFrame(ProgressBar bar) {
         bar.setSelection(1);
@@ -117,8 +125,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         SHELL.setLayout(new BorderLayout());
         SHELL.setImage(ButtonImage.MAIN_IMAGE);
-        SHELL.setText(
-            ConstantValue.MAIN_WINDOW_TITLE + " [" + configuration.getSmartPuttyVersion() + "]");
+        SHELL.setText(ConstantValue.MAIN_WINDOW_TITLE + " [" + configuration.getSmartPuttyVersion() + "]");
         SHELL.setBounds(configuration.getWindowPositionSize());
         SHELL.addShellListener(this);
 
@@ -464,12 +471,12 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         folder.addSelectionListener(this);
 
         Listener listener = new Listener() {
-            boolean  drag          = false;
-            boolean  exitDrag      = false;
+            boolean drag = false;
+            boolean exitDrag = false;
             CTabItem dragItem;
-            Cursor   cursorSizeAll = new Cursor(null, SWT.CURSOR_SIZEALL);
-            Cursor   cursorNo      = new Cursor(null, SWT.CURSOR_NO);
-            Cursor   cursorArrow   = new Cursor(null, SWT.CURSOR_ARROW);
+            Cursor cursorSizeAll = new Cursor(null, SWT.CURSOR_SIZEALL);
+            Cursor cursorNo = new Cursor(null, SWT.CURSOR_NO);
+            Cursor cursorArrow = new Cursor(null, SWT.CURSOR_ARROW);
 
             @Override
             public void handleEvent(Event e) {
@@ -480,93 +487,93 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 }
                 switch (e.type) {
 
-                    case SWT.DragDetect: {
-                        CTabItem item = folder.getItem(p);
-                        if (item == null) {
-                            return;
-                        }
-
-                        drag = true;
-                        exitDrag = false;
-                        dragItem = item;
-
-                        folder.getShell().setCursor(cursorNo);
-                        break;
+                case SWT.DragDetect: {
+                    CTabItem item = folder.getItem(p);
+                    if (item == null) {
+                        return;
                     }
 
-                    case SWT.MouseEnter:
-                        if (exitDrag) {
-                            exitDrag = false;
-                            drag = e.button != 0;
-                        }
-                        break;
+                    drag = true;
+                    exitDrag = false;
+                    dragItem = item;
 
-                    case SWT.MouseExit:
-                        if (drag) {
-                            folder.setInsertMark(null, false);
-                            exitDrag = true;
-                            drag = false;
+                    folder.getShell().setCursor(cursorNo);
+                    break;
+                }
 
-                            folder.getShell().setCursor(cursorArrow);
-                        }
-                        break;
-
-                    case SWT.MouseUp: {
-                        if (!drag) {
-                            return;
-                        }
-                        folder.setInsertMark(null, false);
-                        CTabItem item = folder.getItem(new Point(p.x, 1));
-
-                        if (item != null) {
-                            int index = folder.indexOf(item);
-                            int newIndex = folder.indexOf(item);
-                            int oldIndex = folder.indexOf(dragItem);
-                            if (newIndex != oldIndex) {
-                                boolean after = newIndex > oldIndex;
-                                index = after ? index + 1 : index;
-                                index = Math.max(0, index);
-
-                                CTabItem cloneItem = new CTabItem(folder, SWT.CLOSE, index);
-                                cloneItem.setText(dragItem.getText());
-                                cloneItem.setImage(dragItem.getImage());
-                                cloneItem.setData("hwnd", dragItem.getData("hwnd"));
-                                cloneItem.setData("session", dragItem.getData("session"));
-
-                                Control c = dragItem.getControl();
-                                dragItem.setControl(null);
-                                cloneItem.setControl(c);
-                                dragItem.dispose();
-                                folder.setSelection(cloneItem);
-                            }
-                        }
-                        drag = false;
+                case SWT.MouseEnter:
+                    if (exitDrag) {
                         exitDrag = false;
-                        dragItem = null;
+                        drag = e.button != 0;
+                    }
+                    break;
+
+                case SWT.MouseExit:
+                    if (drag) {
+                        folder.setInsertMark(null, false);
+                        exitDrag = true;
+                        drag = false;
 
                         folder.getShell().setCursor(cursorArrow);
-                        break;
                     }
+                    break;
 
-                    case SWT.MouseMove: {
-                        if (!drag) {
-                            return;
-                        }
-                        CTabItem item = folder.getItem(new Point(p.x, 2));
-                        if (item == null) {
-                            folder.setInsertMark(null, false);
-                            return;
-                        }
-                        Rectangle rect = item.getBounds();
-                        boolean after = p.x > rect.x + rect.width / 2;
-                        folder.setInsertMark(item, after);
-
-                        folder.getShell().setCursor(cursorSizeAll);
-                        break;
+                case SWT.MouseUp: {
+                    if (!drag) {
+                        return;
                     }
+                    folder.setInsertMark(null, false);
+                    CTabItem item = folder.getItem(new Point(p.x, 1));
 
-                    default:
-                        break;
+                    if (item != null) {
+                        int index = folder.indexOf(item);
+                        int newIndex = folder.indexOf(item);
+                        int oldIndex = folder.indexOf(dragItem);
+                        if (newIndex != oldIndex) {
+                            boolean after = newIndex > oldIndex;
+                            index = after ? index + 1 : index;
+                            index = Math.max(0, index);
+
+                            CTabItem cloneItem = new CTabItem(folder, SWT.CLOSE, index);
+                            cloneItem.setText(dragItem.getText());
+                            cloneItem.setImage(dragItem.getImage());
+                            cloneItem.setData("hwnd", dragItem.getData("hwnd"));
+                            cloneItem.setData("session", dragItem.getData("session"));
+
+                            Control c = dragItem.getControl();
+                            dragItem.setControl(null);
+                            cloneItem.setControl(c);
+                            dragItem.dispose();
+                            folder.setSelection(cloneItem);
+                        }
+                    }
+                    drag = false;
+                    exitDrag = false;
+                    dragItem = null;
+
+                    folder.getShell().setCursor(cursorArrow);
+                    break;
+                }
+
+                case SWT.MouseMove: {
+                    if (!drag) {
+                        return;
+                    }
+                    CTabItem item = folder.getItem(new Point(p.x, 2));
+                    if (item == null) {
+                        folder.setInsertMark(null, false);
+                        return;
+                    }
+                    Rectangle rect = item.getBounds();
+                    boolean after = p.x > rect.x + rect.width / 2;
+                    folder.setInsertMark(item, after);
+
+                    folder.getShell().setCursor(cursorSizeAll);
+                    break;
+                }
+
+                default:
+                    break;
                 }
             }
         };
@@ -625,6 +632,16 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         copyTabNamePopItem.setText("copy Tab Name");
         copyTabNamePopItem.setImage(ButtonImage.EDIT_IMAGE);
         copyTabNamePopItem.addSelectionListener(this);
+
+        closeOtherTabsItem = new MenuItem(popupMenu, SWT.PUSH);
+        closeOtherTabsItem.setText("close other tabs");
+        closeOtherTabsItem.setImage(ButtonImage.TRASH_IMAGE);
+        closeOtherTabsItem.addSelectionListener(this);
+
+        closeAllTabsItem = new MenuItem(popupMenu, SWT.PUSH);
+        closeAllTabsItem.setText("close all tabs");
+        closeAllTabsItem.setImage(ButtonImage.TRASH_FULL_IMAGE);
+        closeAllTabsItem.addSelectionListener(this);
     }
 
     private void loadConfiguration() {
@@ -661,8 +678,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             dictItem.setText("Dictionary");
         } else {
             folder.setSelection(dictItem);
-            ((Browser) dictItem.getControl())
-                .setUrl(configuration.getDictionaryBaseUrl() + keyword);
+            ((Browser) dictItem.getControl()).setUrl(configuration.getDictionaryBaseUrl() + keyword);
         }
     }
 
@@ -697,6 +713,42 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         item.setImage(ButtonImage.PUTTY_IMAGE);
         Thread t = new InvokeProgram(composite, item, session);
         t.start();
+    }
+
+    /**
+     * 关闭其他标签.
+     */
+    private void closeOtherTabs() {
+        int selectionIndex = folder.getSelectionIndex();
+        int itemCount = folder.getItemCount();
+
+        for (int index = 0; index < itemCount; index++) {
+            if (index != selectionIndex) {
+                CTabItem item = folder.getItem(index);
+                if (item.getData("hwnd") != null) {
+                    int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
+                    InvokeProgram.killProcess(hwnd);
+                }
+                item.dispose();
+            }
+        }
+
+    }
+
+    /**
+     * 关闭所有标签.
+     */
+    private void closeAllTabs() {
+        int itemCount = folder.getItemCount();
+        // 因为调用了dispose方法后, item数量有变化, 所以倒序关闭
+        for (int index = itemCount - 1; index >= 0; index--) {
+            CTabItem item = folder.getItem(index);
+            if (item.getData("hwnd") != null) {
+                int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
+                InvokeProgram.killProcess(hwnd);
+            }
+            item.dispose();
+        }
     }
 
     private void reloadSession() {
@@ -736,8 +788,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             return;
         }
         ConfigSession session = (ConfigSession) folder.getSelection().getData("session");
-        String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@"
-                + session.getHost() + ":" + session.getPort();
+        String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@" + session.getHost() + ":"
+                + session.getPort();
 
         InvokeProgram.runProgram(ProgramEnum.WINSCP, arg);
     }
@@ -757,7 +809,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         if (session != null) {
             String host = session.getHost();
             InputDialog inputDialog = new InputDialog(SHELL, "Input VNC Server Host",
-                "Example:    xx.swg.usma.ibm.com:1", host + ":1", null);
+                    "Example:    xx.swg.usma.ibm.com:1", host + ":1", null);
             if (InputDialog.OK == inputDialog.open()) {
                 InvokeProgram.runProgram(ProgramEnum.VNC, inputDialog.getValue());
             }
@@ -899,8 +951,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
             showWelcomeTab(ConstantValue.HOME_URL);
         } else if (e.getSource() == aboutItem) {
-            MessageDialog.openInformation(SHELL, "About",
-                "SmartPutty-" + configuration.getSmartPuttyVersion());
+            MessageDialog.openInformation(SHELL, "About", "SmartPutty-" + configuration.getSmartPuttyVersion());
         } else if (e.getSource() == utilitiesBarMenuItem) {
             Boolean visible = utilitiesBarMenuItem.getSelection();
             setCompositeVisible(utilitiesToolbar, SHELL, visible);
@@ -920,6 +971,12 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             copyTabName();
         } else if (e.getSource() == reloadPopItem) {
             reloadSession();
+        } else if (e.getSource() == closeOtherTabsItem) {
+            // 关闭其他标签
+            closeOtherTabs();
+        } else if (e.getSource() == closeAllTabsItem) {
+            // 关闭所有标签
+            closeAllTabs();
         } else if (e.getSource() == openPuttyItem) {
             openPutty();
         } else if (e.getSource() == clonePopItem) {
@@ -953,12 +1010,10 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             String password = passwordItem.getText();
             String session = sessionCombo.getText();
             if (session.trim().isEmpty()) {
-                MessageDialog.openInformation(SHELL, "Information",
-                    "please select a putty session first!");
+                MessageDialog.openInformation(SHELL, "Information", "please select a putty session first!");
                 return;
             }
-            ConfigSession configSession = new ConfigSession(name, host, "", port, user, password,
-                session);
+            ConfigSession configSession = new ConfigSession(name, host, "", port, user, password, session);
             addSession(null, configSession);
         } else if (e.getSource() == win2UnixButton) {
             String path = pathItem.getText().trim();
@@ -975,8 +1030,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 return;
             }
             path = StringUtils.stripStart(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText(configuration.getWinPathBaseDrive() + "\\"
-                    + FilenameUtils.separatorsToWindows(path));
+            pathItem.setText(configuration.getWinPathBaseDrive() + "\\" + FilenameUtils.separatorsToWindows(path));
         } else if (e.getSource() == openPathButton) {
             String path = pathItem.getText().trim();
             if (StringUtils.isBlank(path)) {
@@ -984,8 +1038,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 return;
             }
             path = StringUtils.stripStart(path, "/\\" + configuration.getWinPathBaseDrive());
-            path = configuration.getWinPathBaseDrive() + "\\"
-                    + FilenameUtils.separatorsToWindows(path);
+            path = configuration.getWinPathBaseDrive() + "\\" + FilenameUtils.separatorsToWindows(path);
             pathItem.setText(path);
             if (!InvokeProgram.openFolder(path)) {
                 MessageDialog.openError(SHELL, "Error", "Path not exist!");
@@ -1024,8 +1077,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             if ((ConfigSession) e.item.getData("session") != null) {
                 MessageBox msgBox = new MessageBox(SHELL, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                 msgBox.setText("Confirm Exit");
-                msgBox.setMessage("Are you sure to exit session: "
-                        + ((ConfigSession) e.item.getData("session")).getHost());
+                msgBox.setMessage(
+                        "Are you sure to exit session: " + ((ConfigSession) e.item.getData("session")).getHost());
                 if (msgBox.open() == SWT.YES) {
                     int hWnd = Integer.parseInt(String.valueOf(e.item.getData("hwnd")));
                     InvokeProgram.killProcess(hWnd);
@@ -1067,8 +1120,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     public void mouseDown(MouseEvent e) {
         if (e.button == 3) {
             CTabItem selectItem = folder.getItem(new Point(e.x, e.y));
-            if (selectItem != null && StringUtils.equalsIgnoreCase(
-                String.valueOf(folder.getSelection().getData("TYPE")), "session")) {
+            if (selectItem != null
+                    && StringUtils.equalsIgnoreCase(String.valueOf(folder.getSelection().getData("TYPE")), "session")) {
                 folder.setSelection(selectItem);
                 popupMenu.setVisible(true);
             } else {

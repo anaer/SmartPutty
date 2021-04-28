@@ -56,5 +56,11 @@ public class ButtonImage {
         "icon\\connect_ssh.png");
     public static final Image PUTTY_IMAGE         = new Image(MainFrame.display, "icon\\putty.png");
     public static final Image DICT_IMAGE          = new Image(MainFrame.display, "icon\\dict.png");
+    /**
+     * 关闭 图标.
+     */
+    public static final Image TRASH_IMAGE         = new Image(MainFrame.display, "icon\\trash.png");
+
+    public static final Image TRASH_FULL_IMAGE         = new Image(MainFrame.display, "icon\\trash_full.png");
 
 }
