@@ -4,6 +4,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -189,9 +190,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         openItem.addSelectionListener(this);
 
         tabNextItem = new MenuItem(fileMenu, SWT.PUSH);
-        tabNextItem.setText("Next Tab\tCtrl+Shift+N");
+        tabNextItem.setText("Next Tab\tAlt+#");
         tabNextItem.setImage(ButtonImage.DICT_IMAGE);
-        tabNextItem.setAccelerator(SWT.CTRL + SWT.SHIFT + 'N');
+        tabNextItem.setAccelerator(SWT.ALT + SWT.SHIFT + '3');
         tabNextItem.addSelectionListener(this);
 
         killAllPuttyItem = new MenuItem(fileMenu, SWT.PUSH);
@@ -588,6 +589,23 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         folder.addListener(SWT.MouseMove, listener);
         folder.addListener(SWT.MouseExit, listener);
         folder.addListener(SWT.MouseEnter, listener);
+        folder.addListener(SWT.MouseDoubleClick, e -> {
+            CTabItem item = folder.getSelection();
+            closeTab(item);
+        });
+    }
+
+    /**
+     * 关闭标签.
+     */
+    private void closeTab(CTabItem item) {
+        if (Objects.nonNull(item)) {
+            if (item.getData("hwnd") != null) {
+                int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
+                InvokeProgram.killProcess(hwnd);
+            }
+            item.dispose();
+        }
     }
 
     /** Tab popup menu. */
@@ -735,11 +753,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         for (int index = 0; index < itemCount; index++) {
             if (index != selectionIndex) {
                 CTabItem item = folder.getItem(index);
-                if (item.getData("hwnd") != null) {
-                    int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
-                    InvokeProgram.killProcess(hwnd);
-                }
-                item.dispose();
+                closeTab(item);
             }
         }
 
@@ -753,22 +767,30 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         // 因为调用了dispose方法后, item数量有变化, 所以倒序关闭
         for (int index = itemCount - 1; index >= 0; index--) {
             CTabItem item = folder.getItem(index);
-            if (item.getData("hwnd") != null) {
-                int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
-                InvokeProgram.killProcess(hwnd);
-            }
-            item.dispose();
+            closeTab(item);
         }
     }
 
+    /**
+     * 重新加载会话.
+     */
     private void reloadSession() {
-        CTabItem tabItem = folder.getSelection();
-        if (tabItem.getData("hwnd") == null) {
-            return;
+        CTabItem item = folder.getSelection();
+        reloadTab(item);
+    }
+
+    /**
+     * 重载标签.
+     */
+    private void reloadTab(CTabItem item) {
+        if (Objects.nonNull(item)) {
+            if (item.getData("hwnd") == null) {
+                return;
+            }
+            int hWnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
+            InvokeProgram.killProcess(hWnd);
+            addSession(item, (ConfigSession) item.getData("session"));
         }
-        int hWnd = Integer.parseInt(String.valueOf(tabItem.getData("hwnd")));
-        InvokeProgram.killProcess(hWnd);
-        addSession(tabItem, (ConfigSession) tabItem.getData("session"));
     }
 
     /**
@@ -779,12 +801,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         for (int index = itemCount - 1; index >= 0; index--) {
             CTabItem tabItem = folder.getItem(index);
-            if (tabItem.getData("hwnd") == null) {
-                return;
-            }
-            int hWnd = Integer.parseInt(String.valueOf(tabItem.getData("hwnd")));
-            InvokeProgram.killProcess(hWnd);
-            addSession(tabItem, (ConfigSession) tabItem.getData("session"));
+            reloadTab(tabItem);
         }
     }
 
@@ -849,10 +866,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     public void disposeApp() {
         CTabItem[] items = folder.getItems();
         for (CTabItem item : items) {
-            if (item.getData("hwnd") != null) {
-                int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
-                InvokeProgram.killProcess(hwnd);
-            }
+            closeTab(item);
         }
 
         // Close in-memory database:
@@ -1110,10 +1124,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 msgBox.setMessage(
                         "Are you sure to exit session: " + ((ConfigSession) e.item.getData("session")).getHost());
                 if (msgBox.open() == SWT.YES) {
-                    int hWnd = Integer.parseInt(String.valueOf(e.item.getData("hwnd")));
-                    InvokeProgram.killProcess(hWnd);
-
-                    e.item.dispose();
+                    closeTab((CTabItem) e.item);
                     e.doit = true;
                 } else {
                     e.doit = false;
