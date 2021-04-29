@@ -1094,14 +1094,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     }
 
     private void switchTab() {
-        log.info("切换TAB页");
         int select = folder.getSelectionIndex();
         int count = folder.getItemCount();
 
         if (count > 0) {
-
             int index = select < count - 1 ? select + 1 : 0;
-
             CTabItem item = folder.getItem(index);
             folder.setSelection(item);
         }

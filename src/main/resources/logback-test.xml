@@ -18,16 +18,15 @@
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!--日志文件输出的文件名-->
-      <FileNamePattern>${LOG_HOME}/SmartPutty.log.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>${LOG_HOME}/SmartPutty.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <!-- 最多保留2天的文件 -->
       <MaxHistory>2</MaxHistory>
+      <!-- 启用时 清理日志文件 -->
+      <cleanHistoryOnStart>true</cleanHistoryOnStart>
     </rollingPolicy>
     <encoder>
       <pattern>${commonPattern}</pattern>
     </encoder>
-    <!--日志文件最大的大小-->
-    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-      <MaxFileSize>10MB</MaxFileSize>
-    </triggeringPolicy>
   </appender>
 
   <!-- 异步-日志打印 -->
