@@ -82,6 +82,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             bottomQuickBarMenuItem;
 
     /**
+     * 重新加载所有标签.
+     */
+    private MenuItem reloadAllItem;
+
+    /**
      * 关闭其他标签.
      */
     private MenuItem closeOtherTabsItem;
@@ -594,6 +599,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         reloadPopItem.setImage(ButtonImage.RELOAD_IMAGE);
         reloadPopItem.addSelectionListener(this);
 
+        reloadAllItem = new MenuItem(popupMenu, SWT.PUSH);
+        reloadAllItem.setText("reload all session");
+        reloadAllItem.setImage(ButtonImage.RELOAD_IMAGE);
+        reloadAllItem.addSelectionListener(this);
+
         clonePopItem = new MenuItem(popupMenu, SWT.PUSH);
         clonePopItem.setText("clone session");
         clonePopItem.setImage(ButtonImage.CLONE_IMAGE);
@@ -759,6 +769,23 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         int hWnd = Integer.parseInt(String.valueOf(tabItem.getData("hwnd")));
         InvokeProgram.killProcess(hWnd);
         addSession(tabItem, (ConfigSession) tabItem.getData("session"));
+    }
+
+    /**
+     * 重载所有会话.
+     */
+    private void reloadAllSession() {
+        int itemCount = folder.getItemCount();
+
+        for (int index = itemCount - 1; index >= 0; index--) {
+            CTabItem tabItem = folder.getItem(index);
+            if (tabItem.getData("hwnd") == null) {
+                return;
+            }
+            int hWnd = Integer.parseInt(String.valueOf(tabItem.getData("hwnd")));
+            InvokeProgram.killProcess(hWnd);
+            addSession(tabItem, (ConfigSession) tabItem.getData("session"));
+        }
     }
 
     /**
@@ -971,6 +998,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             copyTabName();
         } else if (e.getSource() == reloadPopItem) {
             reloadSession();
+        } else if (e.getSource() == reloadAllItem) {
+            // 重载所有标签
+            reloadAllSession();
         } else if (e.getSource() == closeOtherTabsItem) {
             // 关闭其他标签
             closeOtherTabs();

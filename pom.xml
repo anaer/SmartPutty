@@ -9,7 +9,7 @@
 		<commons-codec.version>1.15</commons-codec.version>
 		<commons-io.version>2.7</commons-io.version>
 		<commons-net.version>3.7</commons-net.version>
-		<junit.version>4.13</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<org.apache.commons.version>3.11</org.apache.commons.version>
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.hsqldb.version>2.5.1</org.hsqldb.version>
