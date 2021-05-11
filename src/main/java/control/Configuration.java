@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Rectangle;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.setting.Setting;
 import constants.ConfigConstant;
 import constants.ConstantValue;
@@ -20,22 +21,31 @@ import ui.MainFrame;
 import utils.ReadXmlFile;
 
 /**
- * 配置类.
+ * 配置控制类.
  *
  * @author lvcn
  * @version $Id: Configuration.java, v 1.0 Jul 22, 2019 3:44:47 PM lvcn Exp $
  */
 public class Configuration {
 
-    private final Setting                       setting;
+    private final Setting setting;
 
     private final List<HashMap<String, String>> batchConfigListMap;
 
-    /** Constructor: */
+    /** 
+     * 获取自定义菜单配置.
+    */
+    public List<HashMap<String, String>> getBatchConfig() {
+        return this.batchConfigListMap;
+    }
+
+    /** 
+     * 构造函数.
+     * 初始化配置信息.
+     */
     public Configuration() {
         this.batchConfigListMap = ReadXmlFile.parse(new File(ConstantValue.CONFIG_BATCH_FILE));
-        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE),
-            Charset.defaultCharset(), true);
+        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE), Charset.defaultCharset(), true);
         this.setting.autoLoad(true);
     }
 
@@ -45,22 +55,21 @@ public class Configuration {
      * @return true/false
      */
     public Boolean getFeatureToggle(String feature) {
-        return setting.getBool(feature, ConfigConstant.GROUP_FEATURE, false);
+        return getFeature(feature, false);
     }
 
-    /** 
-     * 获取自定义菜单配置.
-    */
-    public List<HashMap<String, String>> getBatchConfig() {
-        return this.batchConfigListMap;
+    /**
+     * 获取初始化 等待时间.
+     */
+    public int getWaitForInitTime() {
+        return getConfiguration(ConfigConstant.WAIT_FOR_INIT_TIME, 0);
     }
 
-    public String getWaitForInitTime() {
-        return setting.get(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.WAIT_FOR_INIT_TIME);
-    }
-
+    /**
+     * 获取SmartPutty版本号配置.
+     */
     public String getSmartPuttyVersion() {
-        return setting.get(ConfigConstant.GROUP_CONFIGURATION, ConfigConstant.VERSION);
+        return getConfiguration(ConfigConstant.VERSION, "");
     }
 
     /**
@@ -69,8 +78,7 @@ public class Configuration {
      * @return
      */
     public Boolean getUtilitiesBarVisible() {
-        return setting.getBool(ConfigConstant.VIEW_UTILITIES_BAR,
-            ConfigConstant.GROUP_CONFIGURATION, false);
+        return getConfiguration(ConfigConstant.VIEW_UTILITIES_BAR, false);
     }
 
     /**
@@ -79,8 +87,7 @@ public class Configuration {
      * @return
      */
     public Boolean getConnectionBarVisible() {
-        return setting.getBool(ConfigConstant.VIEW_CONNECTION_BAR,
-            ConfigConstant.GROUP_CONFIGURATION, false);
+        return getConfiguration(ConfigConstant.VIEW_CONNECTION_BAR, false);
     }
 
     /**
@@ -89,8 +96,7 @@ public class Configuration {
      * @return
      */
     public Boolean getBottomQuickBarVisible() {
-        return setting.getBool(ConfigConstant.VIEW_BOTTOM_QUICK_BAR,
-            ConfigConstant.GROUP_CONFIGURATION, false);
+        return getConfiguration(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, false);
     }
 
     /**
@@ -100,15 +106,14 @@ public class Configuration {
      * @return 执行路径
      */
     public String getProgramPath(ProgramEnum program) {
-        String value = null;
+        String value = program.getPath();
         // 1. 应用程序配置属性
         String property = program.getProperty();
         if (StringUtils.isNotBlank(property)) {
             // 2. 如果配置属性不为空, 从配置文件中获取配置项
-            value = setting.get(ConfigConstant.GROUP_PROGRAM, property);
+            value = getProgram(property, program.getPath());
         }
-        // 3. 如果配置值为空, 取默认的path
-        return StringUtils.defaultIfEmpty(value, program.getPath());
+        return value;
     }
 
     /**
@@ -117,7 +122,7 @@ public class Configuration {
      * @return
      */
     public String getDictionaryBaseUrl() {
-        return getProperty(ConfigConstant.DICTIONARY, "http://dict.youdao.com/w/eng/");
+        return getConfiguration(ConfigConstant.DICTIONARY, "http://dict.youdao.com/w/eng/");
     }
 
     /**
@@ -126,11 +131,14 @@ public class Configuration {
      * @return
      */
     public String getDefaultPuttyUsername() {
-        return getProperty(ConfigConstant.DEFAULT_PUTTY_USERNAME, "");
+        return getConfiguration(ConfigConstant.DEFAULT_PUTTY_USERNAME, "");
     }
 
+    /**
+     * 获取数据库路径.
+     */
     public String getDatabasePath() {
-        return getProperty(ConfigConstant.DATABASE_PATH, "config/sessiondb");
+        return getConfiguration(ConfigConstant.DATABASE_PATH, "config/sessiondb");
     }
 
     /**
@@ -139,7 +147,7 @@ public class Configuration {
      * @return
      */
     public String getWinPathBaseDrive() {
-        return getProperty(ConfigConstant.WINDOWS_BASE_DRIVE, "C:/");
+        return getConfiguration(ConfigConstant.WINDOWS_BASE_DRIVE, "C:/");
     }
 
     /**
@@ -148,8 +156,7 @@ public class Configuration {
      * @return
      */
     public Boolean getWelcomePageVisible() {
-        return setting.getBool(ConfigConstant.SHOW_WELCOME_PAGE, ConfigConstant.GROUP_CONFIGURATION,
-            false);
+        return getConfiguration(ConfigConstant.SHOW_WELCOME_PAGE, false);
     }
 
     /**
@@ -159,11 +166,11 @@ public class Configuration {
      */
     public Rectangle getWindowPositionSize() {
         // Split comma-separated values by x, y, width, height:
-        String windowPositionSize = getProperty(ConfigConstant.WINDOW_POSITION_SIZE, "");
+        String windowPositionSize = getConfiguration(ConfigConstant.WINDOW_POSITION_SIZE, "");
 
-        int[] array = Arrays.stream(windowPositionSize.split(","))
-            .mapToInt(str -> Convert.toInt(str, 0)).toArray();
+        int[] array = Arrays.stream(windowPositionSize.split(",")).mapToInt(str -> Convert.toInt(str, 0)).toArray();
 
+        // 配置不满4位, 根据屏幕宽高 重新设置
         if (array.length < 4) {
             array = new int[4];
             array[0] = ConstantValue.SCREEN_WIDTH / 6;
@@ -191,9 +198,12 @@ public class Configuration {
         return Joiner.on(",").join(x, y, width, height);
     }
 
+    /**
+     * 设置窗口坐标位置.
+     */
     public void setWindowPosisionSizeString() {
         String position = getWindowPositionSizeString();
-        setProperty(ConfigConstant.WINDOW_POSITION_SIZE, position);
+        setConfiguratioin(ConfigConstant.WINDOW_POSITION_SIZE, position);
     }
 
     /**
@@ -202,8 +212,7 @@ public class Configuration {
      * @param visible
      */
     public void setUtilitiesBarVisible(String visible) {
-        setting.setByGroup(ConfigConstant.VIEW_UTILITIES_BAR, ConfigConstant.GROUP_CONFIGURATION,
-            visible);
+        setConfiguratioin(ConfigConstant.VIEW_UTILITIES_BAR, visible);
     }
 
     /**
@@ -212,13 +221,11 @@ public class Configuration {
      * @param visible
      */
     public void setConnectionBarVisible(String visible) {
-        setting.setByGroup(ConfigConstant.VIEW_CONNECTION_BAR, ConfigConstant.GROUP_CONFIGURATION,
-            visible);
+        setConfiguratioin(ConfigConstant.VIEW_CONNECTION_BAR, visible);
     }
 
     public void setBottomQuickBarVisible(String visible) {
-        setting.setByGroup(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, ConfigConstant.GROUP_CONFIGURATION,
-            visible);
+        setConfiguratioin(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, visible);
     }
 
     /**
@@ -227,30 +234,68 @@ public class Configuration {
      * @param visible
      */
     public void setWelcomePageVisible(String visible) {
-        setting.setByGroup(ConfigConstant.SHOW_WELCOME_PAGE, ConfigConstant.GROUP_CONFIGURATION,
-            visible);
+        setConfiguratioin(ConfigConstant.SHOW_WELCOME_PAGE, visible);
     }
 
-    public void setProperty(String key, String value) {
+    /**
+     * 查询配置.
+     */
+    public <T> T getConfiguration(String key, T defaultValue) {
+        return getByGroup(key, ConfigConstant.GROUP_CONFIGURATION, defaultValue);
+    }
+
+    /**
+     * 设置configuration配置.
+     */
+    public void setConfiguratioin(String key, String value) {
         setting.setByGroup(key, ConfigConstant.GROUP_CONFIGURATION, value);
     }
 
-    public String getProperty(String key, String defaultValue) {
-        return setting.getStr(key, ConfigConstant.GROUP_CONFIGURATION, defaultValue);
+    /**
+     * 查询program配置.
+     */
+    public <T> T getProgram(String key, T defaultValue) {
+        return getByGroup(key, ConfigConstant.GROUP_PROGRAM, defaultValue);
     }
 
-    public void setProgramProperty(String key, String value) {
+    public void setProgram(String key, String value) {
         setting.setByGroup(key, ConfigConstant.GROUP_PROGRAM, value);
     }
 
-    public String getProgramProperty(String key, String defaultValue) {
-        return setting.getStr(key, ConfigConstant.GROUP_PROGRAM, defaultValue);
+    /**
+     * 查询特性配置.
+     */
+    public <T> T getFeature(String key, T defaultValue) {
+        return getByGroup(key, ConfigConstant.GROUP_FEATURE, defaultValue);
     }
 
+    /**
+     * 根据defaultValue类型 返回.
+     */
+    public <T> T getByGroup(String key, String group, T defaultValue) {
+        if (StrUtil.isBlank(key)) {
+            return defaultValue;
+        }
+
+        if (null != defaultValue) {
+            final Class<T> type = (Class<T>) defaultValue.getClass();
+            String value = setting.getByGroup(key, group);
+            return Convert.convertWithCheck(type, value, defaultValue, true);
+        }
+
+        return (T) setting.getByGroup(key, group);
+    }
+
+    /**
+     * 保存配置文件.
+     */
     public void saveSetting() {
         setting.store(new File(ConstantValue.APP_CONFIG_FILE));
     }
 
+    /**
+     * 关闭前 保存配置文件.
+     */
     public void saveBeforeClose() {
         setWindowPosisionSizeString();
         // 关闭前, 先关闭自动加载

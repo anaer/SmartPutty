@@ -210,7 +210,7 @@ public class InvokeProgram extends Thread {
 
         while (count > 0
                 && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
-            int waitingTime = Integer.parseInt(MainFrame.configuration.getWaitForInitTime());
+            int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }
@@ -300,8 +300,7 @@ public class InvokeProgram extends Thread {
         Number hWnd = 0;
         while (count > 0
                 && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
-            int waitingTime = Integer.parseInt(MainFrame.configuration.getWaitForInitTime());
-
+            int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }

@@ -5,16 +5,16 @@
 	<version>1.1.21</version>
 	<properties>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
-		<cn.hutool.version>5.6.4</cn.hutool.version>
+		<cn.hutool.version>5.6.5</cn.hutool.version>
 		<commons-codec.version>1.15</commons-codec.version>
-		<commons-io.version>2.7</commons-io.version>
-		<commons-net.version>3.7</commons-net.version>
-		<junit.version>4.13.1</junit.version>
-		<org.apache.commons.version>3.11</org.apache.commons.version>
+		<commons-io.version>2.8.0</commons-io.version>
+		<commons-net.version>3.8.0</commons-net.version>
+		<junit.version>4.13.2</junit.version>
+		<org.apache.commons.version>3.12.0</org.apache.commons.version>
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.hsqldb.version>2.5.1</org.hsqldb.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
-		<org.projectlombok.version>1.18.12</org.projectlombok.version>
+		<org.projectlombok.version>1.18.20</org.projectlombok.version>
 		<guava.version>29.0-jre</guava.version>
 	</properties>
 	<dependencies>

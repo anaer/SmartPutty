@@ -27,6 +27,20 @@ public class ReadXmlFile {
 
     /**
      * 读取xml配置文件.
+     * @param filePath 文件路径
+     */
+    public static List<HashMap<String, String>> parse(String filePath) {
+        List<HashMap<String, String>> list = null;
+        if (FileUtil.isFile(filePath)) {
+            list = parse(new File(filePath));
+        } else {
+            log.error("配置文件不存在. {}", filePath);
+        }
+        return list;
+    }
+
+    /**
+     * 读取xml配置文件.
      *
      * @param file xml文件
      * @return 配置列表
