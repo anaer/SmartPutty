@@ -1182,8 +1182,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
     @Override
     public void shellClosed(ShellEvent e) {
-        // disableProxy();
         disposeApp();
+        System.exit(0);
     }
 
     @Override
