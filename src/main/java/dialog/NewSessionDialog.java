@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Text;
 
 import constants.ButtonImage;
 import constants.ConstantValue;
-import dao.DbManager;
 import enums.ProtocolEnum;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
@@ -52,7 +51,6 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         dialog.setImage(ButtonImage.NEW_IMAGE);
         dialog.setSize(400, 160);
         dialog.setText("New Session Dialog");
-        MainFrame.dbm = DbManager.getDbManagerInstance();
         Rectangle rect = dialog.getBounds();
         int x = rect.width;
         int y = rect.height;

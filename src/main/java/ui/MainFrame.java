@@ -55,7 +55,7 @@ import constants.ButtonImage;
 import constants.ConstantValue;
 import control.Configuration;
 import control.InvokeProgram;
-import dao.DbManager;
+import dao.SessionManager;
 import dialog.NewSessionDialog;
 import dialog.OpenSessionDialog;
 import dialog.ProgramsLocationsDialog;
@@ -74,7 +74,7 @@ import widgets.BorderLayout;
 @Slf4j
 public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
     public static Display display = new Display();
-    public static DbManager dbm;
+    public static SessionManager dbm;
     public static final Shell SHELL = new Shell(display);
     public static Configuration configuration;
     private MenuItem openItem, newItem, captureItem, remoteDesktopItem, exitItem, aboutItem, welcomeMenuItem,
@@ -136,7 +136,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         SHELL.addShellListener(this);
 
         // Get dbManager instance:
-        dbm = DbManager.getDbManagerInstance();
         bar.setSelection(3);
         // Main menu:
         createMainMenu(SHELL);
@@ -164,6 +163,8 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         applyFeatureToggle();
         bar.setSelection(5);
         SHELL.open();
+
+        dbm = SessionManager.getInstance();
     }
 
     /** Main menu. */
@@ -868,9 +869,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         for (CTabItem item : items) {
             closeTab(item);
         }
-
-        // Close in-memory database:
-        dbm.closeDb();
 
         // 关闭程序前, 保存窗口位置.
         configuration.saveBeforeClose();

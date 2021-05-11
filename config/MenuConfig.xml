@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<menus>
+	<menu type="menu">
+		<path>notepad.exe</path>
+		<argument></argument>
+		<description>记事本</description>
+	</menu>
+	<menu type="menu">
+		<path>C:\Program Files\SingleWare\luyten-0.5.0.exe</path>
+		<argument></argument>
+		<description>Java反编译-luyten</description>
+	</menu>
+	<menu type="menu">
+		<path>C:\Program Files\SingleWare\jd-gui.exe</path>
+		<argument></argument>
+		<description>jd-gui</description>
+	</menu>
+	<menu type="separator"></menu>
+	<menu type="menu">
+		<path>C:\Program Files\KDiff3\kdiff3.exe</path>
+		<argument></argument>
+		<description>kdiff3</description>
+	</menu>
+	<menu type="menu">
+		<path>C:\Program Files\SQLyog\SQLyog.exe</path>
+		<argument></argument>
+		<description>SQLyog</description>
+	</menu>
+	<menu type="menu">
+		<path>C:\Program Files\Everything\Everything.exe</path>
+		<argument></argument>
+		<description>Everything</description>
+	</menu>
+</menus>

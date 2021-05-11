@@ -12,7 +12,6 @@
 		<junit.version>4.13.2</junit.version>
 		<org.apache.commons.version>3.12.0</org.apache.commons.version>
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
-		<org.hsqldb.version>2.5.1</org.hsqldb.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
 		<org.projectlombok.version>1.18.20</org.projectlombok.version>
 		<guava.version>29.0-jre</guava.version>
@@ -67,11 +66,6 @@
 			<version>${org.eclipse.swt.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>${org.hsqldb.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mod4j.org.eclipse</groupId>
 			<artifactId>jface</artifactId>
 			<version>${org.mod4j.org.eclipse.version}</version>
@@ -86,6 +80,7 @@
 			<artifactId>lombok</artifactId>
 			<version>${org.projectlombok.version}</version>
 		</dependency>
+		
 	</dependencies>
 	<build>
 		<!-- 输出的包名 -->

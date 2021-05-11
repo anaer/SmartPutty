@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import constants.ButtonImage;
 import control.InvokeProgram;
-import dao.DbManager;
+import dao.SessionManager;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import ui.MainFrame;
@@ -35,7 +35,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     private Shell     dialog    = null;
     protected Object  result;
     private Table     table;
-    private DbManager dbm;
+    private SessionManager dbm;
     /**
      * 新增按钮.
      */
@@ -60,7 +60,6 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     public OpenSessionDialog(MainFrame mainFrame, Shell parent) {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         this.mainFrame = mainFrame;
-        this.dbm = DbManager.getDbManagerInstance();
         init();
     }
 
@@ -106,6 +105,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         sessionColumn.setWidth(75);
         sessionColumn.setText("Session");
 
+        dbm = SessionManager.getInstance();
         loadTable();
 
         int xPos = 565;
@@ -147,6 +147,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
         dialog.pack();
         dialog.open();
+
     }
 
     public ConfigSession getCurrentSelectSession() {

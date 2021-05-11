@@ -11,7 +11,7 @@ ShowWelcomePage = false
 WindowsBaseDrive = C:
 ViewUtilitiesBar = false
 DefaultPuttyUsername = root
-DatabasePath = C:\Program Files\SmartPutty\database\sessiondb
+DatabasePath = C:\Program Files\SmartPutty\config\ssh.csv
 [program]
 0描述 = 应用程序配置项
 KeyGeneratorExecutable = C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE

@@ -14,7 +14,7 @@ PS:
 
 ```
 config  应用配置目录
-  BatchConfig.xml 菜单配置文件
+  MenuConfig.xml 菜单配置文件
   Configuration.xml 应用配置文件
   FeatureToggle.properties 功能开关配置
 database 数据库目录

@@ -51,7 +51,7 @@ public class ReadXmlFile {
             Document doc = XmlUtil.readXML(file);
             doc.getDocumentElement().normalize();
 
-            NodeList nList = doc.getElementsByTagName("batch");
+            NodeList nList = doc.getElementsByTagName("menu");
 
             for (int temp = 0; temp < nList.getLength(); temp++) {
 

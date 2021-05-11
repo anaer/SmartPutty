@@ -138,7 +138,7 @@ public class Configuration {
      * 获取数据库路径.
      */
     public String getDatabasePath() {
-        return getConfiguration(ConfigConstant.DATABASE_PATH, "config/sessiondb");
+        return getConfiguration(ConfigConstant.DATABASE_PATH, "config/ssh.csv");
     }
 
     /**
@@ -272,6 +272,7 @@ public class Configuration {
     /**
      * 根据defaultValue类型 返回.
      */
+    @SuppressWarnings("unchecked")
     public <T> T getByGroup(String key, String group, T defaultValue) {
         if (StrUtil.isBlank(key)) {
             return defaultValue;
