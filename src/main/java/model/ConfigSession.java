@@ -1,6 +1,5 @@
 package model;
 
-import enums.ProtocolEnum;
 import enums.PuttySessionEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,22 +15,22 @@ import lombok.ToString;
 @ToString
 public class ConfigSession {
     private PuttySessionEnum configSessionType = PuttySessionEnum.SMART_PUTTY_SESSION;
-    private String           name              = "";
-    private String           host              = "";
+    private String name = "";
+    private String host = "";
 
-    private String           intranet          = "";
+    private String intranet = "";
     /**
      *  Can be a number or a device name (COM1, COM2, ...).
      */
-    private String           port              = "";
-    private String           user              = "";
-    private ProtocolEnum     protocol;
-    private String           key               = "";
-    private String           password          = "";
-    private String           session           = "";
+    private String port = "";
+    private String user = "";
+    private String protocol = "";
+    private String key = "";
+    private String password = "";
+    private String session = "";
 
-    public ConfigSession(String name, String host, String intranet, String port, String user,
-                         String password, String session) {
+    public ConfigSession(String name, String host, String intranet, String port, String user, String password,
+            String session) {
         this.name = name;
         this.host = host;
         this.intranet = intranet;
@@ -52,8 +51,8 @@ public class ConfigSession {
      * @param file
      * @param password
      */
-    public ConfigSession(String name, String host, String intranet, String port, String user,
-                         ProtocolEnum protocol, String key, String password, String session) {
+    public ConfigSession(String name, String host, String intranet, String port, String user, String protocol,
+            String key, String password, String session) {
         this.name = name;
         this.host = host;
         this.intranet = intranet;
@@ -76,8 +75,8 @@ public class ConfigSession {
      * @param file
      * @param password
      */
-    public ConfigSession(String name, String host, String intranet, String port, String user,
-                         ProtocolEnum protocol, String key, String password) {
+    public ConfigSession(String name, String host, String intranet, String port, String user, String protocol,
+            String key, String password) {
         this.name = name;
         this.host = host;
         this.intranet = intranet;

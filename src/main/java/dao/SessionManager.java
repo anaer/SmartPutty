@@ -78,7 +78,7 @@ public class SessionManager {
                     session.getIntranet(), //
                     session.getPort(), //
                     session.getUser(), //
-                    session.getProtocol().getName(), //
+                    session.getProtocol(), //
                     session.getKey(), //
                     session.getPassword(), //
                     session.getSession() //
@@ -117,13 +117,13 @@ public class SessionManager {
 
     public ConfigSession querySessionByHostUserProtocol(String host, String user, String protocol) {
         return list.stream().filter(p -> StrUtil.equals(p.getHost(), host) && StrUtil.equals(p.getUser(), user)
-                && StrUtil.equals(p.getProtocol().getName(), protocol)).findFirst().orElse(null);
+                && StrUtil.equals(p.getProtocol(), protocol)).findFirst().orElse(null);
     }
 
     public ConfigSession querySessionByHostUserProtocol(String host, String port, String user, String protocol) {
         return list.stream()
                 .filter(p -> StrUtil.equals(p.getHost(), host) && StrUtil.equals(p.getUser(), user)
-                        && StrUtil.equals(p.getProtocol().getName(), protocol) && StrUtil.equals(p.getPort(), port))
+                        && StrUtil.equals(p.getProtocol(), protocol) && StrUtil.equals(p.getPort(), port))
                 .findFirst().orElse(null);
     }
 
@@ -131,7 +131,7 @@ public class SessionManager {
         String host = session.getHost();
         String user = session.getUser();
         String port = session.getPort();
-        String protocol = session.getProtocol().name();
+        String protocol = session.getProtocol();
         return querySessionByHostUserProtocol(host, port, user, protocol);
     }
 

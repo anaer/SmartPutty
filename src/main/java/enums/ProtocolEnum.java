@@ -1,5 +1,7 @@
 package enums;
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * Protocols allowed by "Putty" or "KiTTY".
  *
@@ -7,12 +9,12 @@ package enums;
  */
 public enum ProtocolEnum {
     // Following order is also used on lists to be showed:
-    SSH2("SSH2", "-ssh -2"),
-    SSH("SSH", "-ssh -1"),
-    TELNET("Telnet", "-telnet"),
-    RLOGIN("Rlogin", "-rlogin"),
-    RAW("Raw", "-raw"),
-    SERIAL("Serial", "-serial"),
+    SSH2("SSH2", "-ssh -2"), // 
+    SSH("SSH", "-ssh -1"), //
+    TELNET("Telnet", "-telnet"), //
+    RLOGIN("Rlogin", "-rlogin"), //
+    RAW("Raw", "-raw"), //
+    SERIAL("Serial", "-serial"), //
     MINTTY("Mintty", "");
 
     /**
@@ -50,5 +52,17 @@ public enum ProtocolEnum {
      */
     public String getParameter() {
         return parameter;
+    }
+
+    /**
+     * 按name查枚举
+     */
+    public static ProtocolEnum find(String name) {
+        for (ProtocolEnum e : ProtocolEnum.values()) {
+            if (StrUtil.equals(e.getName(), name)) {
+                return e;
+            }
+        }
+        return null;
     }
 }

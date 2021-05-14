@@ -47,7 +47,7 @@ public class InvokeProgram extends Thread {
     public void run() {
         MainFrame.display.syncExec(() -> {
             if (session != null) {
-                if (ProtocolEnum.MINTTY == session.getProtocol()) {
+                if (ProtocolEnum.MINTTY == ProtocolEnum.find(session.getProtocol())) {
                     invokeMintty(session);
                 } else {
                     invokePutty(session);
@@ -91,7 +91,7 @@ public class InvokeProgram extends Thread {
         String password = session.getPassword();
         String file = session.getKey();
         String protocol = session.getProtocol() == null ? "-ssh -2"
-            : session.getProtocol().getParameter();
+            : ProtocolEnum.find(session.getProtocol()).getParameter();
         String puttySession = session.getSession();
 
         if (session.getConfigSessionType() == PuttySessionEnum.PURE_PUTTY_SESSION) {

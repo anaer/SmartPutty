@@ -167,7 +167,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
             tableItem
                 .setText(new String[] { session.getName(), session.getHost(), session.getIntranet(),
                                         session.getPort(), session.getUser(),
-                                        session.getProtocol().getName(), session.getSession() });
+                                        session.getProtocol(), session.getSession() });
         }
     }
 
