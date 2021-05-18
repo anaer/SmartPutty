@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -20,6 +18,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
 import enums.ProtocolEnum;
@@ -191,9 +191,9 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 if (ProtocolEnum.SSH2 == protocolEnum
                         || ProtocolEnum.SSH == protocolEnum) {
                     String profile = session.getSession();
-                    if (StringUtils.isNotBlank(profile)) {
+                    if (StrUtil.isNotBlank(profile)) {
                         comboSession.setText(profile);
-                        comboSession.select(ArrayUtils.indexOf(comboSession.getItems(), profile));
+                        comboSession.select(ArrayUtil.indexOf(comboSession.getItems(), profile));
                     }
                 } else {
                     comboSession.setEnabled(false);
@@ -215,7 +215,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
         if (e.getSource() == comboHost) {
             String host = comboHost.getText();
-            if (StringUtils.isNotBlank(host)) {
+            if (StrUtil.isNotBlank(host)) {
                 comboUser.removeAll();
                 List<ConfigSession> sessions = MainFrame.dbm.querySessionByHost(host);
                 for (ConfigSession item : sessions) {
@@ -236,7 +236,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         } else if (e.getSource() == comboUser) {
             String host = comboHost.getText();
             String user = comboUser.getText();
-            if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(user)) {
+            if (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user)) {
                 List<ConfigSession> sessions = MainFrame.dbm.querySessionByHostUser(host, user);
                 if (sessions.size() == 1) {
                     comboProtocol.setText(sessions.get(0).getProtocol());
@@ -274,7 +274,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String user = comboUser.getText();
             String password = textPassword.getText();
             String file = textKey.getText().trim();
-            String port = StringUtils.defaultIfBlank(textPort.getText(), "22");
+            String port = StrUtil.blankToDefault(textPort.getText(), "22");
             ProtocolEnum protocol = ProtocolEnum.values()[comboProtocol.getSelectionIndex()];
 
             String sessionProfile = "";
@@ -286,7 +286,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 }
             }
 
-            if (StringUtils.isNotBlank(host) && StringUtils.isNotBlank(user) && protocol != null) {
+            if (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user) && protocol != null) {
                 ConfigSession session = new ConfigSession(name, host, intranet, port, user,
                     protocol.getName(), file, password, sessionProfile);
                 dialog.dispose();
@@ -315,7 +315,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         } else if (e.getSource() == buttonShow) {
             // 显示密码功能
             String text = buttonShow.getText();
-            if (StringUtils.equals(text, "show")) {
+            if (StrUtil.equals(text, "show")) {
                 textPassword.setEchoChar((char) 0);
                 buttonShow.setText("hide");
             } else {

@@ -6,10 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -79,7 +77,7 @@ public class RegistryUtils {
         for (String location : locations) {
             String[] pieces = location.split("\\\\");
             String name = pieces[pieces.length - 1].trim();
-            if (StringUtils.isNotBlank(name) && !StringUtils.equals(name, "Default%20Settings")) {
+            if (StrUtil.isNotBlank(name) && !StrUtil.equals(name, "Default%20Settings")) {
                 list.add(name);
             }
         }
@@ -154,10 +152,10 @@ public class RegistryUtils {
         try {
             String cmd = String.format("reg query %s ", location);
             String output = RuntimeUtil.execForStr(cmd);
-            return StringUtils.trimToEmpty(output).split("\\s+");
+            return StrUtil.trimToEmpty(output).split("\\s+");
         } catch (Exception e) {
             log.error("readRegistryList异常.", e);
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return new String[]{};
         }
     }
 

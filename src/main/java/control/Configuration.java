@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.common.base.Joiner;
-
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.graphics.Rectangle;
 
 import cn.hutool.core.convert.Convert;
@@ -109,7 +106,7 @@ public class Configuration {
         String value = program.getPath();
         // 1. 应用程序配置属性
         String property = program.getProperty();
-        if (StringUtils.isNotBlank(property)) {
+        if (StrUtil.isNotBlank(property)) {
             // 2. 如果配置属性不为空, 从配置文件中获取配置项
             value = getProgram(property, program.getPath());
         }
@@ -194,8 +191,7 @@ public class Configuration {
         String y = String.valueOf(MainFrame.SHELL.getBounds().y);
         String width = String.valueOf(MainFrame.SHELL.getBounds().width);
         String height = String.valueOf(MainFrame.SHELL.getBounds().height);
-
-        return Joiner.on(",").join(x, y, width, height);
+        return StrUtil.join(",", x, y, width, height);
     }
 
     /**

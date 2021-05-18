@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.text.csv.CsvReader;
@@ -51,7 +50,7 @@ public class SessionManager {
         }else{
             log.warn("数据库文件ssh.csv不存在. 默认返回空列表");
         }
-        return Objects.isNull(list) ? Lists.newArrayList() : list;
+        return Objects.isNull(list) ? ListUtil.empty() : list;
     }
 
     /**

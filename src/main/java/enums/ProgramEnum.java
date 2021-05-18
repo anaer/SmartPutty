@@ -1,7 +1,5 @@
 package enums;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import lombok.Getter;
 
 /**
@@ -96,8 +94,8 @@ public enum ProgramEnum {
         this.name = name;
         this.path = path;
         this.property = "";
-        this.filterExtensions = ArrayUtils.EMPTY_STRING_ARRAY;
-        this.filterNames = ArrayUtils.EMPTY_STRING_ARRAY;
+        this.filterExtensions = new String[]{};
+        this.filterNames = new String[]{};
     }
 
     private ProgramEnum(String name, String path, String property, String[] filterExtensions, String[] filterNames) {

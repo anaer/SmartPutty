@@ -3,8 +3,6 @@ package control;
 import java.awt.Desktop;
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.internal.win32.OS;
@@ -12,7 +10,9 @@ import org.eclipse.swt.internal.win32.SHELLEXECUTEINFO;
 import org.eclipse.swt.internal.win32.TCHAR;
 import org.eclipse.swt.widgets.Composite;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
 import constants.ConstantValue;
 import enums.ProgramEnum;
 import enums.ProtocolEnum;
@@ -96,7 +96,7 @@ public class InvokeProgram extends Thread {
 
         if (session.getConfigSessionType() == PuttySessionEnum.PURE_PUTTY_SESSION) {
             // Putty session must the very first parameter to work well.
-            if (StringUtils.isNotBlank(puttySession)) {
+            if (StrUtil.isNotBlank(puttySession)) {
                 args += " -load \"" + puttySession + "\"";
             }
             if (!user.isEmpty()) {
@@ -356,7 +356,7 @@ public class InvokeProgram extends Thread {
     public static void runProgram(ProgramEnum program, String arg) {
         // 1. 获取应用程序执行路径
         String path = MainFrame.configuration.getProgramPath(program);
-        if (StringUtils.isNotBlank(path)) {
+        if (StrUtil.isNotBlank(path)) {
             // 2. 如果路径不为空, 执行应用程序
             exec(path, arg);
         }
@@ -369,14 +369,14 @@ public class InvokeProgram extends Thread {
      * @param arg
      */
     public static void exec(String program, String arg) {
-        if (StringUtils.isBlank(program)) {
+        if (StrUtil.isBlank(program)) {
             log.warn("程序路径为空. 过滤执行.");
             return;
         }
 
         String cmd;
 
-        if (StringUtils.isNotBlank(arg)) {
+        if (StrUtil.isNotBlank(arg)) {
             cmd = program + " " + arg;
         } else {
             cmd = program;
@@ -386,7 +386,7 @@ public class InvokeProgram extends Thread {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception ex) {
             MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage());
-            log.error(ExceptionUtils.getStackTrace(ex));
+            log.error(ExceptionUtil.getMessage(ex));
         }
     }
 
@@ -412,7 +412,7 @@ public class InvokeProgram extends Thread {
             dirToOpen = new File(path);
             desktop.open(dirToOpen);
         } catch (Exception e) {
-            log.error(ExceptionUtils.getStackTrace(e));
+            log.error(ExceptionUtil.getMessage(e));
             return false;
         }
         return true;
@@ -429,7 +429,7 @@ public class InvokeProgram extends Thread {
         String commandString = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY) + args;
 
         try {
-            if (StringUtils.isNotBlank(commandString)) {
+            if (StrUtil.isNotBlank(commandString)) {
                 Runtime.getRuntime().exec(commandString);
             }
         } catch (Exception e) {

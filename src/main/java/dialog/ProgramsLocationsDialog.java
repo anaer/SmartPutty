@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -21,6 +19,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import enums.ProgramEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -150,7 +150,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
 
             @Override
             public void modifyText(ModifyEvent e) {
-                if (StringUtils.isNotBlank(program.getProperty())) {
+                if (StrUtil.isNotBlank(program.getProperty())) {
                     tmpPropConfig.put(program.getProperty(), editText.getText());
                 }
             }
@@ -168,7 +168,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
             @Override
             public void widgetSelected(SelectionEvent e) {
                 String path = searchProgramDialog(program);
-                if (StringUtils.isNotBlank(path)) {
+                if (StrUtil.isNotBlank(path)) {
                     editText.setText(path);
                 }
             }
@@ -186,7 +186,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         String[] filterNames = program.getFilterNames();
 
         // 如果过滤不为空 设置过滤.
-        if (ArrayUtils.isNotEmpty(filterExtensions) && ArrayUtils.isNotEmpty(filterNames)) {
+        if (ArrayUtil.isNotEmpty(filterExtensions) && ArrayUtil.isNotEmpty(filterNames)) {
             fileDialog.setFilterExtensions(filterExtensions);
             fileDialog.setFilterNames(filterNames);
         }

@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -51,6 +49,7 @@ import org.eclipse.swt.widgets.ToolItem;
 
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
 import control.Configuration;
@@ -256,9 +255,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 new MenuItem(applicationMenu, SWT.SEPARATOR);
                 continue;
             }
-            String path = StringUtils.defaultIfBlank(menuHashMap.get("path"), "N/A");
-            String argument = StringUtils.defaultIfBlank(menuHashMap.get("argument"), "N/A");
-            String description = StringUtils.defaultIfBlank(menuHashMap.get("description"), "N/A");
+            String path = StrUtil.blankToDefault(menuHashMap.get("path"), "N/A");
+            String argument = StrUtil.blankToDefault(menuHashMap.get("argument"), "N/A");
+            String description = StrUtil.blankToDefault(menuHashMap.get("description"), "N/A");
             MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
             menuItem.setText(description);
             menuItem.setData("path", path);
@@ -1037,7 +1036,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 Number hWnd = (Number) folder.getSelection().getData("hwnd");
                 InvokeProgram.setWindowFocus(hWnd);
             }
-        } else if (StringUtils.endsWith(e.getSource().getClass().toString(), "MenuItem")
+        } else if (StrUtil.endWith(e.getSource().getClass().toString(), "MenuItem")
                 && "dynamicApplication".equals(((MenuItem) e.getSource()).getData("type"))) {
             String path = ((MenuItem) e.getSource()).getData("path").toString();
             String argument = ((MenuItem) e.getSource()).getData("argument").toString();
@@ -1059,28 +1058,28 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             addSession(null, configSession);
         } else if (e.getSource() == win2UnixButton) {
             String path = pathItem.getText().trim();
-            if (StringUtils.isBlank(path)) {
+            if (StrUtil.isBlank(path)) {
                 MessageDialog.openInformation(SHELL, "Info", "Please input correct path!");
                 return;
             }
-            path = StringUtils.stripStart(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText("/" + FilenameUtils.separatorsToUnix(path));
+            path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
+            pathItem.setText("/" + StrUtil.replace(path,  "\\", "/"));
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
-            if (StringUtils.isBlank(path)) {
+            if (StrUtil.isBlank(path)) {
                 MessageDialog.openInformation(SHELL, "Info", "Please input correct path!");
                 return;
             }
-            path = StringUtils.stripStart(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText(configuration.getWinPathBaseDrive() + "\\" + FilenameUtils.separatorsToWindows(path));
+            path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
+            pathItem.setText(configuration.getWinPathBaseDrive() + "\\" + StrUtil.replace(path, "/", "\\"));
         } else if (e.getSource() == openPathButton) {
             String path = pathItem.getText().trim();
-            if (StringUtils.isBlank(path)) {
+            if (StrUtil.isBlank(path)) {
                 MessageDialog.openInformation(SHELL, "Info", "Please input correct path!");
                 return;
             }
-            path = StringUtils.stripStart(path, "/\\" + configuration.getWinPathBaseDrive());
-            path = configuration.getWinPathBaseDrive() + "\\" + FilenameUtils.separatorsToWindows(path);
+            path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
+            path = configuration.getWinPathBaseDrive() + "\\" + StrUtil.replace(path, "/", "\\") ;
             pathItem.setText(path);
             if (!InvokeProgram.openFolder(path)) {
                 MessageDialog.openError(SHELL, "Error", "Path not exist!");
@@ -1157,7 +1156,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         if (e.button == 3) {
             CTabItem selectItem = folder.getItem(new Point(e.x, e.y));
             if (selectItem != null
-                    && StringUtils.equalsIgnoreCase(String.valueOf(folder.getSelection().getData("TYPE")), "session")) {
+                    && StrUtil.equalsIgnoreCase(String.valueOf(folder.getSelection().getData("TYPE")), "session")) {
                 folder.setSelection(selectItem);
                 popupMenu.setVisible(true);
             } else {
