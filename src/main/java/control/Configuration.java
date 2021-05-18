@@ -27,13 +27,13 @@ public class Configuration {
 
     private final Setting setting;
 
-    private final List<HashMap<String, String>> batchConfigListMap;
+    private final List<HashMap<String, String>> menuConfigMapList;
 
     /** 
      * 获取自定义菜单配置.
     */
-    public List<HashMap<String, String>> getBatchConfig() {
-        return this.batchConfigListMap;
+    public List<HashMap<String, String>> getMenuConfig() {
+        return this.menuConfigMapList;
     }
 
     /** 
@@ -41,7 +41,7 @@ public class Configuration {
      * 初始化配置信息.
      */
     public Configuration() {
-        this.batchConfigListMap = ReadXmlFile.parse(new File(ConstantValue.CONFIG_BATCH_FILE));
+        this.menuConfigMapList = ReadXmlFile.parse(new File(ConstantValue.MENU_CONFIG_FILE));
         this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE), Charset.defaultCharset(), true);
         this.setting.autoLoad(true);
     }

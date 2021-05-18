@@ -43,7 +43,7 @@ public class ConstantValue {
     /**
      * 自定义菜单配置.
      */
-    public static final String CONFIG_BATCH_FILE = Paths.get("config", "MenuConfig.xml").toString();
+    public static final String MENU_CONFIG_FILE = Paths.get("config", "MenuConfig.xml").toString();
 
     /**
      * app配置文件路径.

@@ -248,7 +248,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         application.setText("Application");
         Menu applicationMenu = new Menu(shell, SWT.DROP_DOWN);
         application.setMenu(applicationMenu);
-        List<HashMap<String, String>> listMenuItems = configuration.getBatchConfig();
+        List<HashMap<String, String>> listMenuItems = configuration.getMenuConfig();
         for (HashMap<String, String> menuHashMap : listMenuItems) {
             String type = menuHashMap.get("type");
             if (type == null || "separator".equals(type)) {
@@ -256,7 +256,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 continue;
             }
             String path = StrUtil.blankToDefault(menuHashMap.get("path"), "N/A");
-            String argument = StrUtil.blankToDefault(menuHashMap.get("argument"), "N/A");
+            String argument = StrUtil.trimToEmpty(menuHashMap.get("argument"));
             String description = StrUtil.blankToDefault(menuHashMap.get("description"), "N/A");
             MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
             menuItem.setText(description);

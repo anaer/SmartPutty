@@ -101,7 +101,7 @@ public class ReadXmlFile {
     }
 
     public static void main(String argv[]) {
-        String path = ConstantValue.CONFIG_BATCH_FILE;
+        String path = ConstantValue.MENU_CONFIG_FILE;
         File file = new File(path);
         List<HashMap<String, String>> list = parse(file);
         log.info("{}", JSONUtil.toJsonStr(list));
