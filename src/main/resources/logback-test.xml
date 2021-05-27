@@ -18,9 +18,9 @@
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!--日志文件输出的文件名-->
-      <FileNamePattern>${LOG_HOME}/SmartPutty.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <fileNamePattern>${LOG_HOME}/SmartPutty.%d{yyyy-MM-dd}.log</fileNamePattern>
       <!-- 最多保留2天的文件 -->
-      <MaxHistory>2</MaxHistory>
+      <maxHistory>2</maxHistory>
       <!-- 启用时 清理日志文件 -->
       <cleanHistoryOnStart>true</cleanHistoryOnStart>
     </rollingPolicy>
@@ -34,15 +34,6 @@
     <includeCallerData>true</includeCallerData>
     <appender-ref ref="FILE" />
   </appender>
-
-  <!-- show parameters for ibatis sql 专为 ibatis 定制 -->
-  <logger name="com.ibatis" level="DEBUG" />
-  <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />
-  <logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />
-  <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
-  <logger name="java.sql.Connection" level="DEBUG" />
-  <logger name="java.sql.Statement" level="DEBUG" />
-  <logger name="java.sql.PreparedStatement" level="DEBUG" />
 
   <!-- 日志输出级别 -->
   <root level="DEBUG">

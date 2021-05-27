@@ -30,9 +30,9 @@ import ui.MainFrame;
 @Slf4j
 public class InvokeProgram extends Thread {
 
-    private Composite      composite;
-    private ConfigSession  session;
-    private CTabItem       tabItem;
+    private Composite composite;
+    private ConfigSession session;
+    private CTabItem tabItem;
     /** 是否64位. */
     private static boolean is64 = true;
 
@@ -91,7 +91,7 @@ public class InvokeProgram extends Thread {
         String password = session.getPassword();
         String file = session.getKey();
         String protocol = session.getProtocol() == null ? "-ssh -2"
-            : ProtocolEnum.find(session.getProtocol()).getParameter();
+                : ProtocolEnum.find(session.getProtocol()).getParameter();
         String puttySession = session.getSession();
 
         if (session.getConfigSessionType() == PuttySessionEnum.PURE_PUTTY_SESSION) {
@@ -150,8 +150,13 @@ public class InvokeProgram extends Thread {
         String args = setPuttyParameters(session);
 
         // tab标签展示名称
-        String tabName = String.format("%s@%s(%s)", session.getName(), session.getHost(),
-            session.getIntranet());
+        StringBuilder tabName = new StringBuilder();
+        tabName.append(session.getName()).append("@").append(session.getHost());
+
+        // 可能未配置内网ip
+        if (StrUtil.isNotBlank(session.getIntranet())) {
+            tabName.append("(").append(session.getIntranet()).append(")");
+        }
 
         String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
         String name = getFileNameWithoutSuffix(path);
@@ -186,18 +191,16 @@ public class InvokeProgram extends Thread {
 
         if (!result) {
             MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR",
-                String.format("Failed cmd: %s %s", path, args));
+                    String.format("Failed cmd: %s %s", path, args));
             return;
         }
 
         // 如果有安全警告窗口 等待人工处理
-        Number hWndAlert = OS.FindWindow(null,
-            new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
+        Number hWndAlert = OS.FindWindow(null, new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
         if (hWndAlert.intValue() != 0) {
             int waitingForOperation = 10000;
             while (waitingForOperation > 0) {
-                if (OS.FindWindow(null,
-                    new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true)) == 0) {
+                if (OS.FindWindow(null, new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true)) == 0) {
                     break;
                 }
                 ThreadUtil.safeSleep(500);
@@ -208,26 +211,24 @@ public class InvokeProgram extends Thread {
         int count = 15;
         Number hWnd = 0;
 
-        while (count > 0
-                && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
+        while (count > 0 && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
             int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }
         if (count == 0) {
             MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR",
-                String.format("Failed cmd: %s %s", path, args));
+                    String.format("Failed cmd: %s %s", path, args));
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
         // 隐藏标题栏
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
-            oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
 
         if (hWnd.intValue() != 0) {
-            tabItem.setText(tabName);
+            tabItem.setText(tabName.toString());
             tabItem.setData("hwnd", hWnd);
             tabItem.setData("session", session);
             setWindowFocus(hWnd);
@@ -290,27 +291,24 @@ public class InvokeProgram extends Thread {
 
         if (!result) {
             log.info("启动失败:{} {}", programPath, result);
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN MINTTY ERROR",
-                String.format("Failed cmd: %s %s",
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN MINTTY ERROR", String.format("Failed cmd: %s %s",
                     MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY), args));
             return;
         }
 
         int count = 15;
         Number hWnd = 0;
-        while (count > 0
-                && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
+        while (count > 0 && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
             int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }
         if (count == 0) {
             MessageDialog.openError(MainFrame.SHELL, "OPEN MINTTY ERROR",
-                String.format("Failed cmd: %s %s", programPath, args));
+                    String.format("Failed cmd: %s %s", programPath, args));
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
-            oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
@@ -330,8 +328,7 @@ public class InvokeProgram extends Thread {
     }
 
     public static void killPuttyWarningsAndErrs() {
-        Number hWndAlert = OS.FindWindow(null,
-            new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
+        Number hWndAlert = OS.FindWindow(null, new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
         if (hWndAlert.intValue() != 0) {
             killProcess(hWndAlert.intValue());
         }
@@ -391,8 +388,8 @@ public class InvokeProgram extends Thread {
     }
 
     public static void invokeProxy(String host, String user, String password, String port) {
-        String cmd = "cmd /c start " + MainFrame.configuration.getProgramPath(ProgramEnum.PLINK)
-                + " -D " + port + " -pw " + password + " -N " + user + "@" + host;
+        String cmd = "cmd /c start " + MainFrame.configuration.getProgramPath(ProgramEnum.PLINK) + " -D " + port
+                + " -pw " + password + " -N " + user + "@" + host;
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception e) {
