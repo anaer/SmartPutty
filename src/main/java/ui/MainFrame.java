@@ -21,7 +21,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
@@ -59,6 +58,7 @@ import dialog.NewSessionDialog;
 import dialog.OpenSessionDialog;
 import dialog.ProgramsLocationsDialog;
 import enums.ProgramEnum;
+import listener.DragListener;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import utils.RegistryUtils;
@@ -476,113 +476,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         folder.addMouseListener(this);
         folder.addSelectionListener(this);
 
-        Listener listener = new Listener() {
-            boolean drag = false;
-            boolean exitDrag = false;
-            CTabItem dragItem;
-            Cursor cursorSizeAll = new Cursor(null, SWT.CURSOR_SIZEALL);
-            Cursor cursorNo = new Cursor(null, SWT.CURSOR_NO);
-            Cursor cursorArrow = new Cursor(null, SWT.CURSOR_ARROW);
-
-            @Override
-            public void handleEvent(Event e) {
-                Point p = new Point(e.x, e.y);
-                if (e.type == SWT.DragDetect) {
-                    // see eclipse bug 43251
-                    p = folder.toControl(display.getCursorLocation());
-                }
-                switch (e.type) {
-
-                case SWT.DragDetect: {
-                    CTabItem item = folder.getItem(p);
-                    if (item == null) {
-                        return;
-                    }
-
-                    drag = true;
-                    exitDrag = false;
-                    dragItem = item;
-
-                    folder.getShell().setCursor(cursorNo);
-                    break;
-                }
-
-                case SWT.MouseEnter:
-                    if (exitDrag) {
-                        exitDrag = false;
-                        drag = e.button != 0;
-                    }
-                    break;
-
-                case SWT.MouseExit:
-                    if (drag) {
-                        folder.setInsertMark(null, false);
-                        exitDrag = true;
-                        drag = false;
-
-                        folder.getShell().setCursor(cursorArrow);
-                    }
-                    break;
-
-                case SWT.MouseUp: {
-                    if (!drag) {
-                        return;
-                    }
-                    folder.setInsertMark(null, false);
-                    CTabItem item = folder.getItem(new Point(p.x, 1));
-
-                    if (item != null) {
-                        int index = folder.indexOf(item);
-                        int newIndex = folder.indexOf(item);
-                        int oldIndex = folder.indexOf(dragItem);
-                        if (newIndex != oldIndex) {
-                            boolean after = newIndex > oldIndex;
-                            index = after ? index + 1 : index;
-                            index = Math.max(0, index);
-
-                            CTabItem cloneItem = new CTabItem(folder, SWT.CLOSE, index);
-                            cloneItem.setText(dragItem.getText());
-                            cloneItem.setImage(dragItem.getImage());
-                            cloneItem.setData("hwnd", dragItem.getData("hwnd"));
-                            cloneItem.setData("session", dragItem.getData("session"));
-
-                            Control c = dragItem.getControl();
-                            dragItem.setControl(null);
-                            cloneItem.setControl(c);
-                            dragItem.dispose();
-                            folder.setSelection(cloneItem);
-                        }
-                    }
-                    drag = false;
-                    exitDrag = false;
-                    dragItem = null;
-
-                    folder.getShell().setCursor(cursorArrow);
-                    break;
-                }
-
-                case SWT.MouseMove: {
-                    if (!drag) {
-                        return;
-                    }
-                    CTabItem item = folder.getItem(new Point(p.x, 2));
-                    if (item == null) {
-                        folder.setInsertMark(null, false);
-                        return;
-                    }
-                    Rectangle rect = item.getBounds();
-                    boolean after = p.x > rect.x + rect.width / 2;
-                    folder.setInsertMark(item, after);
-
-                    folder.getShell().setCursor(cursorSizeAll);
-                    break;
-                }
-
-                default:
-                    break;
-                }
-            }
-        };
+        Listener listener = new DragListener(display, folder);
 
         folder.addListener(SWT.DragDetect, listener);
         folder.addListener(SWT.MouseUp, listener);
@@ -962,6 +856,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
     @Override
     public void widgetSelected(SelectionEvent e) {
+
         if (e.getSource() == newItem || e.getSource() == itemNew) {
             new NewSessionDialog(this, null, "add");
         } else if (e.getSource() == itemOpen || e.getSource() == openItem) {
@@ -1063,7 +958,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText("/" + StrUtil.replace(path,  "\\", "/"));
+            pathItem.setText("/" + StrUtil.replace(path, "\\", "/"));
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
@@ -1079,7 +974,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            path = configuration.getWinPathBaseDrive() + "\\" + StrUtil.replace(path, "/", "\\") ;
+            path = configuration.getWinPathBaseDrive() + "\\" + StrUtil.replace(path, "/", "\\");
             pathItem.setText(path);
             if (!InvokeProgram.openFolder(path)) {
                 MessageDialog.openError(SHELL, "Error", "Path not exist!");

@@ -5,7 +5,7 @@
 	<version>1.1.23</version>
 	<properties>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
-		<cn.hutool.version>5.6.5</cn.hutool.version>
+		<cn.hutool.version>5.6.6</cn.hutool.version>
 		<junit.version>4.13.2</junit.version>
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
