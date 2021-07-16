@@ -83,62 +83,56 @@ public class InvokeProgram extends Thread {
      * @return
      */
     private static String setPuttyParameters(ConfigSession session) {
-        String args = "";
-
         String host = session.getHost();
         String port = session.getPort();
         String user = session.getUser();
         String password = session.getPassword();
-        String file = session.getKey();
+        String keyFile = session.getKey();
         String protocol = session.getProtocol() == null ? "-ssh -2"
                 : ProtocolEnum.find(session.getProtocol()).getParameter();
         String puttySession = session.getSession();
 
+        StringBuilder sb = new StringBuilder();
         if (session.getConfigSessionType() == PuttySessionEnum.PURE_PUTTY_SESSION) {
-            // Putty session must the very first parameter to work well.
-            if (StrUtil.isNotBlank(puttySession)) {
-                args += " -load \"" + puttySession + "\"";
-            }
-            if (!user.isEmpty()) {
-                args += String.format(" -l \"%s\"", user);
-            }
-            if (!password.isEmpty()) {
-                args += String.format(" -pw \"%s\"", password);
-            }
-            if (!port.isEmpty()) {
-                args += String.format(" -P %s ", port);
-            }
-            if (!host.isEmpty()) {
-                args += String.format(" %s", host);
-            }
+            appendIfNotBlank(sb, " -load ", puttySession, true);
         } else {
-            args = String.format(" %s %s ", protocol, host);
-
-            if (!port.isEmpty()) {
-                args += String.format(" -P %s ", port);
-            }
-
-            if (!user.isEmpty()) {
-                args += String.format(" -l \"%s\"", user);
-            }
-
-            if (!password.isEmpty()) {
-                args += String.format(" -pw \"%s\"", password);
-            }
-            // private key
-            if (!file.isEmpty()) {
-                args += String.format(" -i \"%s\"", file);
-            }
+            appendIfNotBlank(sb, " ", protocol);
+            appendIfNotBlank(sb, " -i ", keyFile, true);
         }
-        log.debug("Putty parameters: putty {}", args);
 
-        return args;
+        appendIfNotBlank(sb, " -l ", user, true);
+        appendIfNotBlank(sb, " -pw ", password, true);
+        appendIfNotBlank(sb, " -P ", port);
+        appendIfNotBlank(sb, " ", host);
+
+        log.debug("Putty parameters: putty {}", sb);
+
+        return sb.toString();
     }
 
-    private static String setMinttyParameters(ConfigSession session) {
-        String args = " --dir ~";
-        log.debug("Mintty parameters: {}", args);
-        return args;
+    /**
+     * 判断参数不为空时, 追加参数.
+     * @param sb
+     * @param param
+     * @param value
+     */
+    private static void appendIfNotBlank(StringBuilder sb, String param, String value) {
+        appendIfNotBlank(sb, param, value, false);
+    }
+
+    /**
+     * 判断参数不为空时, 追加参数.
+     * @param sb
+     * @param param
+     * @param value
+     * @param isWrap 是否使用双引号包起来
+     */
+    private static void appendIfNotBlank(StringBuilder sb, String param, String value,
+            boolean isWrap) {
+        if (StrUtil.isNotBlank(value)) {
+            String str = isWrap ? StrUtil.wrap(value, "\"") : value;
+            sb.append(param).append(str);
+        }
     }
 
     /**
@@ -177,8 +171,6 @@ public class InvokeProgram extends Thread {
         info.lpFile = lpFile.intValue();
         info.lpParameters = lpParameters.intValue();
 
-        // info.nShow = OS.SW_HIDE;
-
         boolean result = OS.ShellExecuteEx(info);
 
         if (lpFile.intValue() != 0) {
@@ -190,17 +182,18 @@ public class InvokeProgram extends Thread {
         }
 
         if (!result) {
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR",
-                    String.format("Failed cmd: %s %s", path, args));
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR", String.format("Failed cmd: %s %s", path, args));
             return;
         }
 
         // 如果有安全警告窗口 等待人工处理
-        Number hWndAlert = OS.FindWindow(null, new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
+        Number hWndAlert = OS.FindWindow(null,
+                new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
         if (hWndAlert.intValue() != 0) {
             int waitingForOperation = 10000;
             while (waitingForOperation > 0) {
-                if (OS.FindWindow(null, new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true)) == 0) {
+                if (OS.FindWindow(null,
+                        new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true)) == 0) {
                     break;
                 }
                 ThreadUtil.safeSleep(500);
@@ -211,7 +204,8 @@ public class InvokeProgram extends Thread {
         int count = 15;
         Number hWnd = 0;
 
-        while (count > 0 && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
+        while (count > 0
+                && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
             int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
@@ -222,7 +216,8 @@ public class InvokeProgram extends Thread {
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
         // 隐藏标题栏
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
+                oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
@@ -255,7 +250,7 @@ public class InvokeProgram extends Thread {
      * @param session
      */
     public void invokeMintty(ConfigSession session) {
-        String args = setMinttyParameters(session);
+                String args = " --dir ~";
 
         // Mount command-line Putty parameters:
         String tabDisplayName = "Cygwin";
@@ -291,14 +286,16 @@ public class InvokeProgram extends Thread {
 
         if (!result) {
             log.info("启动失败:{} {}", programPath, result);
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN MINTTY ERROR", String.format("Failed cmd: %s %s",
-                    MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY), args));
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN MINTTY ERROR",
+                    String.format("Failed cmd: %s %s",
+                            MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY), args));
             return;
         }
 
         int count = 15;
         Number hWnd = 0;
-        while (count > 0 && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
+        while (count > 0
+                && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
             int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
@@ -308,7 +305,8 @@ public class InvokeProgram extends Thread {
                     String.format("Failed cmd: %s %s", programPath, args));
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
+                oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
@@ -328,7 +326,8 @@ public class InvokeProgram extends Thread {
     }
 
     public static void killPuttyWarningsAndErrs() {
-        Number hWndAlert = OS.FindWindow(null, new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
+        Number hWndAlert = OS.FindWindow(null,
+                new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
         if (hWndAlert.intValue() != 0) {
             killProcess(hWndAlert.intValue());
         }
@@ -388,8 +387,8 @@ public class InvokeProgram extends Thread {
     }
 
     public static void invokeProxy(String host, String user, String password, String port) {
-        String cmd = "cmd /c start " + MainFrame.configuration.getProgramPath(ProgramEnum.PLINK) + " -D " + port
-                + " -pw " + password + " -N " + user + "@" + host;
+        String cmd = "cmd /c start " + MainFrame.configuration.getProgramPath(ProgramEnum.PLINK)
+                + " -D " + port + " -pw " + password + " -N " + user + "@" + host;
         try {
             Runtime.getRuntime().exec(cmd);
         } catch (Exception e) {

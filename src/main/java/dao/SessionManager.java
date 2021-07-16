@@ -1,11 +1,11 @@
 package dao;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.text.csv.CsvReader;
@@ -13,13 +13,11 @@ import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.text.csv.CsvWriter;
 import cn.hutool.core.util.StrUtil;
 import control.Configuration;
-import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 
 /**
  * 数据库管理.
  */
-@Slf4j
 public class SessionManager {
 
     private static SessionManager manager;
@@ -43,14 +41,16 @@ public class SessionManager {
      * 读取csv文件.
      */
     private List<ConfigSession> readCsv() {
-        List<ConfigSession> list = null;
+        List<ConfigSession> configList = null;
         if (FileUtil.isFile(databasePath)) {
             CsvReader reader = CsvUtil.getReader();
-            list = reader.read(ResourceUtil.getUtf8Reader(databasePath), ConfigSession.class);
-        }else{
-            log.warn("数据库文件ssh.csv不存在. 默认返回空列表");
+            configList = reader.read(ResourceUtil.getUtf8Reader(databasePath), ConfigSession.class);
         }
-        return Objects.isNull(list) ? ListUtil.empty() : list;
+
+        if(Objects.isNull(configList)){
+            configList = new ArrayList<>();
+        }
+        return configList;
     }
 
     /**

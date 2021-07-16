@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,6 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
@@ -34,20 +33,20 @@ import ui.MainFrame;
  */
 @Slf4j
 public class ProgramsLocationsDialog implements SelectionListener, MouseListener {
-    final private Shell         dialog;
+    private final Shell dialog;
     /**
      * 保存按钮.
      */
-    private Button              saveButton;
+    private Button saveButton;
     /**
      * 取消按钮.
      */
-    private Button              cancelButton;
+    private Button cancelButton;
 
     /**
      * 配置变更缓存.
      */
-    private Map<String, String> tmpPropConfig;
+    private Map<String, String> tmpPropConfigMap;
 
     /**
      *  Constructor:
@@ -64,7 +63,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
      */
     private void init() {
         // 临时修改的配置项
-        tmpPropConfig = new HashMap<>(16);
+        tmpPropConfigMap = new HashMap<>(16);
 
         // Setup a layout:
         GridLayout layout = new GridLayout(3, false);
@@ -78,7 +77,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         gd00.horizontalSpan = 3;
         Label textLabel = new Label(dialog, SWT.LEFT);
         textLabel.setText(
-            "Use this window to define which programs to use: \"SmartPutty\" included programs or yours.");
+                "Use this window to define which programs to use: \"SmartPutty\" included programs or yours.");
         textLabel.setLayoutData(gd00);
 
         // Blank space:
@@ -146,15 +145,10 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         editText.setLayoutData(gd2);
 
         // 编辑框内容修改时, 添加到临时变量配置中
-        editText.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(ModifyEvent e) {
-                if (StrUtil.isNotBlank(program.getProperty())) {
-                    tmpPropConfig.put(program.getProperty(), editText.getText());
-                }
+        editText.addModifyListener(event -> {
+            if (StrUtil.isNotBlank(program.getProperty())) {
+                tmpPropConfigMap.put(program.getProperty(), editText.getText());
             }
-
         });
 
         GridData gd3 = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -175,11 +169,16 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
 
             @Override
             public void widgetDefaultSelected(SelectionEvent e) {
-
+                // nothing
             }
         });
     }
 
+    /**
+     * 程序选择对话框.
+     * @param program 程序枚举
+     * @return
+     */
     private String searchProgramDialog(ProgramEnum program) {
         FileDialog fileDialog = new FileDialog(dialog, SWT.OPEN);
         String[] filterExtensions = program.getFilterExtensions();
@@ -191,8 +190,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
             fileDialog.setFilterNames(filterNames);
         }
 
-        String path = fileDialog.open();
-        return path;
+        return fileDialog.open();
     }
 
     @Override
@@ -200,13 +198,13 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         if (e.getSource() == saveButton) {
             log.info("保存设置项.");
             // Save changes to configuration:
-            if (!tmpPropConfig.isEmpty()) {
-                for (Entry<String, String> entry : tmpPropConfig.entrySet()) {
+            if (MapUtil.isNotEmpty(tmpPropConfigMap)) {
+                for (Entry<String, String> entry : tmpPropConfigMap.entrySet()) {
                     MainFrame.configuration.setProgram(entry.getKey(), entry.getValue());
                 }
                 MainFrame.configuration.saveSetting();
                 // 设置完成后, 清空临时配置项
-                tmpPropConfig.clear();
+                tmpPropConfigMap.clear();
             }
 
             dialog.dispose();
@@ -217,17 +215,21 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
 
     @Override
     public void widgetDefaultSelected(SelectionEvent e) {
+        // nothing
     }
 
     @Override
     public void mouseDoubleClick(MouseEvent e) {
+        // nothing
     }
 
     @Override
     public void mouseDown(MouseEvent e) {
+        // nothing
     }
 
     @Override
     public void mouseUp(MouseEvent e) {
+        // nothing
     }
 }

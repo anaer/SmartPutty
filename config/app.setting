@@ -1,7 +1,7 @@
 [configuration]
 0描述 = 基础配置项
 1以下为具体配置项 = -----------------------
-Version = 1.1.23
+Version = 1.1.24
 WaitForInitTime = 200
 WindowPositionSize = -8,32,1936,1056
 ViewConnectionBar = false

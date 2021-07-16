@@ -51,7 +51,7 @@ public class Configuration {
      * @param feature 功能名
      * @return true/false
      */
-    public Boolean getFeatureToggle(String feature) {
+    public boolean getFeatureToggle(String feature) {
         return getFeature(feature, false);
     }
 
@@ -74,7 +74,7 @@ public class Configuration {
      *
      * @return
      */
-    public Boolean getUtilitiesBarVisible() {
+    public boolean getUtilitiesBarVisible() {
         return getConfiguration(ConfigConstant.VIEW_UTILITIES_BAR, false);
     }
 
@@ -83,7 +83,7 @@ public class Configuration {
      *
      * @return
      */
-    public Boolean getConnectionBarVisible() {
+    public boolean getConnectionBarVisible() {
         return getConfiguration(ConfigConstant.VIEW_CONNECTION_BAR, false);
     }
 
@@ -92,7 +92,7 @@ public class Configuration {
      *
      * @return
      */
-    public Boolean getBottomQuickBarVisible() {
+    public boolean getBottomQuickBarVisible() {
         return getConfiguration(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, false);
     }
 
@@ -152,7 +152,7 @@ public class Configuration {
      *
      * @return
      */
-    public Boolean getWelcomePageVisible() {
+    public boolean getWelcomePageVisible() {
         return getConfiguration(ConfigConstant.SHOW_WELCOME_PAGE, false);
     }
 
