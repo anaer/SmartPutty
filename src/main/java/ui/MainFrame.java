@@ -51,6 +51,8 @@ import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
+import constants.FieldConstants;
+import constants.MessageConstants;
 import control.Configuration;
 import control.InvokeProgram;
 import dao.SessionManager;
@@ -73,10 +75,10 @@ import widgets.BorderLayout;
 @Slf4j
 public class MainFrame
         implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
+    
     public static final Display display = new Display();
     public static final Shell SHELL = new Shell(display);
-    public static SessionManager dbm;
-    public static Configuration configuration;
+    public static final Configuration configuration = new Configuration();
     private MenuItem openItem;
     private MenuItem newItem;
     private MenuItem captureItem;
@@ -168,7 +170,6 @@ public class MainFrame
         SHELL.setBounds(configuration.getWindowPositionSize());
         SHELL.addShellListener(this);
 
-        // Get dbManager instance:
         bar.setSelection(3);
         // Main menu:
         createMainMenu(SHELL);
@@ -290,12 +291,12 @@ public class MainFrame
                 continue;
             }
             String path = StrUtil.blankToDefault(menuHashMap.get("path"), "N/A");
-            String argument = StrUtil.trimToEmpty(menuHashMap.get("argument"));
+            String argument = StrUtil.trimToEmpty(menuHashMap.get(FieldConstants.ARGUMENT));
             String description = StrUtil.blankToDefault(menuHashMap.get("description"), "N/A");
             MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
             menuItem.setText(description);
             menuItem.setData("path", path);
-            menuItem.setData("argument", argument);
+            menuItem.setData(FieldConstants.ARGUMENT, argument);
             menuItem.setData("description", description);
             menuItem.setData("type", "dynamicApplication");
             menuItem.addSelectionListener(this);
@@ -357,7 +358,7 @@ public class MainFrame
         passwordItem.setLayoutData(new RowData(80, 20));
 
         // Session:
-        new Label(connectGroup, SWT.RIGHT).setText("Session");
+        new Label(connectGroup, SWT.RIGHT).setText(FieldConstants.SESSION);
         sessionCombo = new Combo(connectGroup, SWT.READ_ONLY);
         sessionCombo.setLayoutData(new RowData());
         sessionCombo.setToolTipText("Session to use");
@@ -602,7 +603,6 @@ public class MainFrame
 
     private void loadConfiguration() {
         InvokeProgram.killPuttyWarningsAndErrs();
-        configuration = new Configuration();
     }
 
     private void showWelcomeTab(String url) {
@@ -664,7 +664,7 @@ public class MainFrame
 
         Composite composite = new Composite(folder, SWT.EMBEDDED);
         item.setControl(composite);
-        item.setData("TYPE", "session");
+        item.setData("TYPE", FieldConstants.SESSION);
         folder.setSelection(item);
         item.setText("connecting");
         item.setImage(ButtonImage.PUTTY_IMAGE);
@@ -718,7 +718,7 @@ public class MainFrame
             }
             int hWnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
             InvokeProgram.killProcess(hWnd);
-            addSession(item, (ConfigSession) item.getData("session"));
+            addSession(item, (ConfigSession) item.getData(FieldConstants.SESSION));
         }
     }
 
@@ -749,18 +749,18 @@ public class MainFrame
 
     private void cloneSession() {
         CTabItem tabItem = folder.getSelection();
-        if (tabItem.getData("session") == null) {
+        if (tabItem.getData(FieldConstants.SESSION) == null) {
             return;
         }
-        ConfigSession session = (ConfigSession) tabItem.getData("session");
+        ConfigSession session = (ConfigSession) tabItem.getData(FieldConstants.SESSION);
         addSession(null, session);
     }
 
     private void openWinscp(String protocol) {
-        if (folder.getSelection().getData("session") == null) {
+        if (folder.getSelection().getData(FieldConstants.SESSION) == null) {
             return;
         }
-        ConfigSession session = (ConfigSession) folder.getSelection().getData("session");
+        ConfigSession session = (ConfigSession) folder.getSelection().getData(FieldConstants.SESSION);
         String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@"
                 + session.getHost() + ":" + session.getPort();
 
@@ -769,16 +769,16 @@ public class MainFrame
 
     private void openPutty() {
         CTabItem tabItem = folder.getSelection();
-        if (tabItem.getData("session") == null) {
+        if (tabItem.getData(FieldConstants.SESSION) == null) {
             return;
         }
-        ConfigSession session = (ConfigSession) tabItem.getData("session");
+        ConfigSession session = (ConfigSession) tabItem.getData(FieldConstants.SESSION);
         InvokeProgram.invokeSinglePutty(session);
     }
 
     private void openVncSession() {
         CTabItem item = folder.getSelection();
-        ConfigSession session = (ConfigSession) item.getData("session");
+        ConfigSession session = (ConfigSession) item.getData(FieldConstants.SESSION);
         if (session != null) {
             String host = session.getHost();
             InputDialog inputDialog = new InputDialog(SHELL, "Input VNC Server Host",
@@ -989,7 +989,7 @@ public class MainFrame
         } else if (e.getSource() == win2UnixButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info", "Please input correct path!");
+                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
@@ -997,7 +997,7 @@ public class MainFrame
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info", "Please input correct path!");
+                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
@@ -1006,7 +1006,7 @@ public class MainFrame
         } else if (e.getSource() == openPathButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info", "Please input correct path!");
+                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
@@ -1043,11 +1043,11 @@ public class MainFrame
     @Override
     public void close(CTabFolderEvent e) {
         if (e.item == folder.getSelection()) {
-            if ((ConfigSession) e.item.getData("session") != null) {
+            if ((ConfigSession) e.item.getData(FieldConstants.SESSION) != null) {
                 MessageBox msgBox = new MessageBox(SHELL, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                 msgBox.setText("Confirm Exit");
                 msgBox.setMessage("Are you sure to exit session: "
-                        + ((ConfigSession) e.item.getData("session")).getHost());
+                        + ((ConfigSession) e.item.getData(FieldConstants.SESSION)).getHost());
                 if (msgBox.open() == SWT.YES) {
                     closeTab((CTabItem) e.item);
                     e.doit = true;
@@ -1092,7 +1092,7 @@ public class MainFrame
         if (e.button == 3) {
             CTabItem selectItem = folder.getItem(new Point(e.x, e.y));
             if (selectItem != null && StrUtil.equalsIgnoreCase(
-                    String.valueOf(folder.getSelection().getData("TYPE")), "session")) {
+                    String.valueOf(folder.getSelection().getData("TYPE")), FieldConstants.SESSION)) {
                 folder.setSelection(selectItem);
                 popupMenu.setVisible(true);
             } else {

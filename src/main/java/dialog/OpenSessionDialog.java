@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import constants.ButtonImage;
+import constants.FieldConstants;
 import control.InvokeProgram;
 import dao.SessionManager;
 import lombok.extern.slf4j.Slf4j;
@@ -103,7 +104,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
         TableColumn sessionColumn = new TableColumn(table, SWT.NONE);
         sessionColumn.setWidth(75);
-        sessionColumn.setText("Session");
+        sessionColumn.setText(FieldConstants.SESSION);
 
         dbm = SessionManager.getInstance();
         loadTable();
@@ -152,7 +153,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
     public ConfigSession getCurrentSelectSession() {
         if (table.getSelection().length > 0) {
-            return (ConfigSession) (table.getSelection()[0].getData("session"));
+            return (ConfigSession) (table.getSelection()[0].getData(FieldConstants.SESSION));
         } else {
             return null;
         }
@@ -163,7 +164,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         List<ConfigSession> sessions = dbm.getAllSessions();
         for (ConfigSession session : sessions) {
             TableItem tableItem = new TableItem(table, SWT.NONE);
-            tableItem.setData("session", session);
+            tableItem.setData(FieldConstants.SESSION, session);
             tableItem
                 .setText(new String[] { session.getName(), session.getHost(), session.getIntranet(),
                                         session.getPort(), session.getUser(),
@@ -178,9 +179,9 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         TableItem[] tableItems = table.getSelection();
         ArrayList<ConfigSession> sessions = new ArrayList<>();
         for (TableItem tableItem : tableItems) {
-            log.info("session:{}", tableItem.getData("session"));
+            log.info("session:{}", tableItem.getData(FieldConstants.SESSION));
             ConfigSession csession = dbm
-                .querySessionBySession((ConfigSession) tableItem.getData("session"));
+                .querySessionBySession((ConfigSession) tableItem.getData(FieldConstants.SESSION));
             if (csession != null) {
                 sessions.add(csession);
             }
@@ -199,7 +200,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         TableItem[] tableItems = table.getSelection();
         if (tableItems != null) {
             ConfigSession csession = dbm
-                .querySessionBySession((ConfigSession) tableItems[0].getData("session"));
+                .querySessionBySession((ConfigSession) tableItems[0].getData(FieldConstants.SESSION));
             if (Objects.nonNull(csession)) {
                 // deepcode ignore CommandInjection: <忽略>
                 InvokeProgram.invokeSinglePutty(csession);
@@ -210,11 +211,11 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
     @Override
     public void widgetDefaultSelected(SelectionEvent arg0) {
+        //
     }
 
     @Override
     public void widgetSelected(SelectionEvent e) {
-        // System.out.println(e.getSource().toString());
         if (e.getSource() == addButton) {
             new NewSessionDialog(null, this, "add");
         } else if (e.getSource() == editButton) {
@@ -231,7 +232,7 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
             }
             TableItem[] tableItems = table.getSelection();
             for (TableItem item : tableItems) {
-                ConfigSession session = (ConfigSession) item.getData("session");
+                ConfigSession session = (ConfigSession) item.getData(FieldConstants.SESSION);
                 dbm.deleteSession(session);
             }
             loadTable();
@@ -261,10 +262,12 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
     @Override
     public void mouseDown(MouseEvent e) {
+        //do nothing
     }
 
     @Override
     public void mouseUp(MouseEvent e) {
+        //do nothing
     }
 
 }

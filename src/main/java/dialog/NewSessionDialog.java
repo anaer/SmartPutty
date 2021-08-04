@@ -22,6 +22,8 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
+import constants.FieldConstants;
+import dao.SessionManager;
 import enums.ProtocolEnum;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
@@ -38,11 +40,21 @@ import utils.RegistryUtils;
 public class NewSessionDialog implements SelectionListener, MouseListener {
 
     private OpenSessionDialog sessionDialog = null;
-    private MainFrame         mainFrame;
-    private Shell             dialog;
-    private Combo             comboHost, comboIntranet, comboUser, comboProtocol, comboSession;
-    private Text              textPassword, textKey, textName, textPort;
-    private Button            buttonFile, buttonOk, buttonCancel, buttonShow;
+    private MainFrame mainFrame;
+    private Shell dialog;
+    private Combo comboHost;
+    private Combo comboIntranet;
+    private Combo comboUser;
+    private Combo comboProtocol;
+    private Combo comboSession;
+    private Text textPassword;
+    private Text textKey;
+    private Text textName;
+    private Text textPort;
+    private Button buttonFile;
+    private Button buttonOk;
+    private Button buttonCancel;
+    private Button buttonShow;
 
     public NewSessionDialog(MainFrame mainFrame, OpenSessionDialog sessionDialog, String type) {
         this.mainFrame = mainFrame;
@@ -54,7 +66,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         Rectangle rect = dialog.getBounds();
         int x = rect.width;
         int y = rect.height;
-        List<ConfigSession> sessions = MainFrame.dbm.getAllSessions();
+        List<ConfigSession> sessions = SessionManager.getInstance().getAllSessions();
 
         int index = 0;
         Label label = new Label(dialog, SWT.NONE);
@@ -68,7 +80,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         label.setText("Host");
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         comboHost = new Combo(dialog, SWT.None);
-        HashSet<String> hs = new HashSet<String>();
+        HashSet<String> hs = new HashSet<>();
         for (ConfigSession item : sessions) {
             hs.add(item.getHost());
         }
@@ -83,7 +95,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         label.setText("Intranet");
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         comboIntranet = new Combo(dialog, SWT.None);
-        HashSet<String> intranetSet = new HashSet<String>();
+        HashSet<String> intranetSet = new HashSet<>();
         for (ConfigSession item : sessions) {
             intranetSet.add(item.getHost());
         }
@@ -106,7 +118,6 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         label.setText("Protocol");
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         comboProtocol = new Combo(dialog, SWT.READ_ONLY);
-        // comboProtocol.setItems(new String[] { "ssh" });
         // Get all protocols and add:
         for (ProtocolEnum protocol : ProtocolEnum.values()) {
             comboProtocol.add(protocol.getName());
@@ -149,7 +160,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
         index++;
         label = new Label(dialog, SWT.NONE);
-        label.setText("Session");
+        label.setText(FieldConstants.SESSION);
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         comboSession = new Combo(dialog, SWT.READ_ONLY);
         comboSession.setLayoutData(new RowData());
@@ -188,8 +199,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 textKey.setText(session.getKey());
                 textPassword.setText(session.getPassword());
 
-                if (ProtocolEnum.SSH2 == protocolEnum
-                        || ProtocolEnum.SSH == protocolEnum) {
+                if (ProtocolEnum.SSH2 == protocolEnum || ProtocolEnum.SSH == protocolEnum) {
                     String profile = session.getSession();
                     if (StrUtil.isNotBlank(profile)) {
                         comboSession.setText(profile);
@@ -208,6 +218,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
     @Override
     public void widgetDefaultSelected(SelectionEvent arg0) {
+        // do nothing
     }
 
     @Override
@@ -217,7 +228,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String host = comboHost.getText();
             if (StrUtil.isNotBlank(host)) {
                 comboUser.removeAll();
-                List<ConfigSession> sessions = MainFrame.dbm.querySessionByHost(host);
+                List<ConfigSession> sessions = SessionManager.getInstance().querySessionByHost(host);
                 for (ConfigSession item : sessions) {
                     comboUser.add(item.getUser());
                 }
@@ -237,7 +248,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String host = comboHost.getText();
             String user = comboUser.getText();
             if (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user)) {
-                List<ConfigSession> sessions = MainFrame.dbm.querySessionByHostUser(host, user);
+                List<ConfigSession> sessions = SessionManager.getInstance().querySessionByHostUser(host, user);
                 if (sessions.size() == 1) {
                     comboProtocol.setText(sessions.get(0).getProtocol());
                     textPassword.setText(sessions.get(0).getPassword());
@@ -250,8 +261,8 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             String host = comboHost.getText();
             String user = comboUser.getText();
             String protocol = comboProtocol.getText();
-            ConfigSession session = MainFrame.dbm.querySessionByHostUserProtocol(host, user,
-                protocol);
+            ConfigSession session = SessionManager.getInstance().querySessionByHostUserProtocol(host, user,
+                    protocol);
             if (session != null) {
                 textPassword.setText(session.getPassword());
             } else {
@@ -263,6 +274,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
     @Override
     public void mouseDoubleClick(org.eclipse.swt.events.MouseEvent arg0) {
+        // do nothing
     }
 
     @Override
@@ -288,9 +300,9 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
             if (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user) && protocol != null) {
                 ConfigSession session = new ConfigSession(name, host, intranet, port, user,
-                    protocol.getName(), file, password, sessionProfile);
+                        protocol.getName(), file, password, sessionProfile);
                 dialog.dispose();
-                MainFrame.dbm.insertSession(session);
+                SessionManager.getInstance().insertSession(session);
                 if (sessionDialog != null) {
                     sessionDialog.loadTable();
                 }
@@ -299,7 +311,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 }
             } else {
                 MessageDialog.openInformation(dialog, "Warning",
-                    "Must set Host, User and Protocol");
+                        "Must set Host, User and Protocol");
             }
 
         } else if (e.getSource() == buttonCancel) {
@@ -328,6 +340,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
     @Override
     public void mouseUp(org.eclipse.swt.events.MouseEvent arg0) {
+        // do nothing
     }
 
 }

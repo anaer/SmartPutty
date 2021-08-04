@@ -11,6 +11,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import constants.FieldConstants;
+
 /**
  * tab拖动Listener.
  */
@@ -95,7 +97,7 @@ public class DragListener implements Listener {
                     cloneItem.setText(dragItem.getText());
                     cloneItem.setImage(dragItem.getImage());
                     cloneItem.setData("hwnd", dragItem.getData("hwnd"));
-                    cloneItem.setData("session", dragItem.getData("session"));
+                    cloneItem.setData(FieldConstants.SESSION, dragItem.getData(FieldConstants.SESSION));
 
                     Control c = dragItem.getControl();
                     dragItem.setControl(null);

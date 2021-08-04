@@ -68,7 +68,7 @@ public class SessionManager {
                 "protocol", //
                 "key", //
                 "password", //
-                "session" //
+                "session"//
         );
         for (ConfigSession session : list) {
             writer.writeLine(//

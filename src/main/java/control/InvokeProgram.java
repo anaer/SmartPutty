@@ -14,6 +14,8 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ConstantValue;
+import constants.FieldConstants;
+import constants.MessageConstants;
 import enums.ProgramEnum;
 import enums.ProtocolEnum;
 import enums.PuttySessionEnum;
@@ -182,7 +184,7 @@ public class InvokeProgram extends Thread {
         }
 
         if (!result) {
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR", String.format("Failed cmd: %s %s", path, args));
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR", String.format(MessageConstants.FORMAT_FAILED_CMD_2_ARG, path, args));
             return;
         }
 
@@ -212,7 +214,7 @@ public class InvokeProgram extends Thread {
         }
         if (count == 0) {
             MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR",
-                    String.format("Failed cmd: %s %s", path, args));
+                    String.format(MessageConstants.FORMAT_FAILED_CMD_2_ARG, path, args));
         }
         Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
         // 隐藏标题栏
@@ -225,7 +227,7 @@ public class InvokeProgram extends Thread {
         if (hWnd.intValue() != 0) {
             tabItem.setText(tabName.toString());
             tabItem.setData("hwnd", hWnd);
-            tabItem.setData("session", session);
+            tabItem.setData(FieldConstants.SESSION, session);
             setWindowFocus(hWnd);
         } else {
             tabItem.dispose();
@@ -314,7 +316,7 @@ public class InvokeProgram extends Thread {
         if (hWnd.intValue() != 0) {
             tabItem.setText(tabDisplayName);
             tabItem.setData("hwnd", hWnd);
-            tabItem.setData("session", session);
+            tabItem.setData(FieldConstants.SESSION, session);
             setWindowFocus(hWnd);
         } else {
             tabItem.dispose();
