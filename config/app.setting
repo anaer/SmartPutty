@@ -1,9 +1,9 @@
 [configuration]
 0描述 = 基础配置项
 1以下为具体配置项 = -----------------------
-Version = 1.1.24
+Version = 1.1.25
 WaitForInitTime = 200
-WindowPositionSize = -497,154,1936,1056
+WindowPositionSize = -8,32,1936,1056
 ViewConnectionBar = false
 ViewBottomQuickBar = false
 Dictionary = http://dict.youdao.com/w/eng/
