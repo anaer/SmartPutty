@@ -1,6 +1,5 @@
 package dao;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,6 +10,7 @@ import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.text.csv.CsvReader;
 import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.text.csv.CsvWriter;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import control.Configuration;
 import model.ConfigSession;
@@ -57,7 +57,7 @@ public class SessionManager {
      * 保存csv文件.
      */
     private void saveCsv(List<ConfigSession> list) {
-        CsvWriter writer = CsvUtil.getWriter(databasePath, Charset.defaultCharset());
+        CsvWriter writer = CsvUtil.getWriter(databasePath, CharsetUtil.CHARSET_UTF_8);
 
         writer.writeLine( //
                 "name", //
