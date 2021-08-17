@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
@@ -80,13 +81,8 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         label.setText("Host");
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         comboHost = new Combo(dialog, SWT.None);
-        HashSet<String> hs = new HashSet<>();
-        for (ConfigSession item : sessions) {
-            hs.add(item.getHost());
-        }
-        for (String item : hs) {
-            comboHost.add(item);
-        }
+        // 从session列表中 获取host地址, 去重, 校验ip, 排序 添加到host下拉框中
+        sessions.stream().map(ConfigSession::getHost).distinct().filter(Validator::isIpv4).sorted().forEach(item -> comboHost.add(item));
         comboHost.setBounds(x / 3, index * y / 6, 2 * x / 3, y / 6);
         comboHost.addSelectionListener(this);
 
@@ -95,13 +91,8 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         label.setText("Intranet");
         label.setBounds(0, index * y / 6, x / 3, y / 6);
         comboIntranet = new Combo(dialog, SWT.None);
-        HashSet<String> intranetSet = new HashSet<>();
-        for (ConfigSession item : sessions) {
-            intranetSet.add(item.getHost());
-        }
-        for (String item : intranetSet) {
-            comboIntranet.add(item);
-        }
+        // 从session列表中 获取intranet地址, 去重, 校验ip, 排序 添加到intranet下拉框中
+        sessions.stream().map(ConfigSession::getIntranet).distinct().filter(Validator::isIpv4).sorted().forEach(item -> comboIntranet.add(item));
         comboIntranet.setBounds(x / 3, index * y / 6, 2 * x / 3, y / 6);
         comboIntranet.addSelectionListener(this);
 
@@ -298,7 +289,8 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 }
             }
 
-            if (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user) && protocol != null) {
+            // 如果协议类型位mintty, 不校验参数
+            if (protocol == ProtocolEnum.MINTTY || (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user) && protocol != null)) {
                 ConfigSession session = new ConfigSession(name, host, intranet, port, user,
                         protocol.getName(), file, password, sessionProfile);
                 dialog.dispose();
@@ -310,8 +302,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                     mainFrame.addSession(null, session);
                 }
             } else {
-                MessageDialog.openInformation(dialog, "Warning",
-                        "Must set Host, User and Protocol");
+                MessageDialog.openInformation(dialog, "Warning", "Must set Host, User and Protocol");
             }
 
         } else if (e.getSource() == buttonCancel) {
