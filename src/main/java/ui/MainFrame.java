@@ -50,6 +50,7 @@ import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
+import constants.ConfigConstant;
 import constants.ConstantValue;
 import constants.FieldConstants;
 import constants.MessageConstants;
@@ -75,7 +76,11 @@ import widgets.BorderLayout;
 @Slf4j
 public class MainFrame
         implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
-    
+
+    /**
+     * windows 路径分隔符.
+     */
+    private static final String WIN_PATH_DELIMITED = "\\";
     public static final Display display = new Display();
     public static final Shell SHELL = new Shell(display);
     public static final Configuration configuration = new Configuration();
@@ -760,7 +765,8 @@ public class MainFrame
         if (folder.getSelection().getData(FieldConstants.SESSION) == null) {
             return;
         }
-        ConfigSession session = (ConfigSession) folder.getSelection().getData(FieldConstants.SESSION);
+        ConfigSession session = (ConfigSession) folder.getSelection()
+                .getData(FieldConstants.SESSION);
         String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@"
                 + session.getHost() + ":" + session.getPort();
 
@@ -825,13 +831,15 @@ public class MainFrame
 
     /** Check the feature toggle, dispose the features who equals to "false". */
     private void applyFeatureToggle() {
-        boolean bVnc = configuration.getFeatureToggle("vnc");
+        // 是否显示vnc
+        boolean bVnc = configuration.getFeatureToggle(ConfigConstant.Feature.VNC);
         if (!bVnc) {
             this.vncPopItem.dispose();
             this.itemVnc.dispose();
         }
 
-        boolean bTransfer = configuration.getFeatureToggle("transfer");
+        // 是否显示transfer
+        boolean bTransfer = configuration.getFeatureToggle(ConfigConstant.Feature.TRANSFER);
         if (!bTransfer) {
             this.transferPopItem.dispose();
         }
@@ -892,8 +900,10 @@ public class MainFrame
     @Override
     public void widgetSelected(SelectionEvent e) {
         if (e.getSource() == newItem || e.getSource() == itemNew) {
+            // 新增
             new NewSessionDialog(this, null, "add");
         } else if (e.getSource() == itemOpen || e.getSource() == openItem) {
+            // 打开
             new OpenSessionDialog(this, SHELL);
         } else if (e.getSource() == itemRemoteDesk || e.getSource() == remoteDesktopItem) {
             InvokeProgram.runProgram(ProgramEnum.REMOTE_DESK, null);
@@ -989,28 +999,32 @@ public class MainFrame
         } else if (e.getSource() == win2UnixButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
+                MessageDialog.openInformation(SHELL, "Info",
+                        MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText("/" + StrUtil.replace(path, "\\", "/"));
+            pathItem.setText("/" + StrUtil.replace(path, WIN_PATH_DELIMITED, "/"));
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
+                MessageDialog.openInformation(SHELL, "Info",
+                        MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText(
-                    configuration.getWinPathBaseDrive() + "\\" + StrUtil.replace(path, "/", "\\"));
+            pathItem.setText(configuration.getWinPathBaseDrive() + WIN_PATH_DELIMITED
+                    + StrUtil.replace(path, "/", WIN_PATH_DELIMITED));
         } else if (e.getSource() == openPathButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
+                MessageDialog.openInformation(SHELL, "Info",
+                        MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            path = configuration.getWinPathBaseDrive() + "\\" + StrUtil.replace(path, "/", "\\");
+            path = configuration.getWinPathBaseDrive() + WIN_PATH_DELIMITED
+                    + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
             pathItem.setText(path);
             if (!InvokeProgram.openFolder(path)) {
                 MessageDialog.openError(SHELL, "Error", "Path not exist!");
@@ -1021,6 +1035,9 @@ public class MainFrame
         }
     }
 
+    /**
+     * 标签切换.
+     */
     private void switchTab() {
         int select = folder.getSelectionIndex();
         int count = folder.getItemCount();
@@ -1032,6 +1049,9 @@ public class MainFrame
         }
     }
 
+    /**
+     * 关闭所有putty进程.
+     */
     private void killAllPutty() {
         try {
             RuntimeUtil.exec("taskkill /F /IM Putty.exe");
@@ -1040,6 +1060,9 @@ public class MainFrame
         }
     }
 
+    /**
+     * 关闭标签.
+     */
     @Override
     public void close(CTabFolderEvent e) {
         if (e.item == folder.getSelection()) {
@@ -1092,7 +1115,8 @@ public class MainFrame
         if (e.button == 3) {
             CTabItem selectItem = folder.getItem(new Point(e.x, e.y));
             if (selectItem != null && StrUtil.equalsIgnoreCase(
-                    String.valueOf(folder.getSelection().getData("TYPE")), FieldConstants.SESSION)) {
+                    String.valueOf(folder.getSelection().getData("TYPE")),
+                    FieldConstants.SESSION)) {
                 folder.setSelection(selectItem);
                 popupMenu.setVisible(true);
             } else {

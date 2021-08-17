@@ -15,7 +15,7 @@ DatabasePath = C:\Program Files\SmartPutty\config\ssh.csv
 [program]
 0描述 = 应用程序配置项
 KeyGeneratorExecutable = C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE
-MinttyExecutable = D:\Git\usr\bin\mintty.exe
+MinttyExecutable = C:\Program Files\Git\usr\bin\mintty.exe
 ScpExecutable = C:\Program Files\WinSCP\WinSCP.exe
 PuttyExecutable = C:\ProgramData\chocolatey\bin\PUTTY.EXE
 PlinkExecutable = C:\ProgramData\chocolatey\bin\PLINK.EXE

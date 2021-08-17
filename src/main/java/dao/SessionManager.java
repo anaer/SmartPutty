@@ -50,6 +50,7 @@ public class SessionManager {
         if(Objects.isNull(configList)){
             configList = new ArrayList<>();
         }
+
         return configList;
     }
 
@@ -62,7 +63,7 @@ public class SessionManager {
         writer.writeLine( //
                 "name", //
                 "host", //
-                "intranet", // 
+                "intranet", //
                 "port", //
                 "user", //
                 "protocol", //

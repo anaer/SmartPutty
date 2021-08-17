@@ -22,7 +22,6 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import enums.ProgramEnum;
-import lombok.extern.slf4j.Slf4j;
 import ui.MainFrame;
 
 /**
@@ -31,7 +30,6 @@ import ui.MainFrame;
  *
  * @author Carlos SS
  */
-@Slf4j
 public class ProgramsLocationsDialog implements SelectionListener, MouseListener {
     private final Shell dialog;
     /**
@@ -196,7 +194,6 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
     @Override
     public void widgetSelected(SelectionEvent e) {
         if (e.getSource() == saveButton) {
-            log.info("保存设置项.");
             // Save changes to configuration:
             if (MapUtil.isNotEmpty(tmpPropConfigMap)) {
                 for (Entry<String, String> entry : tmpPropConfigMap.entrySet()) {

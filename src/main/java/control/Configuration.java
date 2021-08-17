@@ -2,7 +2,6 @@ package control;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,20 +28,21 @@ public class Configuration {
 
     private final List<HashMap<String, String>> menuConfigMapList;
 
-    /** 
+    /**
      * 获取自定义菜单配置.
     */
     public List<HashMap<String, String>> getMenuConfig() {
         return this.menuConfigMapList;
     }
 
-    /** 
+    /**
      * 构造函数.
      * 初始化配置信息.
      */
     public Configuration() {
         this.menuConfigMapList = ReadXmlFile.parse(new File(ConstantValue.MENU_CONFIG_FILE));
-        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE), Charset.defaultCharset(), true);
+        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE),
+                Charset.defaultCharset(), true);
         this.setting.autoLoad(true);
     }
 
@@ -59,14 +59,14 @@ public class Configuration {
      * 获取初始化 等待时间.
      */
     public int getWaitForInitTime() {
-        return getConfiguration(ConfigConstant.WAIT_FOR_INIT_TIME, 0);
+        return getConfiguration(ConfigConstant.Configuration.WAIT_FOR_INIT_TIME, 0);
     }
 
     /**
      * 获取SmartPutty版本号配置.
      */
     public String getSmartPuttyVersion() {
-        return getConfiguration(ConfigConstant.VERSION, "");
+        return getConfiguration(ConfigConstant.Configuration.VERSION, "");
     }
 
     /**
@@ -75,7 +75,7 @@ public class Configuration {
      * @return
      */
     public boolean getUtilitiesBarVisible() {
-        return getConfiguration(ConfigConstant.VIEW_UTILITIES_BAR, false);
+        return getConfiguration(ConfigConstant.Configuration.VIEW_UTILITIES_BAR, false);
     }
 
     /**
@@ -84,7 +84,7 @@ public class Configuration {
      * @return
      */
     public boolean getConnectionBarVisible() {
-        return getConfiguration(ConfigConstant.VIEW_CONNECTION_BAR, false);
+        return getConfiguration(ConfigConstant.Configuration.VIEW_CONNECTION_BAR, false);
     }
 
     /**
@@ -93,7 +93,7 @@ public class Configuration {
      * @return
      */
     public boolean getBottomQuickBarVisible() {
-        return getConfiguration(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, false);
+        return getConfiguration(ConfigConstant.Configuration.VIEW_BOTTOM_QUICK_BAR, false);
     }
 
     /**
@@ -119,7 +119,8 @@ public class Configuration {
      * @return
      */
     public String getDictionaryBaseUrl() {
-        return getConfiguration(ConfigConstant.DICTIONARY, "http://dict.youdao.com/w/eng/");
+        return getConfiguration(ConfigConstant.Configuration.DICTIONARY,
+                "http://dict.youdao.com/w/eng/");
     }
 
     /**
@@ -128,14 +129,14 @@ public class Configuration {
      * @return
      */
     public String getDefaultPuttyUsername() {
-        return getConfiguration(ConfigConstant.DEFAULT_PUTTY_USERNAME, "");
+        return getConfiguration(ConfigConstant.Configuration.DEFAULT_PUTTY_USERNAME, "");
     }
 
     /**
      * 获取数据库路径.
      */
     public String getDatabasePath() {
-        return getConfiguration(ConfigConstant.DATABASE_PATH, "config/ssh.csv");
+        return getConfiguration(ConfigConstant.Configuration.DATABASE_PATH, "config/ssh.csv");
     }
 
     /**
@@ -144,7 +145,7 @@ public class Configuration {
      * @return
      */
     public String getWinPathBaseDrive() {
-        return getConfiguration(ConfigConstant.WINDOWS_BASE_DRIVE, "C:/");
+        return getConfiguration(ConfigConstant.Configuration.WINDOWS_BASE_DRIVE, "C:/");
     }
 
     /**
@@ -153,7 +154,7 @@ public class Configuration {
      * @return
      */
     public boolean getWelcomePageVisible() {
-        return getConfiguration(ConfigConstant.SHOW_WELCOME_PAGE, false);
+        return getConfiguration(ConfigConstant.Configuration.SHOW_WELCOME_PAGE, false);
     }
 
     /**
@@ -163,9 +164,10 @@ public class Configuration {
      */
     public Rectangle getWindowPositionSize() {
         // Split comma-separated values by x, y, width, height:
-        String windowPositionSize = getConfiguration(ConfigConstant.WINDOW_POSITION_SIZE, "");
+        String windowPositionSize = getConfiguration(
+                ConfigConstant.Configuration.WINDOW_POSITION_SIZE, "");
 
-        int[] array = Arrays.stream(windowPositionSize.split(",")).mapToInt(str -> Convert.toInt(str, 0)).toArray();
+        int[] array = StrUtil.splitToInt(windowPositionSize, ",");
 
         // 配置不满4位, 根据屏幕宽高 重新设置
         if (array.length < 4) {
@@ -181,16 +183,16 @@ public class Configuration {
 
     /**
      * Get main window position and size in String format.
-     * 
+     *
      * 获取窗口坐标位置
      *
      * @return
      */
     public String getWindowPositionSizeString() {
-        String x = String.valueOf(MainFrame.SHELL.getBounds().x);
-        String y = String.valueOf(MainFrame.SHELL.getBounds().y);
-        String width = String.valueOf(MainFrame.SHELL.getBounds().width);
-        String height = String.valueOf(MainFrame.SHELL.getBounds().height);
+        int x = MainFrame.SHELL.getBounds().x;
+        int y = MainFrame.SHELL.getBounds().y;
+        int width = MainFrame.SHELL.getBounds().width;
+        int height = MainFrame.SHELL.getBounds().height;
         return StrUtil.join(",", x, y, width, height);
     }
 
@@ -199,7 +201,7 @@ public class Configuration {
      */
     public void setWindowPosisionSizeString() {
         String position = getWindowPositionSizeString();
-        setConfiguratioin(ConfigConstant.WINDOW_POSITION_SIZE, position);
+        setConfiguratioin(ConfigConstant.Configuration.WINDOW_POSITION_SIZE, position);
     }
 
     /**
@@ -208,7 +210,7 @@ public class Configuration {
      * @param visible
      */
     public void setUtilitiesBarVisible(String visible) {
-        setConfiguratioin(ConfigConstant.VIEW_UTILITIES_BAR, visible);
+        setConfiguratioin(ConfigConstant.Configuration.VIEW_UTILITIES_BAR, visible);
     }
 
     /**
@@ -217,11 +219,11 @@ public class Configuration {
      * @param visible
      */
     public void setConnectionBarVisible(String visible) {
-        setConfiguratioin(ConfigConstant.VIEW_CONNECTION_BAR, visible);
+        setConfiguratioin(ConfigConstant.Configuration.VIEW_CONNECTION_BAR, visible);
     }
 
     public void setBottomQuickBarVisible(String visible) {
-        setConfiguratioin(ConfigConstant.VIEW_BOTTOM_QUICK_BAR, visible);
+        setConfiguratioin(ConfigConstant.Configuration.VIEW_BOTTOM_QUICK_BAR, visible);
     }
 
     /**
@@ -230,39 +232,39 @@ public class Configuration {
      * @param visible
      */
     public void setWelcomePageVisible(String visible) {
-        setConfiguratioin(ConfigConstant.SHOW_WELCOME_PAGE, visible);
+        setConfiguratioin(ConfigConstant.Configuration.SHOW_WELCOME_PAGE, visible);
     }
 
     /**
      * 查询配置.
      */
     public <T> T getConfiguration(String key, T defaultValue) {
-        return getByGroup(key, ConfigConstant.GROUP_CONFIGURATION, defaultValue);
+        return getByGroup(key, ConfigConstant.Group.CONFIGURATION, defaultValue);
     }
 
     /**
      * 设置configuration配置.
      */
     public void setConfiguratioin(String key, String value) {
-        setting.setByGroup(key, ConfigConstant.GROUP_CONFIGURATION, value);
+        setting.setByGroup(key, ConfigConstant.Group.CONFIGURATION, value);
     }
 
     /**
      * 查询program配置.
      */
     public <T> T getProgram(String key, T defaultValue) {
-        return getByGroup(key, ConfigConstant.GROUP_PROGRAM, defaultValue);
+        return getByGroup(key, ConfigConstant.Group.PROGRAM, defaultValue);
     }
 
     public void setProgram(String key, String value) {
-        setting.setByGroup(key, ConfigConstant.GROUP_PROGRAM, value);
+        setting.setByGroup(key, ConfigConstant.Group.PROGRAM, value);
     }
 
     /**
      * 查询特性配置.
      */
     public <T> T getFeature(String key, T defaultValue) {
-        return getByGroup(key, ConfigConstant.GROUP_FEATURE, defaultValue);
+        return getByGroup(key, ConfigConstant.Group.FEATURE, defaultValue);
     }
 
     /**
