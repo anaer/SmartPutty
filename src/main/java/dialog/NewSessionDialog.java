@@ -213,7 +213,6 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
     @Override
     public void widgetSelected(SelectionEvent e) {
-
         if (e.getSource() == comboHost) {
             String host = comboHost.getText();
             if (StrUtil.isNotBlank(host)) {
@@ -224,6 +223,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 }
                 if (sessions.size() == 1) {
                     comboUser.setText(sessions.get(0).getUser());
+                    comboIntranet.setText(sessions.get(0).getIntranet());
                     comboProtocol.setText(sessions.get(0).getProtocol());
                     textPassword.setText(sessions.get(0).getPassword());
                 } else {
@@ -241,6 +241,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 List<ConfigSession> sessions = SessionManager.getInstance().querySessionByHostUser(host, user);
                 if (sessions.size() == 1) {
                     comboProtocol.setText(sessions.get(0).getProtocol());
+                    comboIntranet.setText(sessions.get(0).getIntranet());
                     textPassword.setText(sessions.get(0).getPassword());
                 } else {
                     comboProtocol.setText(ConstantValue.DEFAULT_PROTOCOL);
