@@ -1,9 +1,9 @@
 # Changelog
 
-## [1.1.25] - 2021-08-17
+## [1.1.25] - 2021-09-22
 
-- hutool -> 5.7.9
-- logback -> 1.2.5
+- hutool -> 5.7.13
+- logback -> 1.2.6
 - 添加mintty会话时, 不校验host等
 - 调整会话编辑框中, host和intranet下拉框的列表获取
 

@@ -107,7 +107,7 @@ public class InvokeProgram extends Thread {
         appendIfNotBlank(sb, " -P ", port);
         appendIfNotBlank(sb, " ", host);
 
-        log.debug("Putty parameters: putty {}", sb);
+        log.debug("Putty command: putty{}", sb);
 
         return sb.toString();
     }
@@ -184,7 +184,8 @@ public class InvokeProgram extends Thread {
         }
 
         if (!result) {
-            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR", String.format(MessageConstants.FORMAT_FAILED_CMD_2_ARG, path, args));
+            MessageDialog.openInformation(MainFrame.SHELL, "OPEN " + name + "ERROR",
+                    String.format(MessageConstants.FORMAT_FAILED_CMD_2_ARG, path, args));
             return;
         }
 
@@ -252,7 +253,7 @@ public class InvokeProgram extends Thread {
      * @param session
      */
     public void invokeMintty(ConfigSession session) {
-                String args = " --dir ~";
+        String args = " --dir ~";
 
         // Mount command-line Putty parameters:
         String tabDisplayName = "Cygwin";

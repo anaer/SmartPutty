@@ -4,8 +4,8 @@
 	<artifactId>SmartPutty</artifactId>
 	<version>1.1.25</version>
 	<properties>
-		<ch.qos.logback.version>1.2.5</ch.qos.logback.version>
-		<cn.hutool.version>5.7.9</cn.hutool.version>
+		<ch.qos.logback.version>1.2.6</ch.qos.logback.version>
+		<cn.hutool.version>5.7.13</cn.hutool.version>
 		<junit.version>4.13.2</junit.version>
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
