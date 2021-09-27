@@ -2,10 +2,10 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,42 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class RegistryUtils {
+
+    /**
+     *
+     */
+    private static final String REG_SZ = "REG_SZ";
+    /**
+     *
+     */
+    private static final String REG_DWORD = "REG_DWORD";
+    /**
+     *
+     */
+    private static final String BLINK_CUR = "BlinkCur";
+    /**
+     *
+     */
+    private static final String NO_REMOTE_WIN_TITLE = "NoRemoteWinTitle";
+    /**
+     *
+     */
+    private static final String WIN_TITLE = "WinTitle";
+    /**
+     *
+     */
+    private static final String SCROLLBACK_LINES = "ScrollbackLines";
+    /**
+     *
+     */
+    private static final String LINE_CODE_PAGE = "LineCodePage";
+    /**
+     *
+     */
+    private static final String WARN_ON_CLOSE = "WarnOnClose";
+
+    private RegistryUtils(){}
+
     /**
      * putty会话配置.
      */
@@ -41,12 +77,12 @@ public class RegistryUtils {
      * 初始化 注册表 默认配置.
      */
     public static void initPuttyDefaultSettings() {
-        setRegistry(REGISTRY_PUTTY_SETTINGS, "WarnOnClose", "REG_DWORD", "0");
-        setRegistry(REGISTRY_PUTTY_SETTINGS, "LineCodePage", "REG_SZ", "UTF-8");
-        setRegistry(REGISTRY_PUTTY_SETTINGS, "ScrollbackLines", "REG_DWORD", "5000");
-        setRegistry(REGISTRY_PUTTY_SETTINGS, "WinTitle", "REG_SZ", " ");
-        setRegistry(REGISTRY_PUTTY_SETTINGS, "NoRemoteWinTitle", "REG_DWORD", "1");
-        setRegistry(REGISTRY_PUTTY_SETTINGS, "BlinkCur", "REG_DWORD", "1");
+        setRegistry(REGISTRY_PUTTY_SETTINGS, WARN_ON_CLOSE, REG_DWORD, "0");
+        setRegistry(REGISTRY_PUTTY_SETTINGS, LINE_CODE_PAGE, REG_SZ, "UTF-8");
+        setRegistry(REGISTRY_PUTTY_SETTINGS, SCROLLBACK_LINES, REG_DWORD, "5000");
+        setRegistry(REGISTRY_PUTTY_SETTINGS, WIN_TITLE, REG_SZ, " ");
+        setRegistry(REGISTRY_PUTTY_SETTINGS, NO_REMOTE_WIN_TITLE, REG_DWORD, "1");
+        setRegistry(REGISTRY_PUTTY_SETTINGS, BLINK_CUR, REG_DWORD, "1");
     }
 
     /**
@@ -55,13 +91,13 @@ public class RegistryUtils {
      * @return
      */
     public static Map<String, Object> readPuttyDefaultSettings() {
-        Map<String, Object> map = new HashMap<>(6);
-        map.put("WarnOnClose", readRegistry(REGISTRY_PUTTY_SETTINGS, "WarnOnClose"));
-        map.put("LineCodePage", readRegistry(REGISTRY_PUTTY_SETTINGS, "LineCodePage"));
-        map.put("ScrollbackLines", readRegistry(REGISTRY_PUTTY_SETTINGS, "ScrollbackLines"));
-        map.put("WinTitle", readRegistry(REGISTRY_PUTTY_SETTINGS, "WinTitle"));
-        map.put("NoRemoteWinTitle", readRegistry(REGISTRY_PUTTY_SETTINGS, "NoRemoteWinTitle"));
-        map.put("BlinkCur", readRegistry(REGISTRY_PUTTY_SETTINGS, "BlinkCur"));
+        Map<String, Object> map = MapUtil.newHashMap(6);
+        map.put(WARN_ON_CLOSE, readRegistry(REGISTRY_PUTTY_SETTINGS, WARN_ON_CLOSE));
+        map.put(LINE_CODE_PAGE, readRegistry(REGISTRY_PUTTY_SETTINGS, LINE_CODE_PAGE));
+        map.put(SCROLLBACK_LINES, readRegistry(REGISTRY_PUTTY_SETTINGS, SCROLLBACK_LINES));
+        map.put(WIN_TITLE, readRegistry(REGISTRY_PUTTY_SETTINGS, WIN_TITLE));
+        map.put(NO_REMOTE_WIN_TITLE, readRegistry(REGISTRY_PUTTY_SETTINGS, NO_REMOTE_WIN_TITLE));
+        map.put(BLINK_CUR, readRegistry(REGISTRY_PUTTY_SETTINGS, BLINK_CUR));
         return map;
     }
 
@@ -101,10 +137,10 @@ public class RegistryUtils {
 
             if (parsed.length == 4) {
                 switch (parsed[2]) {
-                    case "REG_SZ":
+                    case REG_SZ:
                         obj = parsed[3];
                         break;
-                    case "REG_DWORD":
+                    case REG_DWORD:
                         obj = Integer.decode(parsed[3]);
                         break;
                     default:

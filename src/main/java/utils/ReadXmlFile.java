@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.XmlUtil;
 import cn.hutool.json.JSONUtil;
 import constants.ConstantValue;
@@ -66,7 +67,7 @@ public class ReadXmlFile {
 
                     // 过滤配置了绝对路径, 但是路径不存在的配置
                     if (!(FileUtil.isAbsolutePath(path) && !FileUtil.exist(path))) {
-                        HashMap<String, String> hm = new HashMap<>(4);
+                        HashMap<String, String> hm = MapUtil.newHashMap(4);
                         hm.put("type", type);
                         hm.put("path", path);
                         hm.put("argument", argument);
@@ -100,7 +101,7 @@ public class ReadXmlFile {
         return res;
     }
 
-    public static void main(String argv[]) {
+    public static void main(String[] argv) {
         String path = ConstantValue.MENU_CONFIG_FILE;
         File file = new File(path);
         List<HashMap<String, String>> list = parse(file);

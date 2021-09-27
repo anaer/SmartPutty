@@ -1,6 +1,5 @@
 package dialog;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -61,7 +60,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
      */
     private void init() {
         // 临时修改的配置项
-        tmpPropConfigMap = new HashMap<>(16);
+        tmpPropConfigMap = MapUtil.newHashMap();
 
         // Setup a layout:
         GridLayout layout = new GridLayout(3, false);
