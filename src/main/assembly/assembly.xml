@@ -15,6 +15,9 @@
 		<fileSet>
 			<directory>target/lib</directory>
 			<outputDirectory>/lib</outputDirectory>
+			<excludes>
+				<exclude>lombok-*.jar</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>target/config</directory>
