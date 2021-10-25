@@ -87,18 +87,18 @@ public class SessionManager {
         writer.flush();
     }
 
-    public void insertSession(ConfigSession configSession) {
-        list.add(configSession);
+    public void insertSession(ConfigSession session) {
+        list.add(session);
         saveCsv(list);
     }
 
     /**
      * 删除会话.
      *
-     * @param csession
+     * @param session
      */
-    public void deleteSession(ConfigSession csession) {
-        list.remove(csession);
+    public void deleteSession(ConfigSession session) {
+        list.remove(session);
         saveCsv(list);
     }
 

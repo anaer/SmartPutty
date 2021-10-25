@@ -180,10 +180,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         ArrayList<ConfigSession> sessions = new ArrayList<>();
         for (TableItem tableItem : tableItems) {
             log.info("session:{}", tableItem.getData(FieldConstants.SESSION));
-            ConfigSession csession = dbm
+            ConfigSession session = dbm
                 .querySessionBySession((ConfigSession) tableItem.getData(FieldConstants.SESSION));
-            if (csession != null) {
-                sessions.add(csession);
+            if (session != null) {
+                sessions.add(session);
             }
         }
         dialog.dispose();
@@ -199,11 +199,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     private void openPutty() {
         TableItem[] tableItems = table.getSelection();
         if (tableItems != null) {
-            ConfigSession csession = dbm
+            ConfigSession session = dbm
                 .querySessionBySession((ConfigSession) tableItems[0].getData(FieldConstants.SESSION));
-            if (Objects.nonNull(csession)) {
-                // deepcode ignore CommandInjection: <忽略>
-                InvokeProgram.invokeSinglePutty(csession);
+            if (Objects.nonNull(session)) {
+                InvokeProgram.invokeSinglePutty(session);
                 dialog.dispose();
             }
         }

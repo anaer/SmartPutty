@@ -199,9 +199,9 @@ public class Configuration {
     /**
      * 设置窗口坐标位置.
      */
-    public void setWindowPosisionSizeString() {
+    public void setWindowPositionSizeString() {
         String position = getWindowPositionSizeString();
-        setConfiguratioin(ConfigConstant.Configuration.WINDOW_POSITION_SIZE, position);
+        setConfiguration(ConfigConstant.Configuration.WINDOW_POSITION_SIZE, position);
     }
 
     /**
@@ -210,7 +210,7 @@ public class Configuration {
      * @param visible
      */
     public void setUtilitiesBarVisible(String visible) {
-        setConfiguratioin(ConfigConstant.Configuration.VIEW_UTILITIES_BAR, visible);
+        setConfiguration(ConfigConstant.Configuration.VIEW_UTILITIES_BAR, visible);
     }
 
     /**
@@ -219,11 +219,11 @@ public class Configuration {
      * @param visible
      */
     public void setConnectionBarVisible(String visible) {
-        setConfiguratioin(ConfigConstant.Configuration.VIEW_CONNECTION_BAR, visible);
+        setConfiguration(ConfigConstant.Configuration.VIEW_CONNECTION_BAR, visible);
     }
 
     public void setBottomQuickBarVisible(String visible) {
-        setConfiguratioin(ConfigConstant.Configuration.VIEW_BOTTOM_QUICK_BAR, visible);
+        setConfiguration(ConfigConstant.Configuration.VIEW_BOTTOM_QUICK_BAR, visible);
     }
 
     /**
@@ -232,7 +232,7 @@ public class Configuration {
      * @param visible
      */
     public void setWelcomePageVisible(String visible) {
-        setConfiguratioin(ConfigConstant.Configuration.SHOW_WELCOME_PAGE, visible);
+        setConfiguration(ConfigConstant.Configuration.SHOW_WELCOME_PAGE, visible);
     }
 
     /**
@@ -245,7 +245,7 @@ public class Configuration {
     /**
      * 设置configuration配置.
      */
-    public void setConfiguratioin(String key, String value) {
+    public void setConfiguration(String key, String value) {
         setting.setByGroup(key, ConfigConstant.Group.CONFIGURATION, value);
     }
 
@@ -296,7 +296,7 @@ public class Configuration {
      * 关闭前 保存配置文件.
      */
     public void saveBeforeClose() {
-        setWindowPosisionSizeString();
+        setWindowPositionSizeString();
         // 关闭前, 先关闭自动加载
         this.setting.autoLoad(false);
         saveSetting();
