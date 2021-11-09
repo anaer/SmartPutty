@@ -525,7 +525,15 @@ public class MainFrame
         folder.addListener(SWT.MouseEnter, listener);
         folder.addListener(SWT.MouseDoubleClick, e -> {
             CTabItem item = folder.getSelection();
-            closeTab(item);
+            if (Objects.nonNull(item)) {
+                // 双击tab关闭, 添加确认提示框 (鼠标有问题 容易误操作 连击)
+                MessageBox msgBox = new MessageBox(SHELL, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+                msgBox.setText("Confirm Exit");
+                msgBox.setMessage("Are you sure?");
+                if (msgBox.open() == SWT.YES) {
+                    closeTab(item);
+                }
+            }
         });
     }
 

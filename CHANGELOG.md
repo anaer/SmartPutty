@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.27] - 2021-11-09
+
+- hutool -> 5.7.16
+- double click close add confirm dialog
+
+
 ## [1.1.26] - 2021-10-25
 
 - hutool -> 5.7.15
