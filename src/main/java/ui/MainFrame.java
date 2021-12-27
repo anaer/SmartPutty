@@ -220,25 +220,21 @@ public class MainFrame
 
         newItem = new MenuItem(fileMenu, SWT.PUSH);
         newItem.setText("New\tCtrl+N");
-        newItem.setImage(ButtonImage.NEW_IMAGE);
         newItem.setAccelerator(SWT.CTRL + 'N');
         newItem.addSelectionListener(this);
 
         openItem = new MenuItem(fileMenu, SWT.PUSH);
         openItem.setText("Open\tCtrl+O");
-        openItem.setImage(ButtonImage.OPEN_IMAGE);
         openItem.setAccelerator(SWT.CTRL + 'O');
         openItem.addSelectionListener(this);
 
         tabNextItem = new MenuItem(fileMenu, SWT.PUSH);
         tabNextItem.setText("Next Tab\tAlt+#");
-        tabNextItem.setImage(ButtonImage.DICT_IMAGE);
         tabNextItem.setAccelerator(SWT.ALT + SWT.SHIFT + '3');
         tabNextItem.addSelectionListener(this);
 
         killAllPuttyItem = new MenuItem(fileMenu, SWT.PUSH);
         killAllPuttyItem.setText("Kill All Putty");
-        killAllPuttyItem.setImage(ButtonImage.RELOAD_IMAGE);
         killAllPuttyItem.addSelectionListener(this);
 
         // Separator:
@@ -278,8 +274,7 @@ public class MainFrame
         configurationMenuItem.setMenu(optionsMenu);
 
         configProgramsLocationsItem = new MenuItem(optionsMenu, SWT.PUSH);
-        configProgramsLocationsItem.setText("Programs locations");
-        configProgramsLocationsItem.setImage(ButtonImage.REMOTE_DESK_IMAGE);
+        configProgramsLocationsItem.setText("Programs locations\tCtrl+R");
         configProgramsLocationsItem.setAccelerator(SWT.CTRL + 'R');
 
         configProgramsLocationsItem.addSelectionListener(this);

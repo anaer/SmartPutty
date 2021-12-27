@@ -111,38 +111,33 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
         int xPos = 565;
         // button
-        addButton = new Button(dialog, SWT.LEFT);
+        addButton = new Button(dialog, SWT.NONE);
         addButton.setBounds(xPos, 5, 80, 27);
         addButton.setText("Add   ");
-        addButton.setImage(ButtonImage.ADD_IMAGE);
         addButton.setToolTipText("Add a new connection");
         addButton.addSelectionListener(this);
 
-        editButton = new Button(dialog, SWT.LEFT);
+        editButton = new Button(dialog, SWT.NONE);
         editButton.setBounds(xPos, 38, 80, 27);
         editButton.setText("Edit ");
-        editButton.setImage(ButtonImage.EDIT_IMAGE);
         editButton.setToolTipText("Edit selected connection");
         editButton.addSelectionListener(this);
 
-        deleteButton = new Button(dialog, SWT.LEFT);
+        deleteButton = new Button(dialog, SWT.NONE);
         deleteButton.setBounds(xPos, 70, 80, 27);
         deleteButton.setText("Delete");
-        deleteButton.setImage(ButtonImage.DELETE_IMAGE);
         deleteButton.setToolTipText("Delete selected connection/s");
         deleteButton.addSelectionListener(this);
 
-        puttyWindow = new Button(dialog, SWT.LEFT);
+        puttyWindow = new Button(dialog, SWT.NONE);
         puttyWindow.setBounds(xPos, 103, 80, 27);
         puttyWindow.setText("Putty");
-        puttyWindow.setImage(ButtonImage.PUTTY_IMAGE);
         puttyWindow.setToolTipText("Open selected connection in a single window");
         puttyWindow.addSelectionListener(this);
 
         connectButton = new Button(dialog, SWT.NONE);
         connectButton.setBounds(xPos, 230, 80, 27);
         connectButton.setText("Connect");
-        connectButton.setImage(ButtonImage.CONNECT_IMAGE);
         connectButton.setToolTipText("Open selected connection/s in a tab");
         connectButton.addSelectionListener(this);
 

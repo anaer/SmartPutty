@@ -7,7 +7,7 @@ configuration:
     WaitForInitTime: 200
     ShowWelcomePage: false
     ViewUtilitiesBar: 'false'
-    WindowPositionSize: 201,57,1857,1096
+    WindowPositionSize: -304,194,1857,1096
     ViewBottomQuickBar: 'false'
     DefaultPuttyUsername: root
     DatabasePath: C:\Program Files\SmartPutty\config\ssh.csv
