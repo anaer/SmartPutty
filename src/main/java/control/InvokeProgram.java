@@ -389,6 +389,27 @@ public class InvokeProgram extends Thread {
         }
     }
 
+
+    /**
+     * Execute an utility from left bar.
+     *
+     * @param program
+     * @param arg
+     */
+    public static void exec(String cmd) {
+        if (StrUtil.isBlank(cmd)) {
+            log.warn("程序路径为空. 过滤执行.");
+            return;
+        }
+
+        try {
+            Runtime.getRuntime().exec(cmd);
+        } catch (Exception ex) {
+            MessageDialog.openInformation(null, "错误", cmd + " " + ex.getMessage());
+            log.error(ExceptionUtil.getMessage(ex));
+        }
+    }
+
     public static void invokeProxy(String host, String user, String password, String port) {
         String cmd = "cmd /c start " + MainFrame.configuration.getProgramPath(ProgramEnum.PLINK)
                 + " -D " + port + " -pw " + password + " -N " + user + "@" + host;

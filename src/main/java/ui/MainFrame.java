@@ -1,8 +1,11 @@
 package ui;
 
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.core.util.StrUtil;
+
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,9 +49,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
-import cn.hutool.core.swing.clipboard.ClipboardUtil;
-import cn.hutool.core.util.RuntimeUtil;
-import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.ConfigConstant;
 import constants.ConstantValue;
@@ -64,6 +64,7 @@ import enums.ProgramEnum;
 import listener.DragListener;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
+import model.CustomMenu;
 import utils.RegistryUtils;
 import widgets.BorderData;
 import widgets.BorderLayout;
@@ -288,21 +289,16 @@ public class MainFrame
         application.setText("Application");
         Menu applicationMenu = new Menu(shell, SWT.DROP_DOWN);
         application.setMenu(applicationMenu);
-        List<HashMap<String, String>> listMenuItems = configuration.getMenuConfig();
-        for (HashMap<String, String> menuHashMap : listMenuItems) {
-            String type = menuHashMap.get("type");
+        List<CustomMenu> menus = configuration.getMenus();
+        for (CustomMenu customMenu : menus) {
+            String type = customMenu.getType();
             if (type == null || "separator".equals(type)) {
                 new MenuItem(applicationMenu, SWT.SEPARATOR);
                 continue;
             }
-            String path = StrUtil.blankToDefault(menuHashMap.get("path"), "N/A");
-            String argument = StrUtil.trimToEmpty(menuHashMap.get(FieldConstants.ARGUMENT));
-            String description = StrUtil.blankToDefault(menuHashMap.get("description"), "N/A");
             MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
-            menuItem.setText(description);
-            menuItem.setData("path", path);
-            menuItem.setData(FieldConstants.ARGUMENT, argument);
-            menuItem.setData("description", description);
+            menuItem.setText(customMenu.getName());
+            menuItem.setData("cmd", customMenu.getCmd());
             menuItem.setData("type", "dynamicApplication");
             menuItem.addSelectionListener(this);
         }
@@ -986,9 +982,8 @@ public class MainFrame
             }
         } else if (StrUtil.endWith(e.getSource().getClass().toString(), "MenuItem")
                 && "dynamicApplication".equals(((MenuItem) e.getSource()).getData("type"))) {
-            String path = ((MenuItem) e.getSource()).getData("path").toString();
-            String argument = ((MenuItem) e.getSource()).getData("argument").toString();
-            InvokeProgram.exec(path, argument);
+            String cmd = ((MenuItem) e.getSource()).getData("cmd").toString();
+            InvokeProgram.exec(cmd);
         } else if (e.getSource() == connectButton) {
             String host = hostItem.getText();
             String name = host;

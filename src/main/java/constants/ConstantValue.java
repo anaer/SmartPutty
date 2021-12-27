@@ -41,12 +41,8 @@ public class ConstantValue {
     public static final int SCREEN_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 
     /**
-     * 自定义菜单配置.
+     * 配置文件.
      */
-    public static final String MENU_CONFIG_FILE = Paths.get("config", "MenuConfig.xml").toString();
+    public static final String CONFIG_FILE = Paths.get("config", "config.yaml").toString();
 
-    /**
-     * app配置文件路径.
-     */
-    public static final String APP_CONFIG_FILE = Paths.get("config", "app.setting").toString();
 }

@@ -1,0 +1,32 @@
+!!model.Config
+configuration:
+    Dictionary: http://dict.youdao.com/w/eng/
+    Version: 1.2.1
+    ViewConnectionBar: 'false'
+    WindowsBaseDrive: 'C:'
+    WaitForInitTime: 200
+    ShowWelcomePage: false
+    ViewUtilitiesBar: 'false'
+    WindowPositionSize: 201,57,1857,1096
+    ViewBottomQuickBar: 'false'
+    DefaultPuttyUsername: root
+    DatabasePath: C:\Program Files\SmartPutty\config\ssh.csv
+feature:
+    transfer: true
+    vnc: false
+menus:
+-   cmd: notepad.exe
+    name: notebook
+    type: menu
+-   cmd: C:\Program Files\SingleWare\luyten-0.5.0.exe
+    name: Java反编译
+    type: menu
+-   cmd: null
+    name: null
+    type: separator
+program:
+    PuttyExecutable: C:\ProgramData\chocolatey\bin\PUTTY.EXE
+    MinttyExecutable: C:\tools\msys64\usr\bin\mintty.exe
+    PlinkExecutable: C:\ProgramData\chocolatey\bin\PLINK.EXE
+    ScpExecutable: C:\Program Files\WinSCP\WinSCP.exe
+    KeyGeneratorExecutable: C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE

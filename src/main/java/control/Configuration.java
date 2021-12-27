@@ -1,20 +1,31 @@
 package control;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.StrUtil;
+
 import java.io.File;
-import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.graphics.Rectangle;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.setting.Setting;
 import constants.ConfigConstant;
 import constants.ConstantValue;
 import enums.ProgramEnum;
+import lombok.extern.slf4j.Slf4j;
+import model.Config;
+import model.CustomMenu;
 import ui.MainFrame;
-import utils.ReadXmlFile;
 
 /**
  * 配置控制类.
@@ -22,17 +33,15 @@ import utils.ReadXmlFile;
  * @author lvcn
  * @version $Id: Configuration.java, v 1.0 Jul 22, 2019 3:44:47 PM lvcn Exp $
  */
+@Slf4j
 public class Configuration {
 
-    private final Setting setting;
+    private final List<CustomMenu> menus;
 
-    private final List<HashMap<String, String>> menuConfigMapList;
+    private final Config config;
 
-    /**
-     * 获取自定义菜单配置.
-    */
-    public List<HashMap<String, String>> getMenuConfig() {
-        return this.menuConfigMapList;
+    public List<CustomMenu> getMenus() {
+        return this.menus;
     }
 
     /**
@@ -40,10 +49,22 @@ public class Configuration {
      * 初始化配置信息.
      */
     public Configuration() {
-        this.menuConfigMapList = ReadXmlFile.parse(new File(ConstantValue.MENU_CONFIG_FILE));
-        this.setting = new Setting(new File(ConstantValue.APP_CONFIG_FILE),
-                Charset.defaultCharset(), true);
-        this.setting.autoLoad(true);
+        this.config = getConfig();
+        this.menus = config.getMenus();
+    }
+
+    private Config getConfig() {
+        Config config = null;
+        File file = new File(ConstantValue.CONFIG_FILE);
+        try (FileInputStream fis = new FileInputStream(file)) {
+            Yaml yaml = new Yaml();
+            Map map = yaml.loadAs(fis, Map.class);
+
+            config = BeanUtil.mapToBean(map, Config.class, true, CopyOptions.create());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return config;
     }
 
     /**
@@ -239,57 +260,57 @@ public class Configuration {
      * 查询配置.
      */
     public <T> T getConfiguration(String key, T defaultValue) {
-        return getByGroup(key, ConfigConstant.Group.CONFIGURATION, defaultValue);
+        Object value = this.config.getConfiguration().get(key);
+        return Convert.convert(defaultValue.getClass(), value, defaultValue);
     }
 
     /**
      * 设置configuration配置.
      */
     public void setConfiguration(String key, String value) {
-        setting.setByGroup(key, ConfigConstant.Group.CONFIGURATION, value);
+        this.config.getConfiguration().put(key, value);
     }
 
     /**
      * 查询program配置.
      */
     public <T> T getProgram(String key, T defaultValue) {
-        return getByGroup(key, ConfigConstant.Group.PROGRAM, defaultValue);
+
+        Object value = this.config.getProgram().get(key);
+        return Convert.convert(defaultValue.getClass(), value, defaultValue);
     }
 
     public void setProgram(String key, String value) {
-        setting.setByGroup(key, ConfigConstant.Group.PROGRAM, value);
+        this.config.getProgram().put(key, value);
     }
 
     /**
      * 查询特性配置.
      */
     public <T> T getFeature(String key, T defaultValue) {
-        return getByGroup(key, ConfigConstant.Group.FEATURE, defaultValue);
-    }
-
-    /**
-     * 根据defaultValue类型 返回.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getByGroup(String key, String group, T defaultValue) {
-        if (StrUtil.isBlank(key)) {
-            return defaultValue;
-        }
-
-        if (null != defaultValue) {
-            final Class<T> type = (Class<T>) defaultValue.getClass();
-            String value = setting.getByGroup(key, group);
-            return Convert.convertWithCheck(type, value, defaultValue, true);
-        }
-
-        return (T) setting.getByGroup(key, group);
+        Object value = this.config.getFeature().get(key);
+        return Convert.convert(defaultValue.getClass(), value, defaultValue);
     }
 
     /**
      * 保存配置文件.
      */
     public void saveSetting() {
-        setting.store(new File(ConstantValue.APP_CONFIG_FILE));
+        File file = new File(ConstantValue.CONFIG_FILE);
+
+        try (OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(file),
+                CharsetUtil.defaultCharset())) {
+            DumperOptions options = new DumperOptions();
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            options.setIndent(4);
+            Yaml yaml = new Yaml(options);
+            yaml.dump(this.config, output);
+
+            // 转换文件编码, 默认输出中文乱码, 暂时先转换处理
+            FileUtil.convertCharset(file, CharsetUtil.CHARSET_GBK, CharsetUtil.CHARSET_UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -297,8 +318,6 @@ public class Configuration {
      */
     public void saveBeforeClose() {
         setWindowPositionSizeString();
-        // 关闭前, 先关闭自动加载
-        this.setting.autoLoad(false);
         saveSetting();
     }
 }
