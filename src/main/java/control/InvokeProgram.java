@@ -456,8 +456,4 @@ public class InvokeProgram extends Thread {
             log.error("执行程序失败:{}", e);
         }
     }
-
-    public static void startProxy(String arg) {
-        // do nothing
-    }
 }

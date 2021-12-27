@@ -33,7 +33,7 @@ import ui.MainFrame;
  * @author lvcn
  * @version $Id: Configuration.java, v 1.0 Jul 22, 2019 3:44:47 PM lvcn Exp $
  */
-@Slf4j
+@SuppressWarnings("all")
 public class Configuration {
 
     private final List<CustomMenu> menus;
