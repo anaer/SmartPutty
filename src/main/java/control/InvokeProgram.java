@@ -1,5 +1,10 @@
 package control;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
+
 import java.awt.Desktop;
 import java.io.File;
 
@@ -10,9 +15,6 @@ import org.eclipse.swt.internal.win32.SHELLEXECUTEINFO;
 import org.eclipse.swt.internal.win32.TCHAR;
 import org.eclipse.swt.widgets.Composite;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
 import constants.ConstantValue;
 import constants.FieldConstants;
 import constants.MessageConstants;
@@ -155,7 +157,7 @@ public class InvokeProgram extends Thread {
         }
 
         String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
-        String name = getFileNameWithoutSuffix(path);
+        String name = FileNameUtil.mainName(path);
 
         Number hHeap = OS.GetProcessHeap();
         TCHAR buffer = new TCHAR(0, path, true);
@@ -207,9 +209,9 @@ public class InvokeProgram extends Thread {
         int count = 15;
         Number hWnd = 0;
 
+        int waitingTime = MainFrame.configuration.getWaitForInitTime();
         while (count > 0
                 && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
-            int waitingTime = MainFrame.configuration.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }
@@ -233,18 +235,6 @@ public class InvokeProgram extends Thread {
         } else {
             tabItem.dispose();
         }
-    }
-
-    /** 获取不带后缀名的文件名. */
-    public static String getFileNameWithoutSuffix(File file) {
-        String fileName = file.getName();
-        return fileName.substring(0, fileName.lastIndexOf('.'));
-    }
-
-    /** 获取不带后缀名的文件名. */
-    public static String getFileNameWithoutSuffix(String path) {
-        File file = new File(path);
-        return getFileNameWithoutSuffix(file);
     }
 
     /**
@@ -355,10 +345,8 @@ public class InvokeProgram extends Thread {
     public static void runProgram(ProgramEnum program, String arg) {
         // 1. 获取应用程序执行路径
         String path = MainFrame.configuration.getProgramPath(program);
-        if (StrUtil.isNotBlank(path)) {
-            // 2. 如果路径不为空, 执行应用程序
-            exec(path, arg);
-        }
+        // 2. 如果路径不为空, 执行应用程序
+        exec(path, arg);
     }
 
     /**
@@ -368,11 +356,6 @@ public class InvokeProgram extends Thread {
      * @param arg
      */
     public static void exec(String program, String arg) {
-        if (StrUtil.isBlank(program)) {
-            log.warn("程序路径为空. 过滤执行.");
-            return;
-        }
-
         String cmd;
 
         if (StrUtil.isNotBlank(arg)) {
@@ -380,15 +363,8 @@ public class InvokeProgram extends Thread {
         } else {
             cmd = program;
         }
-
-        try {
-            Runtime.getRuntime().exec(cmd);
-        } catch (Exception ex) {
-            MessageDialog.openInformation(null, "错误", program + " " + ex.getMessage());
-            log.error(ExceptionUtil.getMessage(ex));
-        }
+        exec(cmd);
     }
-
 
     /**
      * Execute an utility from left bar.
