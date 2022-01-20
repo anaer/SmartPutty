@@ -83,11 +83,11 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         tableNameColumn.setText("Name");
 
         TableColumn tableHostColumn = new TableColumn(table, SWT.NONE);
-        tableHostColumn.setWidth(125);
+        tableHostColumn.setWidth(110);
         tableHostColumn.setText("Host");
 
         TableColumn tableIntranetColumn = new TableColumn(table, SWT.NONE);
-        tableIntranetColumn.setWidth(125);
+        tableIntranetColumn.setWidth(110);
         tableIntranetColumn.setText("Intranet");
 
         TableColumn tablePortColumn = new TableColumn(table, SWT.NONE);
@@ -95,16 +95,17 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         tablePortColumn.setText("Port");
 
         TableColumn tableUserColumn = new TableColumn(table, SWT.NONE);
-        tableUserColumn.setWidth(75);
+        tableUserColumn.setWidth(50);
         tableUserColumn.setText("User");
 
         TableColumn tableTimeColumn = new TableColumn(table, SWT.NONE);
         tableTimeColumn.setWidth(65);
         tableTimeColumn.setText("Protocol");
 
-        TableColumn sessionColumn = new TableColumn(table, SWT.NONE);
-        sessionColumn.setWidth(75);
-        sessionColumn.setText(FieldConstants.SESSION);
+        // 隐藏session列, 主要目前都没怎么用session
+        // TableColumn sessionColumn = new TableColumn(table, SWT.NONE);
+        // sessionColumn.setWidth(75);
+        // sessionColumn.setText(FieldConstants.SESSION);
 
         dbm = SessionManager.getInstance();
         loadTable();
