@@ -175,9 +175,8 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         TableItem[] tableItems = table.getSelection();
         ArrayList<ConfigSession> sessions = new ArrayList<>();
         for (TableItem tableItem : tableItems) {
-            log.info("session:{}", tableItem.getData(FieldConstants.SESSION));
-            ConfigSession session = dbm
-                .querySessionBySession((ConfigSession) tableItem.getData(FieldConstants.SESSION));
+            ConfigSession session = (ConfigSession) tableItem.getData(FieldConstants.SESSION);
+            log.info("session:{}", session);
             if (session != null) {
                 sessions.add(session);
             }
@@ -193,14 +192,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
      * Open a Putty session in a window outside program.
      */
     private void openPutty() {
-        TableItem[] tableItems = table.getSelection();
-        if (tableItems != null) {
-            ConfigSession session = dbm
-                .querySessionBySession((ConfigSession) tableItems[0].getData(FieldConstants.SESSION));
-            if (Objects.nonNull(session)) {
-                InvokeProgram.invokeSinglePutty(session);
-                dialog.dispose();
-            }
+        ConfigSession session = getCurrentSelectSession();
+        if (Objects.nonNull(session)) {
+            InvokeProgram.invokeSinglePutty(session);
+            dialog.dispose();
         }
     }
 
