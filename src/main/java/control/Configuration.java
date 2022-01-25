@@ -210,11 +210,8 @@ public class Configuration {
      * @return
      */
     public String getWindowPositionSizeString() {
-        int x = MainFrame.SHELL.getBounds().x;
-        int y = MainFrame.SHELL.getBounds().y;
-        int width = MainFrame.SHELL.getBounds().width;
-        int height = MainFrame.SHELL.getBounds().height;
-        return StrUtil.join(",", x, y, width, height);
+        Rectangle r = MainFrame.SHELL.getBounds();
+        return StrUtil.join(",", r.x, r.y, r.width, r.height);
     }
 
     /**
