@@ -1,10 +1,6 @@
 package dao;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.text.csv.CsvReader;
@@ -12,6 +8,12 @@ import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.text.csv.CsvWriter;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import control.Configuration;
 import model.ConfigSession;
 
@@ -100,6 +102,39 @@ public class SessionManager {
     public void deleteSession(ConfigSession session) {
         list.remove(session);
         saveCsv(list);
+    }
+
+    /**
+     * 上移.
+     * @param session
+     */
+    public int up(ConfigSession session) {
+        int index = list.indexOf(session);
+        int targetIndex = index;
+
+        if (index > 0) {
+            targetIndex = index - 1;
+            ListUtil.swapTo(list, session, targetIndex);
+            saveCsv(list);
+        }
+        return targetIndex;
+    }
+
+    /**
+     * 下移.
+     * @param session
+     */
+    public int down(ConfigSession session) {
+        int index = list.indexOf(session);
+        int targetIndex = index;
+
+        if (index < list.size() - 1) {
+            targetIndex = index + 1;
+            ListUtil.swapTo(list, session, targetIndex);
+            saveCsv(list);
+        }
+
+        return targetIndex;
     }
 
     public List<ConfigSession> getAllSessions() {

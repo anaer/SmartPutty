@@ -1,16 +1,16 @@
 !!model.Config
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
-    Version: 1.2.1
-    ViewConnectionBar: 'false'
+    Version: 1.2.2
+    ViewConnectionBar: false
     WindowsBaseDrive: 'C:'
     WaitForInitTime: 200
     ShowWelcomePage: false
-    ViewUtilitiesBar: 'false'
-    WindowPositionSize: -85,186,1857,1096
-    ViewBottomQuickBar: 'false'
+    ViewUtilitiesBar: false
+    WindowPositionSize: 252,58,1501,1004
+    ViewBottomQuickBar: false
     DefaultPuttyUsername: root
-    DatabasePath: C:\Program Files\SmartPutty\config\ssh.csv
+    DatabasePath: C:\Git\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
 feature:
     transfer: true
     vnc: false

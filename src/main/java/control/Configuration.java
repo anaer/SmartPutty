@@ -227,7 +227,7 @@ public class Configuration {
      *
      * @param visible
      */
-    public void setUtilitiesBarVisible(String visible) {
+    public void setUtilitiesBarVisible(boolean visible) {
         setConfiguration(ConfigConstant.Configuration.VIEW_UTILITIES_BAR, visible);
     }
 
@@ -236,11 +236,11 @@ public class Configuration {
      *
      * @param visible
      */
-    public void setConnectionBarVisible(String visible) {
+    public void setConnectionBarVisible(boolean visible) {
         setConfiguration(ConfigConstant.Configuration.VIEW_CONNECTION_BAR, visible);
     }
 
-    public void setBottomQuickBarVisible(String visible) {
+    public void setBottomQuickBarVisible(boolean visible) {
         setConfiguration(ConfigConstant.Configuration.VIEW_BOTTOM_QUICK_BAR, visible);
     }
 
@@ -264,7 +264,7 @@ public class Configuration {
     /**
      * 设置configuration配置.
      */
-    public void setConfiguration(String key, String value) {
+    public void setConfiguration(String key, Object value) {
         this.config.getConfiguration().put(key, value);
     }
 

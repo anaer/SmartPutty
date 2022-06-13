@@ -58,6 +58,16 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
      */
     private Button    puttyWindow;
 
+    /**
+     * 上移.
+     */
+    private Button btnUp;
+
+    /**
+     * 下移.
+     */
+    private Button btnDown;
+
     public OpenSessionDialog(MainFrame mainFrame, Shell parent) {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         this.mainFrame = mainFrame;
@@ -119,22 +129,34 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         addButton.addSelectionListener(this);
 
         editButton = new Button(dialog, SWT.NONE);
-        editButton.setBounds(xPos, 38, 80, 27);
+        editButton.setBounds(xPos, 37, 80, 27);
         editButton.setText("Edit ");
         editButton.setToolTipText("Edit selected connection");
         editButton.addSelectionListener(this);
 
         deleteButton = new Button(dialog, SWT.NONE);
-        deleteButton.setBounds(xPos, 70, 80, 27);
+        deleteButton.setBounds(xPos, 69, 80, 27);
         deleteButton.setText("Delete");
         deleteButton.setToolTipText("Delete selected connection/s");
         deleteButton.addSelectionListener(this);
 
         puttyWindow = new Button(dialog, SWT.NONE);
-        puttyWindow.setBounds(xPos, 103, 80, 27);
+        puttyWindow.setBounds(xPos, 101, 80, 27);
         puttyWindow.setText("Putty");
         puttyWindow.setToolTipText("Open selected connection in a single window");
         puttyWindow.addSelectionListener(this);
+
+        btnUp = new Button(dialog, SWT.NONE);
+        btnUp.setBounds(xPos, 133, 80, 27);
+        btnUp.setText("⬆ UP");
+        btnUp.setToolTipText("");
+        btnUp.addSelectionListener(this);
+
+        btnDown = new Button(dialog, SWT.NONE);
+        btnDown.setBounds(xPos, 165, 80, 27);
+        btnDown.setText("⬇ DOWN");
+        btnDown.setToolTipText("");
+        btnDown.addSelectionListener(this);
 
         connectButton = new Button(dialog, SWT.NONE);
         connectButton.setBounds(xPos, 230, 80, 27);
@@ -155,7 +177,18 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         }
     }
 
+    /**
+     * 加载表格. 默认选中第一行
+     */
     public void loadTable() {
+        loadTable(0);
+    }
+
+    /**
+     * 加载表格.
+     * @param selectionIndex 默认选中行
+     */
+    public void loadTable(int selectionIndex) {
         table.removeAll();
         List<ConfigSession> sessions = dbm.getAllSessions();
         for (ConfigSession session : sessions) {
@@ -165,6 +198,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
                 .setText(new String[] { session.getName(), session.getHost(), session.getIntranet(),
                                         session.getPort(), session.getUser(),
                                         session.getProtocol(), session.getSession() });
+        }
+
+        if (selectionIndex >= 0 && selectionIndex < table.getItemCount()) {
+            table.setSelection(selectionIndex);
         }
     }
 
@@ -231,7 +268,28 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
                 MessageDialog.openInformation(dialog, "Warning", "Please select one record!");
                 return;
             }
+
             openPutty();
+        } else if (e.getSource() == btnUp) {
+            if (this.table.getSelection().length == 0) {
+                MessageDialog.openInformation(dialog, "Warning", "Please select one record!");
+                return;
+            }
+
+            ConfigSession session = getCurrentSelectSession();
+            int index = dbm.up(session);
+
+            loadTable(index);
+        } else if (e.getSource() == btnDown) {
+            if (this.table.getSelection().length == 0) {
+                MessageDialog.openInformation(dialog, "Warning", "Please select one record!");
+                return;
+            }
+
+            ConfigSession session = getCurrentSelectSession();
+            int index = dbm.down(session);
+
+            loadTable(index);
         } else if (e.getSource() == connectButton) {
             if (this.table.getSelection().length == 0) {
                 MessageDialog.openInformation(dialog, "Warning",

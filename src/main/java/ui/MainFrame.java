@@ -930,17 +930,17 @@ public class MainFrame
             MessageDialog.openInformation(SHELL, "About",
                     "SmartPutty-" + configuration.getSmartPuttyVersion());
         } else if (e.getSource() == utilitiesBarMenuItem) {
-            Boolean visible = utilitiesBarMenuItem.getSelection();
+            boolean visible = utilitiesBarMenuItem.getSelection();
             setCompositeVisible(utilitiesToolbar, SHELL, visible);
-            configuration.setUtilitiesBarVisible(String.valueOf(visible));
+            configuration.setUtilitiesBarVisible(visible);
         } else if (e.getSource() == connectionBarMenuItem) {
-            Boolean visible = connectionBarMenuItem.getSelection();
+            boolean visible = connectionBarMenuItem.getSelection();
             setCompositeVisible(connectGroup, SHELL, visible);
-            configuration.setConnectionBarVisible(String.valueOf(visible));
+            configuration.setConnectionBarVisible(visible);
         } else if (e.getSource() == bottomQuickBarMenuItem) {
-            Boolean visible = bottomQuickBarMenuItem.getSelection();
+            boolean visible = bottomQuickBarMenuItem.getSelection();
             setCompositeVisible(quickBottomGroup, SHELL, visible);
-            configuration.setBottomQuickBarVisible(String.valueOf(visible));
+            configuration.setBottomQuickBarVisible(visible);
         } else if (e.getSource() == configProgramsLocationsItem) {
             new ProgramsLocationsDialog(SHELL);
             // menuItem
