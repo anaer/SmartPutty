@@ -27,8 +27,8 @@ import ui.MainFrame;
 /**
  * 打开会话对话框.
  *
- * @author lvcn
- * @version $Id: OpenSessionDialog.java, v 1.0 Jul 22, 2019 3:45:59 PM lvcn Exp $
+ * @author anaer
+ * @version $Id: OpenSessionDialog.java, v 1.0 Jul 22, 2019 3:45:59 PM anaer Exp $
  */
 @Slf4j
 public class OpenSessionDialog implements SelectionListener, MouseListener {
@@ -244,10 +244,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     @Override
     public void widgetSelected(SelectionEvent e) {
         if (e.getSource() == addButton) {
-            new NewSessionDialog(null, this, "add");
+            new NewSessionDialog(null, this, false);
         } else if (e.getSource() == editButton) {
             if (table.getSelection().length == 1) {
-                new NewSessionDialog(null, this, "edit");
+                new NewSessionDialog(null, this, true);
             } else {
                 MessageDialog.openInformation(dialog, "Warning", "Please select one record!");
             }

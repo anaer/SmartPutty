@@ -4,7 +4,7 @@ import lombok.Getter;
 
 /**
  * External programs used by "SmartPutty". Some of them can replaceable by another (Putty/KiTTY, Plink/Klink,...), but another not.
- * @author lvcn
+ * @author anaer
  */
 @Getter
 public enum ProgramEnum {

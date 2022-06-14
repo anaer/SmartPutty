@@ -6,8 +6,8 @@ import java.nio.file.Paths;
 /**
  * 常量配置.
  *
- * @author lvcn
- * @version $Id: ConstantValue.java, v 1.0 Jul 22, 2019 3:44:21 PM lvcn Exp $
+ * @author anaer
+ * @version $Id: ConstantValue.java, v 1.0 Jul 22, 2019 3:44:21 PM anaer Exp $
  */
 public class ConstantValue {
     private ConstantValue() {

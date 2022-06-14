@@ -3,7 +3,7 @@ package widgets;
 import org.eclipse.swt.SWT;
 
 /**
- * @author lvcn
+ * @author anaer
  * Indicates the region that a control belongs to.
  */
 public final class BorderData {

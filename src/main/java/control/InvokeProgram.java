@@ -28,8 +28,8 @@ import ui.MainFrame;
 /**
  * 调用程序.
  *
- * @author lvcn
- * @version $Id: InvokeProgram.java, v 1.0 Jul 22, 2019 3:45:00 PM lvcn Exp $
+ * @author anaer
+ * @version $Id: InvokeProgram.java, v 1.0 Jul 22, 2019 3:45:00 PM anaer Exp $
  */
 @Slf4j
 public class InvokeProgram extends Thread {
@@ -49,7 +49,7 @@ public class InvokeProgram extends Thread {
 
     @Override
     public void run() {
-        MainFrame.display.syncExec(() -> {
+        MainFrame.DISPLAY.syncExec(() -> {
             if (session != null) {
                 if (ProtocolEnum.MINTTY == ProtocolEnum.find(session.getProtocol())) {
                     invokeMintty(session);
@@ -156,7 +156,7 @@ public class InvokeProgram extends Thread {
             tabName.append("(").append(session.getIntranet()).append(")");
         }
 
-        String path = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY);
+        String path = MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.PUTTY);
         String name = FileNameUtil.mainName(path);
 
         Number hHeap = OS.GetProcessHeap();
@@ -209,7 +209,7 @@ public class InvokeProgram extends Thread {
         int count = 15;
         Number hWnd = 0;
 
-        int waitingTime = MainFrame.configuration.getWaitForInitTime();
+        int waitingTime = MainFrame.CONFIGURATION.getWaitForInitTime();
         while (count > 0
                 && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
             ThreadUtil.safeSleep(waitingTime);
@@ -249,7 +249,7 @@ public class InvokeProgram extends Thread {
         String tabDisplayName = "Cygwin";
 
         Number hHeap = OS.GetProcessHeap();
-        String programPath = MainFrame.configuration.getProgramPath(ProgramEnum.MINTTY);
+        String programPath = MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.MINTTY);
         TCHAR buffer = new TCHAR(0, programPath, true);
         int byteCount = buffer.length() * TCHAR.sizeof;
         Number lpFile = OS.HeapAlloc(hHeap.intValue(), OS.HEAP_ZERO_MEMORY, byteCount);
@@ -281,7 +281,7 @@ public class InvokeProgram extends Thread {
             log.info("启动失败:{} {}", programPath, result);
             MessageDialog.openInformation(MainFrame.SHELL, "OPEN MINTTY ERROR",
                     String.format("Failed cmd: %s %s",
-                            MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY), args));
+                            MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.PUTTY), args));
             return;
         }
 
@@ -289,7 +289,7 @@ public class InvokeProgram extends Thread {
         Number hWnd = 0;
         while (count > 0
                 && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
-            int waitingTime = MainFrame.configuration.getWaitForInitTime();
+            int waitingTime = MainFrame.CONFIGURATION.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }
@@ -344,7 +344,7 @@ public class InvokeProgram extends Thread {
      */
     public static void runProgram(ProgramEnum program, String arg) {
         // 1. 获取应用程序执行路径
-        String path = MainFrame.configuration.getProgramPath(program);
+        String path = MainFrame.CONFIGURATION.getProgramPath(program);
         // 2. 如果路径不为空, 执行应用程序
         exec(path, arg);
     }
@@ -387,7 +387,7 @@ public class InvokeProgram extends Thread {
     }
 
     public static void invokeProxy(String host, String user, String password, String port) {
-        String cmd = "cmd /c start " + MainFrame.configuration.getProgramPath(ProgramEnum.PLINK)
+        String cmd = "cmd /c start " + MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.PLINK)
                 + " -D " + port + " -pw " + password + " -N " + user + "@" + host;
         try {
             Runtime.getRuntime().exec(cmd);
@@ -422,7 +422,7 @@ public class InvokeProgram extends Thread {
     public static void invokeSinglePutty(ConfigSession session) {
         // Mount command-line Putty parameters:
         String args = setPuttyParameters(session);
-        String commandString = MainFrame.configuration.getProgramPath(ProgramEnum.PUTTY) + args;
+        String commandString = MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.PUTTY) + args;
 
         try {
             if (StrUtil.isNotBlank(commandString)) {

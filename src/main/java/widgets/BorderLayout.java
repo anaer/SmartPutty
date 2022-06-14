@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Layout;
 
 /**
  *
- * @author lvcn
+ * @author anaer
  * Lays out a composite, arranging and resizing its components to fit in five
  * regions: north, south, east, west, and center.
  */

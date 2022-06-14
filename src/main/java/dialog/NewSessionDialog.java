@@ -1,7 +1,10 @@
 package dialog;
 
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+
 import java.util.List;
-import java.util.Objects;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -17,9 +20,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import cn.hutool.core.lang.Validator;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.ConstantValue;
 import constants.FieldConstants;
@@ -33,8 +33,8 @@ import utils.RegistryUtils;
 /**
  * 新会话对话框.
  *
- * @author lvcn
- * @version $Id: NewSessionDialog.java, v 1.0 Jul 22, 2019 3:45:25 PM lvcn Exp $
+ * @author anaer
+ * @version $Id: NewSessionDialog.java, v 1.0 Jul 22, 2019 3:45:25 PM anaer Exp $
  */
 @Slf4j
 public class NewSessionDialog implements SelectionListener, MouseListener {
@@ -56,7 +56,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
     private Button buttonCancel;
     private Button buttonShow;
 
-    public NewSessionDialog(MainFrame mainFrame, OpenSessionDialog sessionDialog, String type) {
+    public NewSessionDialog(MainFrame mainFrame, OpenSessionDialog sessionDialog, boolean isEdit) {
         this.mainFrame = mainFrame;
         this.sessionDialog = sessionDialog;
         dialog = new Shell(MainFrame.SHELL, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
@@ -175,7 +175,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         buttonCancel.setBounds(2 * x / 3 + 60, index * y / 6, 50, y / 6);
         buttonCancel.addMouseListener(this);
 
-        if (Objects.equals(type, "edit")) {
+        if (isEdit) {
             ConfigSession session = sessionDialog.getCurrentSelectSession();
             if (session != null) {
                 String protocol = session.getProtocol();
@@ -290,7 +290,9 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
             }
 
             // 如果协议类型位mintty, 不校验参数
-            if (protocol == ProtocolEnum.MINTTY || (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user) && protocol != null)) {
+            boolean isValid = protocol == ProtocolEnum.MINTTY
+                    || (StrUtil.isNotBlank(host) && StrUtil.isNotBlank(user) && protocol != null);
+            if (isValid) {
                 ConfigSession session = new ConfigSession(name, host, intranet, port, user,
                         protocol.getName(), file, password, sessionProfile);
                 dialog.dispose();
@@ -318,12 +320,12 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         } else if (e.getSource() == buttonShow) {
             // 显示密码功能
             String text = buttonShow.getText();
-            if (StrUtil.equals(text, "show")) {
+            if (StrUtil.equals(text, FieldConstants.SHOW)) {
                 textPassword.setEchoChar((char) 0);
-                buttonShow.setText("hide");
+                buttonShow.setText(FieldConstants.HIDE);
             } else {
                 textPassword.setEchoChar('●');
-                buttonShow.setText("show");
+                buttonShow.setText(FieldConstants.SHOW);
             }
         }
 

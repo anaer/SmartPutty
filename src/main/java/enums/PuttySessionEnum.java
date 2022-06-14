@@ -3,8 +3,8 @@ package enums;
 /**
  * 会话类型枚举.
  *
- * @author lvcn
- * @version $Id: ConstantValue.java, v 1.0 Jul 4, 2019 2:46:10 PM lvcn Exp $
+ * @author anaer
+ * @version $Id: ConstantValue.java, v 1.0 Jul 4, 2019 2:46:10 PM anaer Exp $
  */
 public enum PuttySessionEnum {
     /**

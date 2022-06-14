@@ -1,5 +1,6 @@
 package ui;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -71,7 +72,7 @@ import widgets.BorderLayout;
 
 /**
  *
- * @author lvcn
+ * @author anaer
  * @date 2018/10/24
  */
 @Slf4j
@@ -82,9 +83,9 @@ public class MainFrame
      * windows 路径分隔符.
      */
     private static final String WIN_PATH_DELIMITED = "\\";
-    public static final Display display = new Display();
-    public static final Shell SHELL = new Shell(display);
-    public static final Configuration configuration = new Configuration();
+    public static final Display DISPLAY = new Display();
+    public static final Shell SHELL = new Shell(DISPLAY);
+    public static final Configuration CONFIGURATION = new Configuration();
     private MenuItem openItem;
     private MenuItem newItem;
     private MenuItem captureItem;
@@ -171,9 +172,9 @@ public class MainFrame
 
         SHELL.setLayout(new BorderLayout());
         SHELL.setImage(ButtonImage.MAIN_IMAGE);
-        SHELL.setText(ConstantValue.MAIN_WINDOW_TITLE + " [" + configuration.getSmartPuttyVersion()
+        SHELL.setText(ConstantValue.MAIN_WINDOW_TITLE + " [" + CONFIGURATION.getSmartPuttyVersion()
                 + "]");
-        SHELL.setBounds(configuration.getWindowPositionSize());
+        SHELL.setBounds(CONFIGURATION.getWindowPositionSize());
         SHELL.addShellListener(this);
 
         bar.setSelection(3);
@@ -197,7 +198,7 @@ public class MainFrame
 
         // Show/Hide toolbars based on configuration file values:
         setVisibleComponents();
-        if (configuration.getWelcomePageVisible()) {
+        if (CONFIGURATION.getWelcomePageVisible()) {
             showWelcomeTab(ConstantValue.HOME_URL);
         }
         applyFeatureToggle();
@@ -284,7 +285,7 @@ public class MainFrame
         application.setText("Application");
         Menu applicationMenu = new Menu(shell, SWT.DROP_DOWN);
         application.setMenu(applicationMenu);
-        List<CustomMenu> menus = configuration.getMenus();
+        List<CustomMenu> menus = CONFIGURATION.getMenus();
         for (CustomMenu customMenu : menus) {
             String type = customMenu.getType();
             if (type == null || "separator".equals(type)) {
@@ -345,7 +346,7 @@ public class MainFrame
         // Username:
         new Label(connectGroup, SWT.RIGHT).setText("Username");
         usernameItem = new Text(connectGroup, SWT.BORDER);
-        usernameItem.setText(configuration.getDefaultPuttyUsername());
+        usernameItem.setText(CONFIGURATION.getDefaultPuttyUsername());
         usernameItem.setLayoutData(new RowData(100, 20));
 
         // Password
@@ -507,7 +508,7 @@ public class MainFrame
         folder.addMouseListener(this);
         folder.addSelectionListener(this);
 
-        Listener listener = new DragListener(display, folder);
+        Listener listener = new DragListener(DISPLAY, folder);
 
         folder.addListener(SWT.DragDetect, listener);
         folder.addListener(SWT.MouseUp, listener);
@@ -533,8 +534,9 @@ public class MainFrame
      */
     private void closeTab(CTabItem item) {
         if (Objects.nonNull(item)) {
-            if (item.getData("hwnd") != null) {
-                int hwnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
+
+            int hwnd = Convert.toInt(item.getData(FieldConstants.HWND), 0);
+            if (hwnd > 0) {
                 InvokeProgram.killProcess(hwnd);
             }
             item.dispose();
@@ -632,14 +634,14 @@ public class MainFrame
             dictItem = new CTabItem(folder, SWT.CLOSE);
             dictItem.setImage(ButtonImage.DICT_IMAGE);
             Browser browser = new Browser(folder, SWT.NONE);
-            browser.setUrl(configuration.getDictionaryBaseUrl() + keyword);
+            browser.setUrl(CONFIGURATION.getDictionaryBaseUrl() + keyword);
             dictItem.setControl(browser);
             folder.setSelection(dictItem);
             dictItem.setText("Dictionary");
         } else {
             folder.setSelection(dictItem);
             ((Browser) dictItem.getControl())
-                    .setUrl(configuration.getDictionaryBaseUrl() + keyword);
+                    .setUrl(CONFIGURATION.getDictionaryBaseUrl() + keyword);
         }
     }
 
@@ -647,11 +649,11 @@ public class MainFrame
     private void setVisibleComponents() {
         Event event = new Event();
 
-        utilitiesBarMenuItem.setSelection(configuration.getUtilitiesBarVisible());
+        utilitiesBarMenuItem.setSelection(CONFIGURATION.getUtilitiesBarVisible());
         utilitiesBarMenuItem.notifyListeners(SWT.Selection, event);
-        connectionBarMenuItem.setSelection(configuration.getConnectionBarVisible());
+        connectionBarMenuItem.setSelection(CONFIGURATION.getConnectionBarVisible());
         connectionBarMenuItem.notifyListeners(SWT.Selection, event);
-        bottomQuickBarMenuItem.setSelection(configuration.getBottomQuickBarVisible());
+        bottomQuickBarMenuItem.setSelection(CONFIGURATION.getBottomQuickBarVisible());
         bottomQuickBarMenuItem.notifyListeners(SWT.Selection, event);
     }
 
@@ -717,10 +719,10 @@ public class MainFrame
      */
     private void reloadTab(CTabItem item) {
         if (Objects.nonNull(item)) {
-            if (item.getData("hwnd") == null) {
+            if (item.getData(FieldConstants.HWND) == null) {
                 return;
             }
-            int hWnd = Integer.parseInt(String.valueOf(item.getData("hwnd")));
+            int hWnd = Integer.parseInt(String.valueOf(item.getData(FieldConstants.HWND)));
             InvokeProgram.killProcess(hWnd);
             addSession(item, (ConfigSession) item.getData(FieldConstants.SESSION));
         }
@@ -743,7 +745,7 @@ public class MainFrame
      */
     private void copyTabName() {
         CTabItem tabItem = folder.getSelection();
-        if (tabItem.getData("hwnd") == null) {
+        if (tabItem.getData(FieldConstants.HWND) == null) {
             return;
         }
 
@@ -787,7 +789,7 @@ public class MainFrame
         if (session != null) {
             String host = session.getHost();
             InputDialog inputDialog = new InputDialog(SHELL, "Input VNC Server Host",
-                    "Example:    xx.swg.usma.ibm.com:1", host + ":1", null);
+                    "Example: xx.swg.usma.ibm.com:1", host + ":1", null);
             if (InputDialog.OK == inputDialog.open()) {
                 InvokeProgram.runProgram(ProgramEnum.VNC, inputDialog.getValue());
             }
@@ -804,7 +806,7 @@ public class MainFrame
         }
 
         // 关闭程序前, 保存窗口位置.
-        configuration.saveBeforeClose();
+        CONFIGURATION.saveBeforeClose();
     }
 
     /**
@@ -831,14 +833,14 @@ public class MainFrame
     /** Check the feature toggle, dispose the features who equals to "false". */
     private void applyFeatureToggle() {
         // 是否显示vnc
-        boolean bVnc = configuration.getFeatureToggle(ConfigConstant.Feature.VNC);
+        boolean bVnc = CONFIGURATION.getFeatureToggle(ConfigConstant.Feature.VNC);
         if (!bVnc) {
             this.vncPopItem.dispose();
             this.itemVnc.dispose();
         }
 
         // 是否显示transfer
-        boolean bTransfer = configuration.getFeatureToggle(ConfigConstant.Feature.TRANSFER);
+        boolean bTransfer = CONFIGURATION.getFeatureToggle(ConfigConstant.Feature.TRANSFER);
         if (!bTransfer) {
             this.transferPopItem.dispose();
         }
@@ -861,11 +863,11 @@ public class MainFrame
         splash.pack();
         Rectangle splashRect = splash.getBounds();
 
-        Rectangle displayRect = display.getBounds();
+        Rectangle displayRect = DISPLAY.getBounds();
         int width = displayRect.width;
         int height = displayRect.height;
 
-        // add by lvcn 2018.8.29 多屏处理 获取主屏的分辨率
+        // add by anaer 2018.8.29 多屏处理 获取主屏的分辨率
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gds = ge.getScreenDevices();
         if (gds.length > 1) {
@@ -878,17 +880,17 @@ public class MainFrame
         int y = (height - splashRect.height) / 2;
         splash.setLocation(x, y);
         splash.open();
-        display.asyncExec(() -> {
+        DISPLAY.asyncExec(() -> {
             new MainFrame(bar);
             splash.close();
             ButtonImage.SPLASH_IMAGE.dispose();
         });
         while (!SHELL.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
+            if (!DISPLAY.readAndDispatch()) {
+                DISPLAY.sleep();
             }
         }
-        display.dispose();
+        DISPLAY.dispose();
     }
 
     @Override
@@ -900,7 +902,7 @@ public class MainFrame
     public void widgetSelected(SelectionEvent e) {
         if (e.getSource() == newItem || e.getSource() == itemNew) {
             // 新增
-            new NewSessionDialog(this, null, "add");
+            new NewSessionDialog(this, null, false);
         } else if (e.getSource() == itemOpen || e.getSource() == openItem) {
             // 打开
             new OpenSessionDialog(this, SHELL);
@@ -923,24 +925,24 @@ public class MainFrame
         } else if (e.getSource() == killAllPuttyItem) {
             killAllPutty();
         } else if (e.getSource() == itemKenGen) {
-            InvokeProgram.exec(configuration.getProgramPath(ProgramEnum.KEYGEN), null);
+            InvokeProgram.exec(CONFIGURATION.getProgramPath(ProgramEnum.KEYGEN), null);
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
             showWelcomeTab(ConstantValue.HOME_URL);
         } else if (e.getSource() == aboutItem) {
             MessageDialog.openInformation(SHELL, "About",
-                    "SmartPutty-" + configuration.getSmartPuttyVersion());
+                    "SmartPutty-" + CONFIGURATION.getSmartPuttyVersion());
         } else if (e.getSource() == utilitiesBarMenuItem) {
             boolean visible = utilitiesBarMenuItem.getSelection();
             setCompositeVisible(utilitiesToolbar, SHELL, visible);
-            configuration.setUtilitiesBarVisible(visible);
+            CONFIGURATION.setUtilitiesBarVisible(visible);
         } else if (e.getSource() == connectionBarMenuItem) {
             boolean visible = connectionBarMenuItem.getSelection();
             setCompositeVisible(connectGroup, SHELL, visible);
-            configuration.setConnectionBarVisible(visible);
+            CONFIGURATION.setConnectionBarVisible(visible);
         } else if (e.getSource() == bottomQuickBarMenuItem) {
             boolean visible = bottomQuickBarMenuItem.getSelection();
             setCompositeVisible(quickBottomGroup, SHELL, visible);
-            configuration.setBottomQuickBarVisible(visible);
+            CONFIGURATION.setBottomQuickBarVisible(visible);
         } else if (e.getSource() == configProgramsLocationsItem) {
             new ProgramsLocationsDialog(SHELL);
             // menuItem
@@ -971,12 +973,12 @@ public class MainFrame
             openVncSession();
             // folder
         } else if (e.getSource() == folder) {
-            if (folder.getSelection().getData("hwnd") != null) {
-                Number hWnd = (Number) folder.getSelection().getData("hwnd");
+            if (folder.getSelection().getData(FieldConstants.HWND) != null) {
+                Number hWnd = (Number) folder.getSelection().getData(FieldConstants.HWND);
                 InvokeProgram.setWindowFocus(hWnd);
             }
-        } else if (StrUtil.endWith(e.getSource().getClass().toString(), "MenuItem")
-                && "dynamicApplication".equals(((MenuItem) e.getSource()).getData("type"))) {
+        } else if (StrUtil.endWith(e.getSource().getClass().toString(), FieldConstants.MENU_ITEM)
+                && "dynamicApplication".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
             String cmd = ((MenuItem) e.getSource()).getData("cmd").toString();
             InvokeProgram.exec(cmd);
         } else if (e.getSource() == connectButton) {
@@ -1001,7 +1003,7 @@ public class MainFrame
                         MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
-            path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
+            path = StrUtil.strip(path, "/\\" + CONFIGURATION.getWinPathBaseDrive());
             pathItem.setText("/" + StrUtil.replace(path, WIN_PATH_DELIMITED, "/"));
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
@@ -1010,8 +1012,8 @@ public class MainFrame
                         MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
-            path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            pathItem.setText(configuration.getWinPathBaseDrive() + WIN_PATH_DELIMITED
+            path = StrUtil.strip(path, "/\\" + CONFIGURATION.getWinPathBaseDrive());
+            pathItem.setText(CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED
                     + StrUtil.replace(path, "/", WIN_PATH_DELIMITED));
         } else if (e.getSource() == openPathButton) {
             String path = pathItem.getText().trim();
@@ -1020,8 +1022,8 @@ public class MainFrame
                         MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
-            path = StrUtil.strip(path, "/\\" + configuration.getWinPathBaseDrive());
-            path = configuration.getWinPathBaseDrive() + WIN_PATH_DELIMITED
+            path = StrUtil.strip(path, "/\\" + CONFIGURATION.getWinPathBaseDrive());
+            path = CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED
                     + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
             pathItem.setText(path);
             if (!InvokeProgram.openFolder(path)) {

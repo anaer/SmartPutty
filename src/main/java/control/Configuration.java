@@ -30,8 +30,8 @@ import ui.MainFrame;
 /**
  * 配置控制类.
  *
- * @author lvcn
- * @version $Id: Configuration.java, v 1.0 Jul 22, 2019 3:44:47 PM lvcn Exp $
+ * @author anaer
+ * @version $Id: Configuration.java, v 1.0 Jul 22, 2019 3:44:47 PM anaer Exp $
  */
 @SuppressWarnings("all")
 public class Configuration {
