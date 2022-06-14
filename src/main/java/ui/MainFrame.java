@@ -8,6 +8,8 @@ import cn.hutool.core.util.StrUtil;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.eclipse.jface.dialogs.InputDialog;
@@ -296,6 +298,19 @@ public class MainFrame
             menuItem.setText(customMenu.getName());
             menuItem.setData("cmd", customMenu.getCmd());
             menuItem.setData("type", "dynamicApplication");
+            menuItem.addSelectionListener(this);
+        }
+
+        MenuItem clipboard = new MenuItem(menu, SWT.CASCADE);
+        clipboard.setText("Clipboard");
+        Menu clipboardMenu = new Menu(shell, SWT.DROP_DOWN);
+        clipboard.setMenu(clipboardMenu);
+        Map<String, String> clipboardMap = CONFIGURATION.getClipboard();
+        for(Entry<String, String> entry : clipboardMap.entrySet()){
+            MenuItem menuItem = new MenuItem(clipboardMenu, SWT.PUSH);
+            menuItem.setText(entry.getKey());
+            menuItem.setData("data", entry.getValue());
+            menuItem.setData("type", "clipboard");
             menuItem.addSelectionListener(this);
         }
 
@@ -981,6 +996,10 @@ public class MainFrame
                 && "dynamicApplication".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
             String cmd = ((MenuItem) e.getSource()).getData("cmd").toString();
             InvokeProgram.exec(cmd);
+        } else if (StrUtil.endWith(e.getSource().getClass().toString(), FieldConstants.MENU_ITEM)
+                && "clipboard".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
+            String data = ((MenuItem) e.getSource()).getData("data").toString();
+            ClipboardUtil.setStr(data);
         } else if (e.getSource() == connectButton) {
             String host = hostItem.getText();
             String name = host;

@@ -1,4 +1,6 @@
 !!model.Config
+clipboard:
+    常用命令: ls -rtlh
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
     Version: 1.2.2

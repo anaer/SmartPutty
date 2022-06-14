@@ -40,10 +40,6 @@ public class Configuration {
 
     private final Config config;
 
-    public List<CustomMenu> getMenus() {
-        return this.menus;
-    }
-
     /**
      * 构造函数.
      * 初始化配置信息.
@@ -51,6 +47,18 @@ public class Configuration {
     public Configuration() {
         this.config = getConfig();
         this.menus = config.getMenus();
+    }
+
+    public List<CustomMenu> getMenus() {
+        return this.menus;
+    }
+
+    /**
+     * 获取剪贴板配置.
+     * @return
+     */
+    public Map<String, String> getClipboard(){
+        return config.getClipboard();
     }
 
     private Config getConfig() {
