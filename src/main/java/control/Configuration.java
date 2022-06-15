@@ -22,7 +22,6 @@ import org.yaml.snakeyaml.Yaml;
 import constants.ConfigConstant;
 import constants.ConstantValue;
 import enums.ProgramEnum;
-import lombok.extern.slf4j.Slf4j;
 import model.Config;
 import model.CustomMenu;
 import ui.MainFrame;
@@ -174,7 +173,7 @@ public class Configuration {
      * @return
      */
     public String getWinPathBaseDrive() {
-        return getConfiguration(ConfigConstant.Configuration.WINDOWS_BASE_DRIVE, "C:/");
+        return getConfiguration(ConfigConstant.Configuration.WINDOWS_BASE_DRIVE, "C:");
     }
 
     /**

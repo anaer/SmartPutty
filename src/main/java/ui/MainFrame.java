@@ -2,6 +2,7 @@ package ui;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -306,7 +307,7 @@ public class MainFrame
         Menu clipboardMenu = new Menu(shell, SWT.DROP_DOWN);
         clipboard.setMenu(clipboardMenu);
         Map<String, String> clipboardMap = CONFIGURATION.getClipboard();
-        for(Entry<String, String> entry : clipboardMap.entrySet()){
+        for (Entry<String, String> entry : clipboardMap.entrySet()) {
             MenuItem menuItem = new MenuItem(clipboardMenu, SWT.PUSH);
             menuItem.setText(entry.getKey());
             menuItem.setData("data", entry.getValue());
@@ -1022,8 +1023,8 @@ public class MainFrame
                         MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
-            path = StrUtil.strip(path, "/\\" + CONFIGURATION.getWinPathBaseDrive());
-            pathItem.setText("/" + StrUtil.replace(path, WIN_PATH_DELIMITED, "/"));
+            path = StrUtil.strip(path, CONFIGURATION.getWinPathBaseDrive());
+            pathItem.setText(StrUtil.replace(path, WIN_PATH_DELIMITED, "/"));
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
@@ -1031,20 +1032,25 @@ public class MainFrame
                         MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
-            path = StrUtil.strip(path, "/\\" + CONFIGURATION.getWinPathBaseDrive());
-            pathItem.setText(CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED
-                    + StrUtil.replace(path, "/", WIN_PATH_DELIMITED));
+
+            boolean isWinPath = isWinPath(path);
+            if (!isWinPath) {
+                path = CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED
+                        + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
+
+                path = path.replace("\\\\", "\\");
+                
+                pathItem.setText(path);
+            }
         } else if (e.getSource() == openPathButton) {
             String path = pathItem.getText().trim();
-            if (StrUtil.isBlank(path)) {
+            boolean isValidPath = isWinPath(path);
+
+            if (!isValidPath) {
                 MessageDialog.openInformation(SHELL, "Info",
                         MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
-            path = StrUtil.strip(path, "/\\" + CONFIGURATION.getWinPathBaseDrive());
-            path = CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED
-                    + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
-            pathItem.setText(path);
             if (!InvokeProgram.openFolder(path)) {
                 MessageDialog.openError(SHELL, "Error", "Path not exist!");
             }
@@ -1052,6 +1058,14 @@ public class MainFrame
             String keyword = dictText.getText().trim();
             openDictTab(keyword);
         }
+    }
+
+    /**
+     * 判断是否有效的Windows路径
+     * 简单判断
+     */
+    private boolean isWinPath(String path) {
+        return ReUtil.isMatch("^[a-zA-Z]:.*", path);
     }
 
     /**
