@@ -12,6 +12,7 @@
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
 		<org.yaml.version>1.30</org.yaml.version>
 	</properties>
+
 	<dependencies>
 
 		<dependency>

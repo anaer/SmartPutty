@@ -4,6 +4,7 @@ clipboard:
     Redis批量删除: redis-cli -h 127.0.0.1 -p 6379 -a password -n 0 keys "*name*" | xargs
         redis-cli -h 127.0.0.1 -p 6379 -a password -n 0 del
     MySQL连接: mysql -h 地址 -P 端口 -u 用户名 -p 密码
+    yum源配置目录: cd /etc/yum.repos.d/
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
     Version: 1.2.2
