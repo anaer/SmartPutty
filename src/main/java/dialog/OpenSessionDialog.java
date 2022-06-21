@@ -23,6 +23,7 @@ import dao.SessionManager;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import ui.MainFrame;
+import utils.SwtUtils;
 
 /**
  * 打开会话对话框.
@@ -72,7 +73,10 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         this.mainFrame = mainFrame;
         init();
+
+        SwtUtils.setDialogLocation(parent, dialog);
     }
+
 
     /**
      * Initialize window in a safer way. Useful to avoid "Leaking This In Constructor" warnings.

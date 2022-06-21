@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import ui.MainFrame;
 import utils.RegistryUtils;
+import utils.SwtUtils;
 
 /**
  * 新会话对话框.
@@ -63,6 +64,9 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         dialog.setImage(ButtonImage.NEW_IMAGE);
         dialog.setSize(400, 160);
         dialog.setText("New Session Dialog");
+
+        SwtUtils.setDialogLocation(MainFrame.SHELL, dialog);
+
         Rectangle rect = dialog.getBounds();
         int x = rect.width;
         int y = rect.height;

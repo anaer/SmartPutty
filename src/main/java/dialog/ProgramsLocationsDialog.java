@@ -1,5 +1,9 @@
 package dialog;
 
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -16,12 +20,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import enums.ProgramEnum;
 import ui.MainFrame;
+import utils.SwtUtils;
 
 /**
  * To define which locations has programs to use. <br>
@@ -53,6 +55,8 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 
         init();
+
+        SwtUtils.setDialogLocation(parent, dialog);
     }
 
     /**
@@ -115,6 +119,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         cancelButton.setToolTipText("Cancel changes");
         cancelButton.addSelectionListener(this);
         cancelButton.setLayoutData(gd99);
+
 
         dialog.pack();
         dialog.open();
