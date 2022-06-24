@@ -53,6 +53,8 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
      */
     public ProgramsLocationsDialog(Shell parent) {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+        dialog.setSize(554, 275);
+        SwtUtils.setDialogLocation(parent, dialog);
 
         // 临时修改的配置项
         tmpPropConfigMap = MapUtil.newHashMap();
@@ -64,21 +66,12 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         dialog.setText("Configure programs locations");
         dialog.setLayout(layout);
 
-        SwtUtils.setDialogLocation(parent, dialog);
 
         // Initial help text:
-        GridData gd00 = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gd00.horizontalSpan = 3;
-        Label textLabel = new Label(dialog, SWT.LEFT);
-        textLabel.setText(
+        addTextSpace(
                 "Use this window to define which programs to use: \"SmartPutty\" included programs or yours.");
-        textLabel.setLayoutData(gd00);
 
-        // Blank space:
-        GridData gd01 = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gd01.horizontalSpan = 3;
-        Label empty01Label = new Label(dialog, SWT.NONE);
-        empty01Label.setLayoutData(gd01);
+        addTextSpace("");
 
         addItem(ProgramEnum.PUTTY);
         addItem(ProgramEnum.PLINK);
@@ -86,11 +79,7 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         addItem(ProgramEnum.MINTTY);
         addItem(ProgramEnum.WINSCP);
 
-        // Blank space:
-        GridData gd98 = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gd98.horizontalSpan = 3;
-        Label empty98Label = new Label(dialog, SWT.NONE);
-        empty98Label.setLayoutData(gd98);
+        addTextSpace("");
 
         // Main buttons:
         GridData gd99 = new GridData(SWT.RIGHT, SWT.RIGHT, true, true);
@@ -113,9 +102,19 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         cancelButton.addSelectionListener(this);
         cancelButton.setLayoutData(gd99);
 
-
         dialog.pack();
         dialog.open();
+    }
+
+    /**
+     * 添加文本栏.
+     */
+    private void addTextSpace(String text) {
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd.horizontalSpan = 3;
+        Label label = new Label(dialog, SWT.LEFT);
+        label.setText(text);
+        label.setLayoutData(gd);
     }
 
     /**
