@@ -54,15 +54,6 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
     public ProgramsLocationsDialog(Shell parent) {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 
-        init();
-
-        SwtUtils.setDialogLocation(parent, dialog);
-    }
-
-    /**
-     * Initialize window in a safer way. Useful to avoid "Leaking This In Constructor" warnings.
-     */
-    private void init() {
         // 临时修改的配置项
         tmpPropConfigMap = MapUtil.newHashMap();
 
@@ -72,6 +63,8 @@ public class ProgramsLocationsDialog implements SelectionListener, MouseListener
         dialog.setImage(ButtonImage.OPEN_IMAGE);
         dialog.setText("Configure programs locations");
         dialog.setLayout(layout);
+
+        SwtUtils.setDialogLocation(parent, dialog);
 
         // Initial help text:
         GridData gd00 = new GridData(SWT.FILL, SWT.FILL, true, true);

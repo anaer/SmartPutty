@@ -72,19 +72,12 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
     public OpenSessionDialog(MainFrame mainFrame, Shell parent) {
         this.dialog = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         this.mainFrame = mainFrame;
-        init();
 
-        SwtUtils.setDialogLocation(parent, dialog);
-    }
-
-
-    /**
-     * Initialize window in a safer way. Useful to avoid "Leaking This In Constructor" warnings.
-     */
-    private void init() {
         dialog.setImage(ButtonImage.OPEN_IMAGE);
         dialog.setText("Open Session Dialog");
         dialog.setSize(665, 300);
+
+        SwtUtils.setDialogLocation(parent, dialog);
 
         table = new Table(dialog, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
         table.setBounds(0, 0, 560, 257);
