@@ -701,7 +701,8 @@ public class MainFrame
         int selectionIndex = folder.getSelectionIndex();
         int itemCount = folder.getItemCount();
 
-        for (int index = 0; index < itemCount; index++) {
+        // 需要跟closeAllTabs一样, 倒序关闭 
+        for (int index = itemCount - 1; index >= 0; index--) {
             if (index != selectionIndex) {
                 CTabItem item = folder.getItem(index);
                 closeTab(item);
@@ -1039,7 +1040,7 @@ public class MainFrame
                         + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
 
                 path = path.replace("\\\\", "\\");
-                
+
                 pathItem.setText(path);
             }
         } else if (e.getSource() == openPathButton) {
