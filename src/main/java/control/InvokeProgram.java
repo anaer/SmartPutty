@@ -1,6 +1,7 @@
 package control;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
@@ -378,8 +379,15 @@ public class InvokeProgram extends Thread {
             return;
         }
 
+        if (!FileUtil.isFile(cmd)) {
+            MessageDialog.openInformation(null, "错误", cmd + " 程序不存在, 请检查程序路径是否正确.");
+            return;
+        }
+
         try {
-            Runtime.getRuntime().exec(cmd);
+            // 直接执行cmd时, 即使关闭cmd的程序, 任务管理器仍存在, 所以调整使用cmd /c start方式启动
+            // Runtime.getRuntime().exec(cmd);
+            Runtime.getRuntime().exec(new String[] { "cmd", "/c", "start", cmd });
         } catch (Exception ex) {
             MessageDialog.openInformation(null, "错误", cmd + " " + ex.getMessage());
             log.error(ExceptionUtil.getMessage(ex));

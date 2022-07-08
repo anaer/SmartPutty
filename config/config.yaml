@@ -7,16 +7,16 @@ clipboard:
     yum源配置目录: cd /etc/yum.repos.d/
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
-    Version: 1.2.3
+    Version: 1.2.4
     ViewConnectionBar: false
     WindowsBaseDrive: 'C:'
     WaitForInitTime: 200
     ShowWelcomePage: false
     ViewUtilitiesBar: false
-    WindowPositionSize: 486,50,1216,1004
+    WindowPositionSize: 475,19,1216,1004
     ViewBottomQuickBar: false
     DefaultPuttyUsername: root
-    DatabasePath: C:\Git\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
+    DatabasePath: D:\Git\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
 feature:
     transfer: true
     vnc: false
@@ -24,7 +24,7 @@ menus:
 -   cmd: notepad.exe
     name: notebook
     type: menu
--   cmd: C:\Program Files\SingleWare\luyten-0.5.0.exe
+-   cmd: D:\SingleWare\luyten-0.5.0.exe
     name: Java反编译
     type: menu
 -   cmd: null
