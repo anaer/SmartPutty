@@ -34,5 +34,5 @@ program:
     PuttyExecutable: C:\ProgramData\chocolatey\bin\PUTTY.EXE
     MinttyExecutable: C:\tools\msys64\usr\bin\mintty.exe
     PlinkExecutable: C:\ProgramData\chocolatey\bin\PLINK.EXE
-    ScpExecutable: C:\Program Files\WinSCP\WinSCP.exe
+    ScpExecutable: C:\Users\Administrator\AppData\Local\Programs\WinSCP\WinSCP.exe
     KeyGeneratorExecutable: C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE

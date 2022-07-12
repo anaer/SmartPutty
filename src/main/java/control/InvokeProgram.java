@@ -350,21 +350,9 @@ public class InvokeProgram extends Thread {
         exec(path, arg);
     }
 
-    /**
-     * Execute an utility from left bar.
-     *
-     * @param program
-     * @param arg
-     */
-    public static void exec(String program, String arg) {
-        String cmd;
 
-        if (StrUtil.isNotBlank(arg)) {
-            cmd = program + " " + arg;
-        } else {
-            cmd = program;
-        }
-        exec(cmd);
+    public static void exec(String cmd) {
+        exec(cmd, "");
     }
 
     /**
@@ -373,7 +361,7 @@ public class InvokeProgram extends Thread {
      * @param program
      * @param arg
      */
-    public static void exec(String cmd) {
+    public static void exec(String cmd, String arg) {
         if (StrUtil.isBlank(cmd)) {
             log.warn("程序路径为空. 过滤执行.");
             return;
@@ -385,9 +373,14 @@ public class InvokeProgram extends Thread {
         }
 
         try {
-            // 直接执行cmd时, 即使关闭cmd的程序, 任务管理器仍存在, 所以调整使用cmd /c start方式启动
-            // Runtime.getRuntime().exec(cmd);
-            Runtime.getRuntime().exec(new String[] { "cmd", "/c", "start", cmd });
+            if (StrUtil.isNotBlank(arg)) {
+                // 对于Winscp程序, 直接使用这个方式
+                log.info("启动程序:{} {}", cmd, arg);
+                Runtime.getRuntime().exec(cmd + " " + arg);
+            } else {
+                // 如果以上面方式启动如java反编译luyten-0.5.0.exe程序, 在关闭luyten程序后, 任务管理器中进程还在, 所以使用cmd方式启动
+                Runtime.getRuntime().exec(new String[] { "cmd", "/c", "start", cmd });
+            }
         } catch (Exception ex) {
             MessageDialog.openInformation(null, "错误", cmd + " " + ex.getMessage());
             log.error(ExceptionUtil.getMessage(ex));
