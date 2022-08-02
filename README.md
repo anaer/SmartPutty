@@ -5,7 +5,9 @@
 jdk 1.8.0_231
 
 PS:
-pom.xml org.eclipse.swt.win32.win32 根据 jdk 的版本修改依赖包的版本.
+
+1. pom.xml org.eclipse.swt.win32.win32 根据 jdk 的版本修改依赖包的版本.
+2. 使用 OpenJDK\jdk-18.0.2 貌似有问题, 可以启动, 但是调用 Putty 时 闪退了
 
 ## 配置说明
 
