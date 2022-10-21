@@ -10,7 +10,7 @@
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
 		<org.projectlombok.version>1.18.24</org.projectlombok.version>
-		<org.yaml.version>1.30</org.yaml.version>
+		<org.yaml.version>1.32</org.yaml.version>
 	</properties>
 
 	<dependencies>
