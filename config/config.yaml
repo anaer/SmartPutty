@@ -13,11 +13,12 @@ configuration:
     WaitForInitTime: 200
     ShowWelcomePage: false
     ViewUtilitiesBar: false
-    WindowPositionSize: 475,19,1216,1004
+    WindowPositionSize: 390,19,1216,1004
     ViewBottomQuickBar: false
     DefaultPuttyUsername: root
     DatabasePath: D:\Git\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
 feature:
+    calculator: false
     transfer: true
     vnc: false
 menus:

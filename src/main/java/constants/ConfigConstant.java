@@ -97,6 +97,9 @@ public class ConfigConstant {
         public static final String VNC = "vnc";
 
         public static final String TRANSFER = "transfer";
+
+        public static final String CALCULATOR = "calculator";
+
     }
 
     /**

@@ -861,6 +861,12 @@ public class MainFrame
         if (!bTransfer) {
             this.transferPopItem.dispose();
         }
+
+        // 是否显示Calculator, 本机提示: 需要使用新应用以打开此 ms-calculator 链接, 因为实际也没用这个 所以加个开关控制下
+        boolean bCalculator = CONFIGURATION.getFeatureToggle(ConfigConstant.Feature.CALCULATOR);
+        if (!bCalculator) {
+            this.itemCalculator.dispose();
+        }
     }
 
     public static void main(String[] args) {

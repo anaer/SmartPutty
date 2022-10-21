@@ -367,7 +367,8 @@ public class InvokeProgram extends Thread {
             return;
         }
 
-        if (!FileUtil.isFile(cmd)) {
+        // 仅当cmd为绝对路径时 判断文件是否存在, 其他如notepad.exe等 则不判断
+        if (FileUtil.isAbsolutePath(cmd) && !FileUtil.isFile(cmd)) {
             MessageDialog.openInformation(null, "错误", cmd + " 程序不存在, 请检查程序路径是否正确.");
             return;
         }
