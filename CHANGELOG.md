@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.5] - 2023-02-16
+
+- hutool -> 5.8.12 之前版本爆出漏洞 https://gitee.com/dromara/hutool/issues/I6AEX2
+- lombok -> 1.18.26
+- 修改启动脚本即README说明
+
 ## [1.2.4] - 2022-07-08
 
 - hutool -> 5.8.4

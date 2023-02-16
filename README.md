@@ -30,3 +30,15 @@ target           编译生成目录
 
 Alt+# 切换 tab
 Ctrl+R 打开程序路径配置弹窗
+
+## 启动脚本
+
+### Start.bat
+启动脚本, 因本机安装了多个jdk版本, 对于高版本或者特殊版本, 启动Putty会闪退, 所以需要指定javaw绝对路径
+因`C:\Program Files`带空格, 所以使用缩写的形式, 具体路径根据实际情况进行调整
+```
+start C:\Progra~1\Java\jdk1.8.0_211\bin\javaw.exe -jar SmartPutty.jar
+```
+
+### Start.vbs
+因使用Start.bat启动时有黑窗, 所以使用vbs处理下

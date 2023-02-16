@@ -7,13 +7,13 @@ clipboard:
     yum源配置目录: cd /etc/yum.repos.d/
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
-    Version: 1.2.4
+    Version: 1.2.5
     ViewConnectionBar: false
     WindowsBaseDrive: 'C:'
     WaitForInitTime: 200
     ShowWelcomePage: false
     ViewUtilitiesBar: false
-    WindowPositionSize: 390,19,1216,1004
+    WindowPositionSize: 309,37,1216,1004
     ViewBottomQuickBar: false
     DefaultPuttyUsername: root
     DatabasePath: D:\Git\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
