@@ -12,12 +12,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.graphics.Rectangle;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
 
 import constants.ConfigConstant;
 import constants.ConstantValue;
@@ -64,7 +67,12 @@ public class Configuration {
         Config config = null;
         File file = new File(ConstantValue.CONFIG_FILE);
         try (FileInputStream fis = new FileInputStream(file)) {
-            Yaml yaml = new Yaml();
+            LoaderOptions options = new LoaderOptions();
+            // snakeyaml由1.33升级为2.0后, 需要设置可信tag, 否则会提示Global tag is not allowed: tag:yaml.org,2002:model.Config
+            List<String> tags = Arrays.asList("model.Config");
+            TrustedPrefixesTagInspector tagInspector = new TrustedPrefixesTagInspector(tags);
+            options.setTagInspector(tagInspector);
+            Yaml yaml = new Yaml(options);
             Map map = yaml.loadAs(fis, Map.class);
 
             config = BeanUtil.mapToBean(map, Config.class, true, CopyOptions.create());
@@ -307,6 +315,7 @@ public class Configuration {
             DumperOptions options = new DumperOptions();
             options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
             options.setIndent(4);
+            options.setAllowUnicode(true);
             Yaml yaml = new Yaml(options);
             yaml.dump(this.config, output);
 

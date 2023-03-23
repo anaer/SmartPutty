@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.6] - 2023-03-23
+
+- hutool -> 5.8.15
+- snakeyaml -> 2.0 需要设置tagInspector, 默认不支持globle tag
+- Clipboard菜单项选中时, 弹个tip显示下具体命令信息
+
 ## [1.2.5] - 2023-02-16
 
 - hutool -> 5.8.12 之前版本爆出漏洞 https://gitee.com/dromara/hutool/issues/I6AEX2

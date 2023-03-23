@@ -7,7 +7,7 @@ clipboard:
     yum源配置目录: cd /etc/yum.repos.d/
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
-    Version: 1.2.5
+    Version: 1.2.6
     ViewConnectionBar: false
     WindowsBaseDrive: 'C:'
     WaitForInitTime: 200

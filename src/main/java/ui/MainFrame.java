@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolTip;
 
 import constants.ButtonImage;
 import constants.ConfigConstant;
@@ -79,8 +80,7 @@ import widgets.BorderLayout;
  * @date 2018/10/24
  */
 @Slf4j
-public class MainFrame
-        implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
+public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
 
     /**
      * windows 路径分隔符.
@@ -175,8 +175,7 @@ public class MainFrame
 
         SHELL.setLayout(new BorderLayout());
         SHELL.setImage(ButtonImage.MAIN_IMAGE);
-        SHELL.setText(ConstantValue.MAIN_WINDOW_TITLE + " [" + CONFIGURATION.getSmartPuttyVersion()
-                + "]");
+        SHELL.setText(ConstantValue.MAIN_WINDOW_TITLE + " [" + CONFIGURATION.getSmartPuttyVersion() + "]");
         SHELL.setBounds(CONFIGURATION.getWindowPositionSize());
         SHELL.addShellListener(this);
 
@@ -291,17 +290,20 @@ public class MainFrame
         List<CustomMenu> menus = CONFIGURATION.getMenus();
         for (CustomMenu customMenu : menus) {
             String type = customMenu.getType();
-            if (type == null || "separator".equals(type)) {
-                new MenuItem(applicationMenu, SWT.SEPARATOR);
+            if (type == null) {
                 continue;
+            } else if ("separator".equals(type)) {
+                new MenuItem(applicationMenu, SWT.SEPARATOR);
+            } else {
+                MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
+                menuItem.setText(customMenu.getName());
+                menuItem.setData("cmd", customMenu.getCmd());
+                menuItem.setData("type", "dynamicApplication");
+                menuItem.addSelectionListener(this);
             }
-            MenuItem menuItem = new MenuItem(applicationMenu, SWT.PUSH);
-            menuItem.setText(customMenu.getName());
-            menuItem.setData("cmd", customMenu.getCmd());
-            menuItem.setData("type", "dynamicApplication");
-            menuItem.addSelectionListener(this);
         }
 
+        // Menu: Clipboard
         MenuItem clipboard = new MenuItem(menu, SWT.CASCADE);
         clipboard.setText("Clipboard");
         Menu clipboardMenu = new Menu(shell, SWT.DROP_DOWN);
@@ -473,7 +475,6 @@ public class MainFrame
         itemRemoteDesk.setImage(ButtonImage.REMOTE_DESK_IMAGE);
         itemRemoteDesk.addSelectionListener(this);
 
-        // 工具栏 隐藏Capture, 直接调用会报错
         itemCapture = new ToolItem(utilitiesToolbar, SWT.PUSH);
         itemCapture.setText("Capture");
         itemCapture.setToolTipText("Open FastStone Capture");
@@ -656,8 +657,7 @@ public class MainFrame
             dictItem.setText("Dictionary");
         } else {
             folder.setSelection(dictItem);
-            ((Browser) dictItem.getControl())
-                    .setUrl(CONFIGURATION.getDictionaryBaseUrl() + keyword);
+            ((Browser) dictItem.getControl()).setUrl(CONFIGURATION.getDictionaryBaseUrl() + keyword);
         }
     }
 
@@ -701,7 +701,7 @@ public class MainFrame
         int selectionIndex = folder.getSelectionIndex();
         int itemCount = folder.getItemCount();
 
-        // 需要跟closeAllTabs一样, 倒序关闭 
+        // 需要跟closeAllTabs一样, 倒序关闭
         for (int index = itemCount - 1; index >= 0; index--) {
             if (index != selectionIndex) {
                 CTabItem item = folder.getItem(index);
@@ -783,10 +783,8 @@ public class MainFrame
         if (folder.getSelection().getData(FieldConstants.SESSION) == null) {
             return;
         }
-        ConfigSession session = (ConfigSession) folder.getSelection()
-                .getData(FieldConstants.SESSION);
-        String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@"
-                + session.getHost() + ":" + session.getPort();
+        ConfigSession session = (ConfigSession) folder.getSelection().getData(FieldConstants.SESSION);
+        String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@" + session.getHost() + ":" + session.getPort();
 
         InvokeProgram.runProgram(ProgramEnum.WINSCP, arg);
     }
@@ -805,8 +803,7 @@ public class MainFrame
         ConfigSession session = (ConfigSession) item.getData(FieldConstants.SESSION);
         if (session != null) {
             String host = session.getHost();
-            InputDialog inputDialog = new InputDialog(SHELL, "Input VNC Server Host",
-                    "Example: xx.swg.usma.ibm.com:1", host + ":1", null);
+            InputDialog inputDialog = new InputDialog(SHELL, "Input VNC Server Host", "Example: xx.swg.usma.ibm.com:1", host + ":1", null);
             if (InputDialog.OK == inputDialog.open()) {
                 InvokeProgram.runProgram(ProgramEnum.VNC, inputDialog.getValue());
             }
@@ -952,8 +949,7 @@ public class MainFrame
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
             showWelcomeTab(ConstantValue.HOME_URL);
         } else if (e.getSource() == aboutItem) {
-            MessageDialog.openInformation(SHELL, "About",
-                    "SmartPutty-" + CONFIGURATION.getSmartPuttyVersion());
+            MessageDialog.openInformation(SHELL, "About", "SmartPutty-" + CONFIGURATION.getSmartPuttyVersion());
         } else if (e.getSource() == utilitiesBarMenuItem) {
             boolean visible = utilitiesBarMenuItem.getSelection();
             setCompositeVisible(utilitiesToolbar, SHELL, visible);
@@ -1000,14 +996,18 @@ public class MainFrame
                 Number hWnd = (Number) folder.getSelection().getData(FieldConstants.HWND);
                 InvokeProgram.setWindowFocus(hWnd);
             }
-        } else if (StrUtil.endWith(e.getSource().getClass().toString(), FieldConstants.MENU_ITEM)
-                && "dynamicApplication".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
+        } else if (StrUtil.endWith(e.getSource().getClass().toString(), FieldConstants.MENU_ITEM) && "dynamicApplication".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
             String cmd = ((MenuItem) e.getSource()).getData("cmd").toString();
             InvokeProgram.exec(cmd);
-        } else if (StrUtil.endWith(e.getSource().getClass().toString(), FieldConstants.MENU_ITEM)
-                && "clipboard".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
+        } else if (StrUtil.endWith(e.getSource().getClass().toString(), FieldConstants.MENU_ITEM) && "clipboard".equals(((MenuItem) e.getSource()).getData(FieldConstants.TYPE))) {
             String data = ((MenuItem) e.getSource()).getData("data").toString();
             ClipboardUtil.setStr(data);
+
+            // 增加剪贴板提示
+            ToolTip toolTip = new ToolTip(SHELL, 0);
+            toolTip.setText("已复制到剪贴板: " + data);
+            toolTip.setVisible(true);
+            toolTip.setAutoHide(true);
         } else if (e.getSource() == connectButton) {
             String host = hostItem.getText();
             String name = host;
@@ -1016,18 +1016,15 @@ public class MainFrame
             String password = passwordItem.getText();
             String session = sessionCombo.getText();
             if (StrUtil.isBlank(session)) {
-                MessageDialog.openInformation(SHELL, "Information",
-                        "please select a putty session first!");
+                MessageDialog.openInformation(SHELL, "Information", "please select a putty session first!");
                 return;
             }
-            ConfigSession configSession = new ConfigSession(name, host, "", port, user, password,
-                    session);
+            ConfigSession configSession = new ConfigSession(name, host, "", port, user, password, session);
             addSession(null, configSession);
         } else if (e.getSource() == win2UnixButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info",
-                        MessageConstants.PLEASE_INPUT_CORRECT_PATH);
+                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             path = StrUtil.strip(path, CONFIGURATION.getWinPathBaseDrive());
@@ -1035,15 +1032,13 @@ public class MainFrame
         } else if (e.getSource() == unix2WinButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {
-                MessageDialog.openInformation(SHELL, "Info",
-                        MessageConstants.PLEASE_INPUT_CORRECT_PATH);
+                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
 
             boolean isWinPath = isWinPath(path);
             if (!isWinPath) {
-                path = CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED
-                        + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
+                path = CONFIGURATION.getWinPathBaseDrive() + WIN_PATH_DELIMITED + StrUtil.replace(path, "/", WIN_PATH_DELIMITED);
 
                 path = path.replace("\\\\", "\\");
 
@@ -1054,8 +1049,7 @@ public class MainFrame
             boolean isValidPath = isWinPath(path);
 
             if (!isValidPath) {
-                MessageDialog.openInformation(SHELL, "Info",
-                        MessageConstants.PLEASE_INPUT_CORRECT_PATH);
+                MessageDialog.openInformation(SHELL, "Info", MessageConstants.PLEASE_INPUT_CORRECT_PATH);
                 return;
             }
             if (!InvokeProgram.openFolder(path)) {
@@ -1109,8 +1103,7 @@ public class MainFrame
             if ((ConfigSession) e.item.getData(FieldConstants.SESSION) != null) {
                 MessageBox msgBox = new MessageBox(SHELL, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                 msgBox.setText("Confirm Exit");
-                msgBox.setMessage("Are you sure to exit session: "
-                        + ((ConfigSession) e.item.getData(FieldConstants.SESSION)).getHost());
+                msgBox.setMessage("Are you sure to exit session: " + ((ConfigSession) e.item.getData(FieldConstants.SESSION)).getHost());
                 if (msgBox.open() == SWT.YES) {
                     closeTab((CTabItem) e.item);
                     e.doit = true;
@@ -1154,9 +1147,7 @@ public class MainFrame
     public void mouseDown(MouseEvent e) {
         if (e.button == 3) {
             CTabItem selectItem = folder.getItem(new Point(e.x, e.y));
-            if (selectItem != null && StrUtil.equalsIgnoreCase(
-                    String.valueOf(folder.getSelection().getData("TYPE")),
-                    FieldConstants.SESSION)) {
+            if (selectItem != null && StrUtil.equalsIgnoreCase(String.valueOf(folder.getSelection().getData("TYPE")), FieldConstants.SESSION)) {
                 folder.setSelection(selectItem);
                 popupMenu.setVisible(true);
             } else {
