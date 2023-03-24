@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.7] - 2023-03-24
+
+- 修改Putty全屏无标题边框
+- 修改Mintty的标签名和错误提示信息
+- 调整Kill All同时kill Putty和Mintty
+
 ## [1.2.6] - 2023-03-23
 
 - hutool -> 5.8.15

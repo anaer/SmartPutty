@@ -220,10 +220,8 @@ public class InvokeProgram extends Thread {
             MessageDialog.openError(MainFrame.SHELL, "OPEN " + name + " ERROR",
                     String.format(MessageConstants.FORMAT_FAILED_CMD_2_ARG, path, args));
         }
-        Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
-        // 隐藏标题栏
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
-                oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
+        // 全屏 无标题边框
+        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, OS.WS_MAXIMIZEBOX );
 
         OS.SetParent(hWnd.intValue(), composite.handle);
         OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
@@ -239,15 +237,14 @@ public class InvokeProgram extends Thread {
     }
 
     /**
-     * Start Putty in a tab.
+     * Start Mintty in a tab.
      *
      * @param session
      */
     public void invokeMintty(ConfigSession session) {
         String args = " --dir ~";
 
-        // Mount command-line Putty parameters:
-        String tabDisplayName = "Cygwin";
+        String tabDisplayName = "Mintty";
 
         Number hHeap = OS.GetProcessHeap();
         String programPath = MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.MINTTY);
@@ -282,7 +279,7 @@ public class InvokeProgram extends Thread {
             log.info("启动失败:{} {}", programPath, result);
             MessageDialog.openInformation(MainFrame.SHELL, "OPEN MINTTY ERROR",
                     String.format("Failed cmd: %s %s",
-                            MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.PUTTY), args));
+                            MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.MINTTY), args));
             return;
         }
 

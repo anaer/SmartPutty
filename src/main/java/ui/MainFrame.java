@@ -237,7 +237,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         tabNextItem.addSelectionListener(this);
 
         killAllPuttyItem = new MenuItem(fileMenu, SWT.PUSH);
-        killAllPuttyItem.setText("Kill All Putty");
+        killAllPuttyItem.setText("Kill All Putty/Mintty");
         killAllPuttyItem.addSelectionListener(this);
 
         // Separator:
@@ -1088,9 +1088,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
      */
     private void killAllPutty() {
         try {
-            RuntimeUtil.exec("taskkill /F /IM Putty.exe");
+            RuntimeUtil.exec("taskkill /F /IM Putty.exe /IM Mintty.exe");
         } catch (Exception ex) {
-            log.error("关闭Putty异常.");
+            log.error("关闭Putty/Mintty异常.");
         }
     }
 
