@@ -31,6 +31,9 @@ menus:
 -   cmd: null
     name: null
     type: separator
+-   cmd: taskkill /f /im language_server_windows_x64.exe
+    name: 关闭Codeium语言服务程序
+    type: menu
 program:
     PuttyExecutable: C:\ProgramData\chocolatey\bin\PUTTY.EXE
     MinttyExecutable: C:\Program Files\Git\usr\bin\mintty.exe
