@@ -20,8 +20,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
-
+import org.yaml.snakeyaml.inspector.TagInspector;
+import org.yaml.snakeyaml.nodes.Tag;
 import constants.ConfigConstant;
 import constants.ConstantValue;
 import enums.ProgramEnum;
@@ -68,10 +68,14 @@ public class Configuration {
         File file = new File(ConstantValue.CONFIG_FILE);
         try (FileInputStream fis = new FileInputStream(file)) {
             LoaderOptions options = new LoaderOptions();
-            // snakeyaml由1.33升级为2.0后, 需要设置可信tag, 否则会提示Global tag is not allowed: tag:yaml.org,2002:model.Config
-            List<String> tags = Arrays.asList("model.Config");
-            TrustedPrefixesTagInspector tagInspector = new TrustedPrefixesTagInspector(tags);
-            options.setTagInspector(tagInspector);
+            options.setTagInspector(new TagInspector(){
+                @Override
+                public boolean isGlobalTagAllowed(Tag tag) {
+                    // 自定义允许的tag
+                    return tag.getClassName().startsWith("model.Config");
+                }
+
+            });
             Yaml yaml = new Yaml(options);
             Map map = yaml.loadAs(fis, Map.class);
 
