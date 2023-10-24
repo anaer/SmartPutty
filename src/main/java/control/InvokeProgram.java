@@ -64,12 +64,12 @@ public class InvokeProgram extends Thread {
     public static void setWindowFocus(Number hWnd) {
         if (is64) {
             // 64位
-            OS.SendMessage(hWnd.intValue(), OS.WM_SETFOCUS, 0, 0);
-            OS.SetCapture(hWnd.intValue());
+            OS.SendMessage(hWnd.longValue(), OS.WM_SETFOCUS, 0, 0);
+            OS.SetCapture(hWnd.longValue());
         } else {
             // 32位
-            OS.SetForegroundWindow(hWnd.intValue());
-            OS.SetCursor(hWnd.intValue());
+            OS.SetForegroundWindow(hWnd.longValue());
+            OS.SetCursor(hWnd.longValue());
         }
     }
 
@@ -163,27 +163,27 @@ public class InvokeProgram extends Thread {
         Number hHeap = OS.GetProcessHeap();
         TCHAR buffer = new TCHAR(0, path, true);
         int byteCount = buffer.length() * TCHAR.sizeof;
-        Number lpFile = OS.HeapAlloc(hHeap.intValue(), OS.HEAP_ZERO_MEMORY, byteCount);
+        Number lpFile = OS.HeapAlloc(hHeap.longValue(), OS.HEAP_ZERO_MEMORY, byteCount);
         TCHAR buffer1 = new TCHAR(0, args, true);
         int byteCount1 = buffer1.length() * TCHAR.sizeof;
-        Number lpParameters = OS.HeapAlloc(hHeap.intValue(), OS.HEAP_ZERO_MEMORY, byteCount1);
+        Number lpParameters = OS.HeapAlloc(hHeap.longValue(), OS.HEAP_ZERO_MEMORY, byteCount1);
 
-        OS.MoveMemory(lpFile.intValue(), buffer, byteCount);
-        OS.MoveMemory(lpParameters.intValue(), buffer1, byteCount1);
+        OS.MoveMemory(lpFile.longValue(), buffer, byteCount);
+        OS.MoveMemory(lpParameters.longValue(), buffer1, byteCount1);
 
         SHELLEXECUTEINFO info = new SHELLEXECUTEINFO();
         info.cbSize = SHELLEXECUTEINFO.sizeof;
-        info.lpFile = lpFile.intValue();
-        info.lpParameters = lpParameters.intValue();
+        info.lpFile = lpFile.longValue();
+        info.lpParameters = lpParameters.longValue();
 
         boolean result = OS.ShellExecuteEx(info);
 
-        if (lpFile.intValue() != 0) {
-            OS.HeapFree(hHeap.intValue(), 0, lpFile.intValue());
+        if (lpFile.longValue() != 0) {
+            OS.HeapFree(hHeap.longValue(), 0, lpFile.longValue());
         }
 
-        if (lpParameters.intValue() != 0) {
-            OS.HeapFree(hHeap.intValue(), 0, lpParameters.intValue());
+        if (lpParameters.longValue() != 0) {
+            OS.HeapFree(hHeap.longValue(), 0, lpParameters.longValue());
         }
 
         if (!result) {
@@ -195,7 +195,7 @@ public class InvokeProgram extends Thread {
         // 如果有安全警告窗口 等待人工处理
         Number hWndAlert = OS.FindWindow(null,
                 new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
-        if (hWndAlert.intValue() != 0) {
+        if (hWndAlert.longValue() != 0) {
             int waitingForOperation = 10000;
             while (waitingForOperation > 0) {
                 if (OS.FindWindow(null,
@@ -212,7 +212,7 @@ public class InvokeProgram extends Thread {
 
         int waitingTime = MainFrame.CONFIGURATION.getWaitForInitTime();
         while (count > 0
-                && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).intValue() == 0) {
+                && (hWnd = OS.FindWindow(new TCHAR(0, name, true), null)).longValue() == 0) {
             ThreadUtil.safeSleep(waitingTime);
             count--;
         }
@@ -221,12 +221,12 @@ public class InvokeProgram extends Thread {
                     String.format(MessageConstants.FORMAT_FAILED_CMD_2_ARG, path, args));
         }
         // 全屏 无标题边框
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE, OS.WS_MAXIMIZEBOX );
+        OS.SetWindowLong(hWnd.longValue(), OS.GWL_STYLE, OS.WS_MAXIMIZEBOX );
 
-        OS.SetParent(hWnd.intValue(), composite.handle);
-        OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
+        OS.SetParent(hWnd.longValue(), composite.handle);
+        OS.SendMessage(hWnd.longValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
 
-        if (hWnd.intValue() != 0) {
+        if (hWnd.longValue() != 0) {
             tabItem.setText(tabName.toString());
             tabItem.setData("hwnd", hWnd);
             tabItem.setData(FieldConstants.SESSION, session);
@@ -250,29 +250,29 @@ public class InvokeProgram extends Thread {
         String programPath = MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.MINTTY);
         TCHAR buffer = new TCHAR(0, programPath, true);
         int byteCount = buffer.length() * TCHAR.sizeof;
-        Number lpFile = OS.HeapAlloc(hHeap.intValue(), OS.HEAP_ZERO_MEMORY, byteCount);
+        Number lpFile = OS.HeapAlloc(hHeap.longValue(), OS.HEAP_ZERO_MEMORY, byteCount);
         TCHAR buffer1 = new TCHAR(0, args, true);
         int byteCount1 = buffer1.length() * TCHAR.sizeof;
-        Number lpParameters = OS.HeapAlloc(hHeap.intValue(), OS.HEAP_ZERO_MEMORY, byteCount1);
+        Number lpParameters = OS.HeapAlloc(hHeap.longValue(), OS.HEAP_ZERO_MEMORY, byteCount1);
 
-        OS.MoveMemory(lpFile.intValue(), buffer, byteCount);
-        OS.MoveMemory(lpParameters.intValue(), buffer1, byteCount1);
+        OS.MoveMemory(lpFile.longValue(), buffer, byteCount);
+        OS.MoveMemory(lpParameters.longValue(), buffer1, byteCount1);
 
         SHELLEXECUTEINFO info = new SHELLEXECUTEINFO();
         info.cbSize = SHELLEXECUTEINFO.sizeof;
-        info.lpFile = lpFile.intValue();
-        info.lpParameters = lpParameters.intValue();
+        info.lpFile = lpFile.longValue();
+        info.lpParameters = lpParameters.longValue();
 
         info.nShow = OS.SW_SHOW;
 
         boolean result = OS.ShellExecuteEx(info);
 
-        if (lpFile.intValue() != 0) {
-            OS.HeapFree(hHeap.intValue(), 0, lpFile.intValue());
+        if (lpFile.longValue() != 0) {
+            OS.HeapFree(hHeap.longValue(), 0, lpFile.longValue());
         }
 
-        if (lpParameters.intValue() != 0) {
-            OS.HeapFree(hHeap.intValue(), 0, lpParameters.intValue());
+        if (lpParameters.longValue() != 0) {
+            OS.HeapFree(hHeap.longValue(), 0, lpParameters.longValue());
         }
 
         if (!result) {
@@ -286,7 +286,7 @@ public class InvokeProgram extends Thread {
         int count = 15;
         Number hWnd = 0;
         while (count > 0
-                && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).intValue() == 0) {
+                && (hWnd = OS.FindWindow(null, new TCHAR(0, "bash", true))).longValue() == 0) {
             int waitingTime = MainFrame.CONFIGURATION.getWaitForInitTime();
             ThreadUtil.safeSleep(waitingTime);
             count--;
@@ -295,14 +295,14 @@ public class InvokeProgram extends Thread {
             MessageDialog.openError(MainFrame.SHELL, "OPEN MINTTY ERROR",
                     String.format("Failed cmd: %s %s", programPath, args));
         }
-        Number oldStyle = OS.GetWindowLong(hWnd.intValue(), OS.GWL_STYLE);
-        OS.SetWindowLong(hWnd.intValue(), OS.GWL_STYLE,
+        Number oldStyle = OS.GetWindowLong(hWnd.longValue(), OS.GWL_STYLE);
+        OS.SetWindowLong(hWnd.longValue(), OS.GWL_STYLE,
                 oldStyle.intValue() & ~OS.WS_CAPTION & ~OS.WS_BORDER);
 
-        OS.SetParent(hWnd.intValue(), composite.handle);
-        OS.SendMessage(hWnd.intValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
+        OS.SetParent(hWnd.longValue(), composite.handle);
+        OS.SendMessage(hWnd.longValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
 
-        if (hWnd.intValue() != 0) {
+        if (hWnd.longValue() != 0) {
             tabItem.setText(tabDisplayName);
             tabItem.setData("hwnd", hWnd);
             tabItem.setData(FieldConstants.SESSION, session);
@@ -312,25 +312,25 @@ public class InvokeProgram extends Thread {
         }
     }
 
-    public static void killProcess(int hWnd) {
+    public static void killProcess(long hWnd) {
         OS.SendMessage(hWnd, OS.WM_CLOSE, null, 0);
     }
 
     public static void killPuttyWarningsAndErrs() {
         Number hWndAlert = OS.FindWindow(null,
                 new TCHAR(0, ConstantValue.PUTTY_SECURITY_ALERT, true));
-        if (hWndAlert.intValue() != 0) {
-            killProcess(hWndAlert.intValue());
+        if (hWndAlert.longValue() != 0) {
+            killProcess(hWndAlert.longValue());
         }
 
         Number hWndError = OS.FindWindow(null, new TCHAR(0, "PuTTY Error", true));
-        if (hWndError.intValue() != 0) {
-            killProcess(hWndError.intValue());
+        if (hWndError.longValue() != 0) {
+            killProcess(hWndError.longValue());
         }
 
         hWndError = OS.FindWindow(null, new TCHAR(0, "PuTTY Fatal Error", true));
-        if (hWndError.intValue() != 0) {
-            killProcess(hWndError.intValue());
+        if (hWndError.longValue() != 0) {
+            killProcess(hWndError.longValue());
         }
     }
 
