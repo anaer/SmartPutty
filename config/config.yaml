@@ -16,7 +16,7 @@ configuration:
     WindowPositionSize: 374,24,1216,1004
     ViewBottomQuickBar: false
     DefaultPuttyUsername: root
-    DatabasePath: D:\Git\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
+    DatabasePath: D:\GitHub\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
 feature:
     calculator: false
     transfer: true
@@ -35,8 +35,8 @@ menus:
     name: 关闭Codeium语言服务程序
     type: menu
 program:
-    PuttyExecutable: C:\ProgramData\chocolatey\bin\PUTTY.EXE
+    PuttyExecutable: D:\Putty\PUTTY.EXE
     MinttyExecutable: C:\Program Files\Git\usr\bin\mintty.exe
-    PlinkExecutable: C:\ProgramData\chocolatey\bin\PLINK.EXE
+    PlinkExecutable: D:\Putty\PLINK.EXE
     ScpExecutable: C:\Users\Administrator\AppData\Local\Programs\WinSCP\WinSCP.exe
-    KeyGeneratorExecutable: C:\ProgramData\chocolatey\bin\PUTTYGEN.EXE
+    KeyGeneratorExecutable: D:\Putty\PUTTYGEN.EXE
