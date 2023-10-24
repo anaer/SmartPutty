@@ -1,1 +1,1 @@
-start C:\Progra~1\Java\jdk1.8.0_211\bin\javaw.exe -jar SmartPutty.jar
+start D:\Java\jdk1.8.0_333\bin\javaw.exe -jar SmartPutty.jar
