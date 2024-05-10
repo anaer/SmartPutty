@@ -106,7 +106,7 @@ public class Configuration {
      * 获取SmartPutty版本号配置.
      */
     public String getSmartPuttyVersion() {
-        return getConfiguration(ConfigConstant.Configuration.VERSION, "");
+        return getConfiguration(ConfigConstant.Configuration.VERSION, "1.3.0");
     }
 
     /**

@@ -125,13 +125,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
      */
     private MenuItem closeAllTabsItem;
 
-    private MenuItem tabNextItem;
-
-    /**
-     * 关闭所有putty进程.
-     * */
-    private MenuItem killAllPuttyItem;
-
     private Menu popupMenu;
     private ToolItem itemNew;
     private ToolItem itemOpen;
@@ -230,15 +223,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         openItem.setText("Open\tCtrl+O");
         openItem.setAccelerator(SWT.CTRL + 'O');
         openItem.addSelectionListener(this);
-
-        tabNextItem = new MenuItem(fileMenu, SWT.PUSH);
-        tabNextItem.setText("Next Tab\tAlt+#");
-        tabNextItem.setAccelerator(SWT.ALT + SWT.SHIFT + '3');
-        tabNextItem.addSelectionListener(this);
-
-        killAllPuttyItem = new MenuItem(fileMenu, SWT.PUSH);
-        killAllPuttyItem.setText("Kill All Putty/Mintty");
-        killAllPuttyItem.addSelectionListener(this);
 
         // Separator:
         new MenuItem(fileMenu, SWT.SEPARATOR);
@@ -940,10 +924,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             InvokeProgram.runProgram(ProgramEnum.VNC, null);
         } else if (e.getSource() == itemNotePad) {
             InvokeProgram.runProgram(ProgramEnum.NOTEPAD, null);
-        } else if (e.getSource() == tabNextItem) {
-            switchTab();
-        } else if (e.getSource() == killAllPuttyItem) {
-            killAllPutty();
         } else if (e.getSource() == itemKenGen) {
             InvokeProgram.exec(CONFIGURATION.getProgramPath(ProgramEnum.KEYGEN), null);
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
@@ -1067,31 +1047,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
      */
     private boolean isWinPath(String path) {
         return ReUtil.isMatch("^[a-zA-Z]:.*", path);
-    }
-
-    /**
-     * 标签切换.
-     */
-    private void switchTab() {
-        int select = folder.getSelectionIndex();
-        int count = folder.getItemCount();
-
-        if (count > 0) {
-            int index = select < count - 1 ? select + 1 : 0;
-            CTabItem item = folder.getItem(index);
-            folder.setSelection(item);
-        }
-    }
-
-    /**
-     * 关闭所有putty进程.
-     */
-    private void killAllPutty() {
-        try {
-            RuntimeUtil.exec("taskkill /F /IM Putty.exe /IM Mintty.exe");
-        } catch (Exception ex) {
-            log.error("关闭Putty/Mintty异常.");
-        }
     }
 
     /**

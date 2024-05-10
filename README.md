@@ -7,18 +7,14 @@ jdk 1.8.0_231
 PS:
 
 1. pom.xml org.eclipse.swt.win32.win32 根据 jdk 的版本修改依赖包的版本.
-2. 使用 OpenJDK\jdk-18.0.2 貌似有问题, 可以启动, 但是调用 Putty 时 闪退了
-
-## 配置说明
-
-1. 版本号修改 config.yaml, pom.xml
+2. 使用 OpenJDK\jdk-18.0.2 貌似有问题, 可以启动, 但是调用 Putty 时会闪退
 
 ## 目录说明
 
 ```
 config           应用配置目录
   config.yaml    应用配置文件
-  ssh.csv        账号信息
+  ssh.csv        账号信息, 因为自用 所以未做加密处理, 请自行保护
 doc              文档目录
 icon             应用图标目录
 src              源代码
@@ -28,8 +24,8 @@ target           编译生成目录
 
 ## 快捷键
 
-Alt+# 切换 tab
 Ctrl+R 打开程序路径配置弹窗
+标签栏 左右方向键切换Tab
 
 ## 启动脚本
 

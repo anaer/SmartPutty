@@ -7,7 +7,6 @@ clipboard:
     yum源配置目录: cd /etc/yum.repos.d/
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
-    Version: 1.2.7
     ViewConnectionBar: false
     WindowsBaseDrive: 'C:'
     WaitForInitTime: 200
@@ -31,8 +30,8 @@ menus:
 -   cmd: null
     name: null
     type: separator
--   cmd: taskkill /f /im language_server_windows_x64.exe
-    name: 关闭Codeium语言服务程序
+-   cmd: taskkill /F /IM Putty.exe /IM Mintty.exe
+    name: 关闭所有Putty程序
     type: menu
 program:
     PuttyExecutable: D:\Putty\PUTTY.EXE
