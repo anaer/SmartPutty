@@ -3,7 +3,6 @@ package ui;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.awt.GraphicsDevice;
@@ -67,7 +66,6 @@ import dialog.OpenSessionDialog;
 import dialog.ProgramsLocationsDialog;
 import enums.ProgramEnum;
 import listener.DragListener;
-import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import model.CustomMenu;
 import utils.RegistryUtils;
@@ -79,7 +77,6 @@ import widgets.BorderLayout;
  * @author anaer
  * @date 2018/10/24
  */
-@Slf4j
 public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseListener, ShellListener {
 
     /**

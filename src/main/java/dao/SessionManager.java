@@ -89,9 +89,15 @@ public class SessionManager {
         writer.flush();
     }
 
-    public void insertSession(ConfigSession session) {
+    public int insertSession(ConfigSession session) {
+        ConfigSession existSession = querySessionByHostUserProtocol(session.getHost(), session.getPort(), session.getUser(), session.getProtocol());
+        if(Objects.nonNull(existSession)){
+            list.remove(existSession);
+        }
         list.add(session);
         saveCsv(list);
+
+        return list.indexOf(session);
     }
 
     /**

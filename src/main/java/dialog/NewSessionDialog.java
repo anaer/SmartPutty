@@ -300,9 +300,10 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
                 ConfigSession session = new ConfigSession(name, host, intranet, port, user,
                         protocol.getName(), file, password, sessionProfile);
                 dialog.dispose();
-                SessionManager.getInstance().insertSession(session);
+                int index = SessionManager.getInstance().insertSession(session);
+
                 if (sessionDialog != null) {
-                    sessionDialog.loadTable();
+                    sessionDialog.loadTable(index);
                 }
                 if (mainFrame != null) {
                     mainFrame.addSession(null, session);
