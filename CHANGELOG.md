@@ -1,5 +1,11 @@
 # Changelog
 
+## 24.1128.1328
+
+1. 删除较少使用的快捷方式: vnc, notepad, capture, calclator, remote_desk等
+2. 有需要的话可以在配置文件中添加快捷方式
+3. 修改版本号规则, 直接按日期
+
 ## 1.3.0 - 2024-07-24
 
 - hutool -> 5.8.29

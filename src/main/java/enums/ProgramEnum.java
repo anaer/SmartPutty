@@ -11,7 +11,17 @@ public enum ProgramEnum {
     /**
      * putty程序.
      */
-    PUTTY("Putty", "", "PuttyExecutable", "putty.exe", "Putty (putty.exe)"),
+    PUTTY("Putty", "", "PuttyExecutable", "*tty.exe", "Putty (*tty.exe)"),
+
+    /**
+     * plink程序.
+     */
+    PLINK("Plink", "", "PlinkExecutable", "*link.exe", "Plink (*link.exe)"),
+
+    /**
+     * keygen程序.
+     */
+    KEYGEN("Key generator", "", "KeyGeneratorExecutable", "*ttygen.exe", "Key generator (*ttygen.exe)"),
 
     /**
      * mintty程序.
@@ -19,44 +29,9 @@ public enum ProgramEnum {
     MINTTY("Mintty", "", "MinttyExecutable", "mintty.exe", "Mintty (mintty.exe)"),
 
     /**
-     * plink程序.
-     */
-    PLINK("Plink", "", "PlinkExecutable", "plink.exe", "Plink (plink.exe)"),
-
-    /**
-     * keygen程序.
-     */
-    KEYGEN("Key generator", "", "KeyGeneratorExecutable", "puttygen.exe", "Key generator (puttygen.exe)"),
-
-    /**
      * winscp程序.
      */
-    WINSCP("Winscp", "", "ScpExecutable", "winscp.exe", "scp(winscp.exe)"),
-
-    /**
-     * vpc程序.
-     */
-    VNC("vnc", ""),
-
-    /**
-     * notepad程序.
-     */
-    NOTEPAD("notepad", "notepad.exe"),
-
-    /**
-     * capture程序.
-     */
-    CAPTURE("capture", "snippingtool.exe"),
-
-    /**
-     * calculator程序.
-     */
-    CALCULATOR("calculator", "calc.exe"),
-
-    /**
-     * 远程桌面.
-     */
-    REMOTE_DESK("remote_desk", "mstsc.exe");
+    WINSCP("Winscp", "", "ScpExecutable", "winscp.exe", "scp(winscp.exe)");
 
     /**
      * 程序名称.

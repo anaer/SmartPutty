@@ -11,7 +11,7 @@ PS:
 
 ## 目录说明
 
-```
+```plaintext
 config           应用配置目录
   config.yaml    应用配置文件
   ssh.csv        账号信息, 因为自用 所以未做加密处理, 请自行保护

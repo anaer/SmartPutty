@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -88,8 +87,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     public static final Configuration CONFIGURATION = new Configuration();
     private MenuItem openItem;
     private MenuItem newItem;
-    private MenuItem captureItem;
-    private MenuItem remoteDesktopItem;
     private MenuItem exitItem;
     private MenuItem aboutItem;
     private MenuItem welcomeMenuItem;
@@ -100,7 +97,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     private MenuItem scpMenuItem;
     private MenuItem ftpMenuItem;
     private MenuItem sftpMenuItem;
-    private MenuItem vncPopItem;
     private MenuItem openPuttyItem;
     private MenuItem configProgramsLocationsItem;
     private MenuItem utilitiesBarMenuItem;
@@ -125,11 +121,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     private Menu popupMenu;
     private ToolItem itemNew;
     private ToolItem itemOpen;
-    private ToolItem itemRemoteDesk;
-    private ToolItem itemCapture;
-    private ToolItem itemCalculator;
-    private ToolItem itemVnc;
-    private ToolItem itemNotePad;
     private ToolItem itemKenGen;
     private ToolItem itemHelp;
     private CTabFolder folder;
@@ -450,36 +441,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         itemOpen.setImage(ButtonImage.OPEN_IMAGE);
         itemOpen.addSelectionListener(this);
 
-        itemRemoteDesk = new ToolItem(utilitiesToolbar, SWT.PUSH);
-        itemRemoteDesk.setText("RemoteDesk");
-        itemRemoteDesk.setToolTipText("open system remote desk tool");
-        itemRemoteDesk.setImage(ButtonImage.REMOTE_DESK_IMAGE);
-        itemRemoteDesk.addSelectionListener(this);
-
-        itemCapture = new ToolItem(utilitiesToolbar, SWT.PUSH);
-        itemCapture.setText("Capture");
-        itemCapture.setToolTipText("Open FastStone Capture");
-        itemCapture.setImage(ButtonImage.CAPTURE_IMAGE);
-        itemCapture.addSelectionListener(this);
-
-        itemCalculator = new ToolItem(utilitiesToolbar, SWT.PUSH);
-        itemCalculator.setText("Calculator");
-        itemCalculator.setToolTipText("open microsoft calculator");
-        itemCalculator.setImage(ButtonImage.CALC_IMAGE);
-        itemCalculator.addSelectionListener(this);
-
-        itemVnc = new ToolItem(utilitiesToolbar, SWT.PUSH);
-        itemVnc.setText("VNC");
-        itemVnc.setToolTipText("open VNC");
-        itemVnc.setImage(ButtonImage.VPC_IMAGE);
-        itemVnc.addSelectionListener(this);
-
-        itemNotePad = new ToolItem(utilitiesToolbar, SWT.PUSH);
-        itemNotePad.setText("NotePad");
-        itemNotePad.setToolTipText("open NotePad");
-        itemNotePad.setImage(ButtonImage.NOTEPAD_IMAGE);
-        itemNotePad.addSelectionListener(this);
-
         itemKenGen = new ToolItem(utilitiesToolbar, SWT.PUSH);
         itemKenGen.setText("KenGen");
         itemKenGen.setToolTipText("Convert SSH Key");
@@ -582,11 +543,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         transferPopItem.setMenu(subMenu);
         // 文件传输菜单 end
-
-        vncPopItem = new MenuItem(popupMenu, SWT.PUSH);
-        vncPopItem.setText("VNC");
-        vncPopItem.setImage(ButtonImage.VPC_IMAGE);
-        vncPopItem.addSelectionListener(this);
 
         // 拷贝标签名
         copyTabNamePopItem = new MenuItem(popupMenu, SWT.PUSH);
@@ -779,18 +735,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         InvokeProgram.invokeSinglePutty(session);
     }
 
-    private void openVncSession() {
-        CTabItem item = folder.getSelection();
-        ConfigSession session = (ConfigSession) item.getData(FieldConstants.SESSION);
-        if (session != null) {
-            String host = session.getHost();
-            InputDialog inputDialog = new InputDialog(SHELL, "Input VNC Server Host", "Example: xx.swg.usma.ibm.com:1", host + ":1", null);
-            if (InputDialog.OK == inputDialog.open()) {
-                InvokeProgram.runProgram(ProgramEnum.VNC, inputDialog.getValue());
-            }
-        }
-    }
-
     /**
      * 关闭程序.
      */
@@ -827,23 +771,10 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
     /** Check the feature toggle, dispose the features who equals to "false". */
     private void applyFeatureToggle() {
-        // 是否显示vnc
-        boolean bVnc = CONFIGURATION.getFeatureToggle(ConfigConstant.Feature.VNC);
-        if (!bVnc) {
-            this.vncPopItem.dispose();
-            this.itemVnc.dispose();
-        }
-
         // 是否显示transfer
         boolean bTransfer = CONFIGURATION.getFeatureToggle(ConfigConstant.Feature.TRANSFER);
         if (!bTransfer) {
             this.transferPopItem.dispose();
-        }
-
-        // 是否显示Calculator, 本机提示: 需要使用新应用以打开此 ms-calculator 链接, 因为实际也没用这个 所以加个开关控制下
-        boolean bCalculator = CONFIGURATION.getFeatureToggle(ConfigConstant.Feature.CALCULATOR);
-        if (!bCalculator) {
-            this.itemCalculator.dispose();
         }
     }
 
@@ -907,20 +838,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         } else if (e.getSource() == itemOpen || e.getSource() == openItem) {
             // 打开
             new OpenSessionDialog(this, SHELL);
-        } else if (e.getSource() == itemRemoteDesk || e.getSource() == remoteDesktopItem) {
-            InvokeProgram.runProgram(ProgramEnum.REMOTE_DESK, null);
         } else if (e.getSource() == exitItem) {
             disposeApp();
             System.exit(0);
-        } else if (e.getSource() == itemCapture || e.getSource() == captureItem) {
-            InvokeProgram.runProgram(ProgramEnum.CAPTURE, null);
-            SHELL.setMinimized(true);
-        } else if (e.getSource() == itemCalculator) {
-            InvokeProgram.runProgram(ProgramEnum.CALCULATOR, null);
-        } else if (e.getSource() == itemVnc) {
-            InvokeProgram.runProgram(ProgramEnum.VNC, null);
-        } else if (e.getSource() == itemNotePad) {
-            InvokeProgram.runProgram(ProgramEnum.NOTEPAD, null);
         } else if (e.getSource() == itemKenGen) {
             InvokeProgram.exec(CONFIGURATION.getProgramPath(ProgramEnum.KEYGEN), null);
         } else if (e.getSource() == itemHelp || e.getSource() == welcomeMenuItem) {
@@ -965,9 +885,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             openWinscp("scp");
         } else if (e.getSource() == sftpMenuItem) {
             openWinscp("sftp");
-        } else if (e.getSource() == vncPopItem) {
-            openVncSession();
-            // folder
         } else if (e.getSource() == folder) {
             if (folder.getSelection().getData(FieldConstants.HWND) != null) {
                 Number hWnd = (Number) folder.getSelection().getData(FieldConstants.HWND);

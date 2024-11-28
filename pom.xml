@@ -1,10 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SmartPutty</groupId>
 	<artifactId>SmartPutty</artifactId>
-	<version>1.3.0</version>
+	<version>24.1128.1328</version>
 	<properties>
 		<!-- JDK8 需要使用1.3.x版本, 1.4.x需要JDK8以上 -->
 		<ch.qos.logback.version>1.3.12</ch.qos.logback.version>
@@ -13,7 +13,7 @@
 		<org.eclipse.swt.version>4.3</org.eclipse.swt.version>
 		<org.mod4j.org.eclipse.version>3.5.0</org.mod4j.org.eclipse.version>
 		<org.projectlombok.version>1.18.34</org.projectlombok.version>
-		<org.yaml.version>2.2</org.yaml.version>
+		<org.yaml.version>2.3</org.yaml.version>
 	</properties>
 
 	<dependencies>

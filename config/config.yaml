@@ -17,9 +17,7 @@ configuration:
     DefaultPuttyUsername: root
     DatabasePath: D:\GitHub\notebook\01-工作\01-环境资源\02-测试环境\ssh.csv
 feature:
-    calculator: false
     transfer: true
-    vnc: false
 menus:
 -   cmd: notepad.exe
     name: notebook
@@ -34,8 +32,8 @@ menus:
     name: 关闭所有Putty程序
     type: menu
 program:
-    PuttyExecutable: D:\Putty\PUTTY.EXE
+    PuttyExecutable: D:\kitty\kitty.exe
     MinttyExecutable: C:\Program Files\Git\usr\bin\mintty.exe
-    PlinkExecutable: D:\Putty\PLINK.EXE
+    PlinkExecutable: D:\kitty\klink.exe
     ScpExecutable: C:\Users\Administrator\AppData\Local\Programs\WinSCP\WinSCP.exe
-    KeyGeneratorExecutable: D:\Putty\PUTTYGEN.EXE
+    KeyGeneratorExecutable: D:\kitty\kittygen.exe
