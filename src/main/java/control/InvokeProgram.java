@@ -98,7 +98,7 @@ public class InvokeProgram extends Thread {
         String puttySession = session.getSession();
 
         StringBuilder sb = new StringBuilder();
-        if (session.getConfigSessionType() == PuttySessionEnum.PURE_PUTTY_SESSION) {
+        if (session.getConfigSessionType() == PuttySessionEnum.PURE_PUTTY_SESSION && StrUtil.isNotBlank(puttySession)) {
             appendIfNotBlank(sb, " -load ", puttySession, true);
         } else {
             appendIfNotBlank(sb, " ", protocol);

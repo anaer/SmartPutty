@@ -38,3 +38,8 @@ start C:\Progra~1\Java\jdk1.8.0_211\bin\javaw.exe -jar SmartPutty.jar
 
 ### Start.vbs
 因使用Start.bat启动时有黑窗, 所以使用vbs处理下
+
+### SSH key文件使用说明
+Unable to use key file "C:\Users\Administrator\.ssh\id_rsa" (OpenSSH SSH-2 private key (old PEM format))
+
+使用key文件登录时, 如果提示以上错误, 则需要使用puttygen.exe将id_rsa的证书文件转为putty支持的ppk文件:id_rsa_putty.ppk
