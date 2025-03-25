@@ -1,6 +1,7 @@
 package ui;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -722,6 +723,12 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         }
         ConfigSession session = (ConfigSession) folder.getSelection().getData(FieldConstants.SESSION);
         String arg = protocol + "://" + session.getUser() + ":" + session.getPassword() + "@" + session.getHost() + ":" + session.getPort();
+
+        // 如果存在Putty的私钥 则带私钥参数
+        String privateKey = session.getKey();
+        if(StrUtil.isNotBlank(privateKey) && StrUtil.equalsIgnoreCase(FileUtil.extName(privateKey), "ppk")) {
+            arg += " /privateKey=\"" + privateKey + "\"";
+        }
 
         InvokeProgram.runProgram(ProgramEnum.WINSCP, arg);
     }

@@ -35,5 +35,5 @@ program:
     PuttyExecutable: D:\kitty\kitty.exe
     MinttyExecutable: C:\Program Files\Git\usr\bin\mintty.exe
     PlinkExecutable: D:\kitty\klink.exe
-    ScpExecutable: C:\Users\Administrator\AppData\Local\Programs\WinSCP\WinSCP.exe
+    ScpExecutable: D:\WinSCP\WinSCP.exe
     KeyGeneratorExecutable: D:\kitty\kittygen.exe
