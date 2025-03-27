@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import control.Configuration;
 import model.ConfigSession;
+import utils.Comms;
 
 /**
  * 数据库管理.
@@ -174,6 +175,12 @@ public class SessionManager {
         String port = session.getPort();
         String protocol = session.getProtocol();
         return querySessionByHostUserProtocol(host, port, user, protocol);
+    }
+
+    public ConfigSession getConfigSession(String selected) {
+        return list.stream().filter(p -> {
+            return StrUtil.equals(selected, Comms.formatName(p.getName(), p.getHost(), p.getIntranet()));
+        }).findFirst().orElse(null);
     }
 
 }

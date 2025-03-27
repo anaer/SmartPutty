@@ -5,6 +5,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -58,12 +59,16 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
     private Button buttonShow;
 
     public NewSessionDialog(MainFrame mainFrame, OpenSessionDialog sessionDialog, boolean isEdit) {
+        this(mainFrame, sessionDialog, isEdit, null);
+    }
+
+    public NewSessionDialog(MainFrame mainFrame, OpenSessionDialog sessionDialog, boolean isEdit, ConfigSession configSession) {
         this.mainFrame = mainFrame;
         this.sessionDialog = sessionDialog;
         dialog = new Shell(MainFrame.SHELL, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialog.setImage(ButtonImage.NEW_IMAGE);
         dialog.setSize(400, 160);
-        dialog.setText("New Session Dialog");
+        dialog.setText(isEdit?"Edit Session Dialog":"New Session Dialog");
 
         SwtUtils.setDialogLocation(MainFrame.SHELL, dialog);
 
@@ -180,21 +185,23 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         buttonCancel.addMouseListener(this);
 
         if (isEdit) {
-            ConfigSession session = sessionDialog.getCurrentSelectSession();
-            if (session != null) {
-                String protocol = session.getProtocol();
+            if(Objects.isNull(configSession)){
+                configSession = sessionDialog.getCurrentSelectSession();
+            }
+            if (configSession != null) {
+                String protocol = configSession.getProtocol();
                 ProtocolEnum protocolEnum = ProtocolEnum.find(protocol);
-                textName.setText(session.getName());
-                textPort.setText(session.getPort());
-                comboHost.setText(session.getHost());
-                comboIntranet.setText(session.getIntranet());
-                comboUser.setText(session.getUser());
+                textName.setText(configSession.getName());
+                textPort.setText(configSession.getPort());
+                comboHost.setText(configSession.getHost());
+                comboIntranet.setText(configSession.getIntranet());
+                comboUser.setText(configSession.getUser());
                 comboProtocol.setText(protocol);
-                textKey.setText(session.getKey());
-                textPassword.setText(session.getPassword());
+                textKey.setText(configSession.getKey());
+                textPassword.setText(configSession.getPassword());
 
                 if (ProtocolEnum.SSH2 == protocolEnum || ProtocolEnum.SSH == protocolEnum) {
-                    String profile = session.getSession();
+                    String profile = configSession.getSession();
                     if (StrUtil.isNotBlank(profile)) {
                         comboSession.setText(profile);
                         comboSession.select(ArrayUtil.indexOf(comboSession.getItems(), profile));
@@ -207,7 +214,6 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
 
         dialog.pack();
         dialog.open();
-
     }
 
     @Override

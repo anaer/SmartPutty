@@ -1,5 +1,10 @@
 # Changelog
 
+## 25.327.1734
+
+1. 在Quick Connect添加快捷搜索下拉框, 选中后回车可直接连接
+2. 在tab右键菜单 添加Edit Session可修改会话信息, 修改保存时自动以新信息创建窗口
+
 ## 24.1128.1328
 
 1. 删除较少使用的快捷方式: vnc, notepad, capture, calclator, remote_desk等

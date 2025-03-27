@@ -25,6 +25,7 @@ import enums.PuttySessionEnum;
 import lombok.extern.slf4j.Slf4j;
 import model.ConfigSession;
 import ui.MainFrame;
+import utils.Comms;
 
 /**
  * 调用程序.
@@ -149,13 +150,7 @@ public class InvokeProgram extends Thread {
         String args = setPuttyParameters(session);
 
         // tab标签展示名称
-        StringBuilder tabName = new StringBuilder();
-        tabName.append(session.getName()).append("@").append(session.getHost());
-
-        // 可能未配置内网ip
-        if (StrUtil.isNotBlank(session.getIntranet())) {
-            tabName.append("(").append(session.getIntranet()).append(")");
-        }
+        String tabName = Comms.formatName(session.getName(), session.getHost(), session.getIntranet());
 
         String path = MainFrame.CONFIGURATION.getProgramPath(ProgramEnum.PUTTY);
         String name = FileNameUtil.mainName(path);
@@ -227,7 +222,7 @@ public class InvokeProgram extends Thread {
         OS.SendMessage(hWnd.longValue(), OS.WM_SYSCOMMAND, OS.SC_MAXIMIZE, 0);
 
         if (hWnd.longValue() != 0) {
-            tabItem.setText(tabName.toString());
+            tabItem.setText(tabName);
             tabItem.setData("hwnd", hWnd);
             tabItem.setData(FieldConstants.SESSION, session);
             setWindowFocus(hWnd);

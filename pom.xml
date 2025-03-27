@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>SmartPutty</groupId>
 	<artifactId>SmartPutty</artifactId>
-	<version>25.325.936</version>
+	<version>25.327.1734</version>
 	<properties>
 		<!-- JDK8 需要使用1.3.x版本, 1.4.x需要JDK8以上 -->
 		<ch.qos.logback.version>1.3.12</ch.qos.logback.version>

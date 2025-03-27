@@ -20,13 +20,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
@@ -68,6 +62,7 @@ import enums.ProgramEnum;
 import listener.DragListener;
 import model.ConfigSession;
 import model.CustomMenu;
+import utils.Comms;
 import utils.RegistryUtils;
 import widgets.BorderData;
 import widgets.BorderLayout;
@@ -92,6 +87,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     private MenuItem aboutItem;
     private MenuItem welcomeMenuItem;
     private MenuItem copyTabNamePopItem;
+    private MenuItem editSessionPopItem;
     private MenuItem reloadPopItem;
     private MenuItem clonePopItem;
     private MenuItem transferPopItem;
@@ -322,6 +318,79 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         connectGroup.setLayoutData(new BorderData(SWT.TOP));
         connectGroup.setText("Quick Connect");
 
+        // Quick Search:
+        Combo searchCombo = new Combo(connectGroup, SWT.DOWN);
+        searchCombo.setLayoutData(new RowData(300, 20));
+        searchCombo.setToolTipText("Filter by modification time");
+
+        List<ConfigSession> configSessions = SessionManager.getInstance().getAllSessions();
+        for (ConfigSession session : configSessions) {
+            searchCombo.add(Comms.formatName(session.getName(), session.getHost(), session.getIntranet()));
+        }
+
+        // 监听下拉列表选择事件
+        // searchCombo.addSelectionListener(new SelectionAdapter() {
+        //     @Override
+        //     public void widgetSelected(SelectionEvent e) {
+        //         int index = searchCombo.getSelectionIndex();
+        //         if (index >= 0) {
+        //             String selected = searchCombo.getItem(index);
+        //             searchCombo.setText("");
+        //             searchCombo.setListVisible(false);
+
+        //             ConfigSession configSession = SessionManager.getInstance().getConfigSession(selected);
+        //             if(Objects.nonNull(configSessions)){
+        //                 addSession(null, configSession);
+        //             }
+        //         }
+        //     }
+        // });
+
+        // 添加回车事件监听
+        searchCombo.addListener(SWT.Traverse, event -> {
+            if (event.detail == SWT.TRAVERSE_RETURN) {
+                String selected = searchCombo.getText().trim();
+                if (StrUtil.isNotBlank(selected)) {
+                    ConfigSession configSession = SessionManager.getInstance().getConfigSession(selected);
+                    if (Objects.nonNull(configSession)) {
+                        addSession(null, configSession);
+                    }
+                }
+            }
+        });
+
+        // 监听输入事件，实现自动提示
+        searchCombo.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(ModifyEvent e) {
+                // System.out.println("346:" + e.getSource());
+                String input = searchCombo.getText().trim().toLowerCase();
+                int selectIndex = searchCombo.getSelectionIndex();
+                if (StrUtil.isNotBlank(input) && selectIndex < 0) {
+                    String[] items = searchCombo.getItems();
+                    for (int i = 0; i < items.length; i++) {
+                        searchCombo.remove(items[i]);
+                    }
+                    List<ConfigSession> configSessions = SessionManager.getInstance().getAllSessions();
+                    configSessions.stream().filter(item -> StrUtil.containsIgnoreCase(item.getName(), input) || StrUtil.containsIgnoreCase(item.getHost(), input) || StrUtil.containsIgnoreCase(item.getIntranet(), input)).limit(5).forEach(item -> {
+                        searchCombo.add(Comms.formatName(item.getName(), item.getHost(), item.getIntranet()), 0);
+                    });
+
+                    searchCombo.setListVisible(true);
+                }
+            }
+        });
+
+        // // 禁用上下按键
+        // searchCombo.addKeyListener(new KeyAdapter() {
+        //     @Override
+        //     public void keyPressed(KeyEvent e) {
+        //         if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
+        //             e.doit = false; // 阻止默认行为
+        //         }
+        //     }
+        // });
+
         // Host:
         new Label(connectGroup, SWT.RIGHT).setText("Host");
         hostItem = new Text(connectGroup, SWT.BORDER);
@@ -551,6 +620,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         copyTabNamePopItem.setImage(ButtonImage.EDIT_IMAGE);
         copyTabNamePopItem.addSelectionListener(this);
 
+        editSessionPopItem = new MenuItem(popupMenu, SWT.PUSH);
+        editSessionPopItem.setText("Edit Session");
+        editSessionPopItem.setImage(ButtonImage.EDIT_IMAGE);
+        editSessionPopItem.addSelectionListener(this);
+
         closeOtherTabsItem = new MenuItem(popupMenu, SWT.PUSH);
         closeOtherTabsItem.setText("close other tabs");
         closeOtherTabsItem.setImage(ButtonImage.TRASH_IMAGE);
@@ -726,7 +800,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         // 如果存在Putty的私钥 则带私钥参数
         String privateKey = session.getKey();
-        if(StrUtil.isNotBlank(privateKey) && StrUtil.equalsIgnoreCase(FileUtil.extName(privateKey), "ppk")) {
+        if (StrUtil.isNotBlank(privateKey) && StrUtil.equalsIgnoreCase(FileUtil.extName(privateKey), "ppk")) {
             arg += " /privateKey=\"" + privateKey + "\"";
         }
 
@@ -871,6 +945,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             // menuItem
         } else if (e.getSource() == copyTabNamePopItem) {
             copyTabName();
+        } else if (e.getSource() == editSessionPopItem) {
+            CTabItem item = folder.getSelection();
+            if (Objects.nonNull(item)) {
+                new NewSessionDialog(this, null, true, (ConfigSession) item.getData(FieldConstants.SESSION));
+            }
         } else if (e.getSource() == reloadPopItem) {
             reloadSession();
         } else if (e.getSource() == reloadAllItem) {

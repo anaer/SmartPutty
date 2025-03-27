@@ -7,7 +7,7 @@ clipboard:
     yum源配置目录: cd /etc/yum.repos.d/
 configuration:
     Dictionary: http://dict.youdao.com/w/eng/
-    ViewConnectionBar: false
+    ViewConnectionBar: true
     WindowsBaseDrive: 'C:'
     WaitForInitTime: 200
     ShowWelcomePage: false
@@ -33,7 +33,7 @@ menus:
     type: menu
 program:
     PuttyExecutable: D:\kitty\kitty.exe
-    MinttyExecutable: C:\Program Files\Git\usr\bin\mintty.exe
+    MinttyExecutable: D:\GitHub\ok-cmder\vendor\cygwin\bin\mintty.exe
     PlinkExecutable: D:\kitty\klink.exe
     ScpExecutable: D:\WinSCP\WinSCP.exe
     KeyGeneratorExecutable: D:\kitty\kittygen.exe
