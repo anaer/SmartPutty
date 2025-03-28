@@ -10,7 +10,7 @@ public class Config {
    /**
     * Application菜单配置.
     */
-   List<CustomMenu> menus; 
+   List<CustomMenu> menus;
    /**
     * 应用配置项.
     */
@@ -27,4 +27,9 @@ public class Config {
     * 剪贴板.
     */
    Map<String, String> clipboard;
+
+   /**
+    * 笔记
+    */
+   Map<String, String> notes;
 }

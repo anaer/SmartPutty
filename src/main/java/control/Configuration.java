@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -12,9 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.eclipse.swt.graphics.Rectangle;
 import org.yaml.snakeyaml.DumperOptions;
@@ -106,7 +105,7 @@ public class Configuration {
      * 获取SmartPutty版本号配置.
      */
     public String getSmartPuttyVersion() {
-        return getConfiguration(ConfigConstant.Configuration.VERSION, "24.1128.1328");
+        return getConfiguration(ConfigConstant.Configuration.VERSION, "Max");
     }
 
     /**
@@ -242,6 +241,35 @@ public class Configuration {
     }
 
     /**
+     * Get main window position and size.
+     *
+     * @return
+     */
+    public Rectangle getNotePositionSize() {
+        // Split comma-separated values by x, y, width, height:
+        String notePositionSize = getConfiguration(
+                ConfigConstant.Configuration.NOTE_POSITION_SIZE, "");
+
+        int[] array = StrUtil.splitToInt(notePositionSize, ",");
+
+        // 配置不满4位, 根据屏幕宽高 重新设置
+        if (array.length < 4) {
+            array = new int[4];
+            array[0] = ConstantValue.SCREEN_WIDTH / 6;
+            array[1] = ConstantValue.SCREEN_HEIGHT / 6;
+            array[2] = 2 * ConstantValue.SCREEN_WIDTH / 3;
+            array[3] = 2 * ConstantValue.SCREEN_HEIGHT / 3;
+        }
+
+        return new Rectangle(array[0], array[1], array[2], array[3]);
+    }
+
+    public void setNotePositionSize(Rectangle r) {
+        String position = StrUtil.join(",", r.x, r.y, r.width, r.height);
+        setConfiguration(ConfigConstant.Configuration.NOTE_POSITION_SIZE, position);
+    }
+
+    /**
      * Set utilities bar visible status.
      *
      * @param visible
@@ -336,5 +364,22 @@ public class Configuration {
     public void saveBeforeClose() {
         setWindowPositionSizeString();
         saveSetting();
+    }
+
+    /**
+     * 查询笔记.
+     */
+    public String getNote(String key) {
+        Map<String, String> notes = this.config.getNotes();
+        return MapUtil.isNotEmpty(notes)? notes.getOrDefault(key, "") : "";
+    }
+
+    public void setNote(String key, String content) {
+        Map<String, String> notes = this.config.getNotes();
+        if(notes == null){
+            notes = new HashMap<>();
+            this.config.setNotes(notes);
+        }
+        notes.put(key, content);
     }
 }

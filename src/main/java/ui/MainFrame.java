@@ -127,14 +127,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
     private Group connectGroup;
     private Group quickBottomGroup;
 
-    /** Connect bar components. */
-    private Button connectButton;
-    private Text hostItem;
-    private Text portItem;
-    private Text usernameItem;
-    private Text passwordItem;
-    private Combo sessionCombo;
-
     /** Bottom util bar components. */
     private Text pathItem;
     private Text dictText;
@@ -328,24 +320,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             searchCombo.add(Comms.formatName(session.getName(), session.getHost(), session.getIntranet()));
         }
 
-        // 监听下拉列表选择事件
-        // searchCombo.addSelectionListener(new SelectionAdapter() {
-        //     @Override
-        //     public void widgetSelected(SelectionEvent e) {
-        //         int index = searchCombo.getSelectionIndex();
-        //         if (index >= 0) {
-        //             String selected = searchCombo.getItem(index);
-        //             searchCombo.setText("");
-        //             searchCombo.setListVisible(false);
-
-        //             ConfigSession configSession = SessionManager.getInstance().getConfigSession(selected);
-        //             if(Objects.nonNull(configSessions)){
-        //                 addSession(null, configSession);
-        //             }
-        //         }
-        //     }
-        // });
-
         // 添加回车事件监听
         searchCombo.addListener(SWT.Traverse, event -> {
             if (event.detail == SWT.TRAVERSE_RETURN) {
@@ -381,59 +355,72 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             }
         });
 
-        // // 禁用上下按键
-        // searchCombo.addKeyListener(new KeyAdapter() {
-        //     @Override
-        //     public void keyPressed(KeyEvent e) {
-        //         if (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN) {
-        //             e.doit = false; // 阻止默认行为
-        //         }
-        //     }
-        // });
-
-        // Host:
-        new Label(connectGroup, SWT.RIGHT).setText("Host");
-        hostItem = new Text(connectGroup, SWT.BORDER);
-        hostItem.setText("");
-        hostItem.setLayoutData(new RowData(120, 20));
-
-        // Port:
-        new Label(connectGroup, SWT.RIGHT).setText("Port");
-        portItem = new Text(connectGroup, SWT.BORDER);
-        portItem.setText("22");
-        portItem.setLayoutData(new RowData(20, 20));
-
-        // Username:
-        new Label(connectGroup, SWT.RIGHT).setText("Username");
-        usernameItem = new Text(connectGroup, SWT.BORDER);
-        usernameItem.setText(CONFIGURATION.getDefaultPuttyUsername());
-        usernameItem.setLayoutData(new RowData(100, 20));
-
-        // Password
-        new Label(connectGroup, SWT.RIGHT).setText("Password");
-        passwordItem = new Text(connectGroup, SWT.PASSWORD | SWT.BORDER);
-        passwordItem.setLayoutData(new RowData(80, 20));
-
-        // Session:
-        new Label(connectGroup, SWT.RIGHT).setText(FieldConstants.SESSION);
-        sessionCombo = new Combo(connectGroup, SWT.READ_ONLY);
-        sessionCombo.setLayoutData(new RowData());
-        sessionCombo.setToolTipText("Session to use");
-        // Empty entry to use none.
-        sessionCombo.add("");
-        // Get all "Putty" sessions:
-        List<String> sessions = RegistryUtils.getAllPuttySessions();
-        for (String session : sessions) {
-            sessionCombo.add(session);
-        }
-
         // Connect button:
-        connectButton = new Button(connectGroup, SWT.PUSH);
-        connectButton.setText("Connect");
-        connectButton.setImage(ButtonImage.PUTTY_IMAGE);
-        connectButton.setLayoutData(new RowData());
-        connectButton.setToolTipText("Connect to host");
-        connectButton.addSelectionListener(this);
+        Button tipButton = new Button(connectGroup, SWT.PUSH | SWT.RIGHT);
+
+        tipButton.setText("笔记");
+        tipButton.setImage(ButtonImage.EDIT_IMAGE);
+        tipButton.setLayoutData(new RowData());
+        tipButton.setToolTipText("Show Tip");
+        tipButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Shell tipShell = new Shell(SHELL, SWT.SHELL_TRIM | SWT.APPLICATION_MODAL);
+                tipShell.setText("Tip");
+                tipShell.setSize(400, 600);
+                tipShell.setLayout(new FormLayout());
+
+                Rectangle rect =  CONFIGURATION.getNotePositionSize();
+                if(Objects.nonNull(rect)){
+                    tipShell.setBounds(rect);
+                }else{
+                Rectangle displayBounds = Display.getDefault().getBounds();
+                int tipShellWidth = 400;
+                int tipShellHeight = 600;
+                int x = displayBounds.width - tipShellWidth - 10; // 10px margin from the right edge
+                int y = (displayBounds.height - tipShellHeight) / 2; // Center vertically
+                tipShell.setLocation(x, y);
+                }
+
+                Text tipText = new Text(tipShell, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
+                FormData textData = new FormData();
+                textData.left = new FormAttachment(0, 10);
+                textData.right = new FormAttachment(100, -10);
+                textData.top = new FormAttachment(0, 10);
+                textData.bottom = new FormAttachment(100, -50);
+                tipText.setLayoutData(textData);
+
+                String tabName = getCurTabName();
+                if (StrUtil.isNotBlank(tabName)) {
+                    String content = CONFIGURATION.getNote(tabName);
+                    tipText.setText(content);
+                }
+
+                tipShell.addListener(SWT.Move, event -> {
+                    CONFIGURATION.setNotePositionSize(tipShell.getBounds());
+                });
+
+                Button saveButton = new Button(tipShell, SWT.PUSH);
+                saveButton.setText("Save");
+                FormData buttonData = new FormData();
+                buttonData.bottom = new FormAttachment(100, -10);
+                buttonData.right = new FormAttachment(100, -10);
+                saveButton.setLayoutData(buttonData);
+
+                saveButton.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        String content = tipText.getText();
+                        CONFIGURATION.setNote(tabName, content);
+                        CONFIGURATION.saveSetting();
+                        tipShell.close();
+                    }
+                });
+
+                tipShell.open();
+            }
+        });
+
         connectGroup.pack();
     }
 
@@ -782,6 +769,11 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         ClipboardUtil.setStr(tabName);
     }
 
+    private String getCurTabName() {
+        CTabItem tabItem = folder.getSelection();
+        return Objects.nonNull(tabItem) ? tabItem.getText() : "untitled";
+    }
+
     private void cloneSession() {
         CTabItem tabItem = folder.getSelection();
         if (tabItem.getData(FieldConstants.SESSION) == null) {
@@ -988,19 +980,6 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
             toolTip.setText("已复制到剪贴板: " + data);
             toolTip.setVisible(true);
             toolTip.setAutoHide(true);
-        } else if (e.getSource() == connectButton) {
-            String host = hostItem.getText();
-            String name = host;
-            String port = portItem.getText();
-            String user = usernameItem.getText();
-            String password = passwordItem.getText();
-            String session = sessionCombo.getText();
-            if (StrUtil.isBlank(session)) {
-                MessageDialog.openInformation(SHELL, "Information", "please select a putty session first!");
-                return;
-            }
-            ConfigSession configSession = new ConfigSession(name, host, "", port, user, password, session);
-            addSession(null, configSession);
         } else if (e.getSource() == win2UnixButton) {
             String path = pathItem.getText().trim();
             if (StrUtil.isBlank(path)) {

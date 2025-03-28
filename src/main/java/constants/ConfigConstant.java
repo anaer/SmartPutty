@@ -85,6 +85,7 @@ public class ConfigConstant {
          */
         public static final String WINDOW_POSITION_SIZE = "WindowPositionSize";
 
+        public static final String NOTE_POSITION_SIZE = "NotePositionSize";
     }
 
     /**
