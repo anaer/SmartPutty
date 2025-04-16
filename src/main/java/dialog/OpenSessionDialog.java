@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-
+import cn.hutool.core.util.StrUtil;
 import constants.ButtonImage;
 import constants.FieldConstants;
 import control.InvokeProgram;
@@ -117,6 +117,21 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         dbm = SessionManager.getInstance();
         loadTable();
 
+        // Add column sorting functionality
+        for (TableColumn column : table.getColumns()) {
+            column.addListener(SWT.Selection, event -> {
+                TableColumn selectedColumn = (TableColumn) event.widget;
+                int columnIndex = table.indexOf(selectedColumn);
+                boolean ascending = (table.getSortColumn() == selectedColumn) ? (table.getSortDirection() != SWT.UP) : true;
+
+                table.setSortColumn(selectedColumn);
+                table.setSortDirection(ascending ? SWT.UP : SWT.DOWN);
+
+                loadTable(0, columnIndex, ascending);
+            });
+        }
+
+
         int xPos = 565;
         // button
         addButton = new Button(dialog, SWT.NONE);
@@ -181,13 +196,34 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         loadTable(0);
     }
 
+    public void loadTable(int selectionIndex) {
+        loadTable(selectionIndex, -1, true);
+    }
+
     /**
      * 加载表格.
      * @param selectionIndex 默认选中行
      */
-    public void loadTable(int selectionIndex) {
+    public void loadTable(int selectionIndex, int sortColumnIndex, boolean ascending) {
         table.removeAll();
         List<ConfigSession> sessions = dbm.getAllSessions();
+
+        if (sortColumnIndex >= 0){
+            sessions.sort((s1, s2) -> {
+                String value1, value2;
+                switch (sortColumnIndex) {
+                case 0: value1 = s1.getName(); value2 = s2.getName(); break;
+                case 1: value1 = s1.getHost(); value2 = s2.getHost(); break;
+                case 2: value1 = s1.getIntranet(); value2 = s2.getIntranet(); break;
+                case 3: value1 = s1.getPort(); value2 = s2.getPort(); break;
+                case 4: value1 = s1.getUser(); value2 = s2.getUser(); break;
+                case 5: value1 = s1.getProtocol(); value2 = s2.getProtocol(); break;
+                case 6: value1 = s1.getSession(); value2 = s2.getSession(); break;
+                default: return 0;
+                }
+                return ascending ?  StrUtil.compareIgnoreCase(value1, value2, true): StrUtil.compareIgnoreCase(value2, value1, true);
+            });
+        }
         for (ConfigSession session : sessions) {
             TableItem tableItem = new TableItem(table, SWT.NONE);
             tableItem.setData(FieldConstants.SESSION, session);
