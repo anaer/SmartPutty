@@ -31,9 +31,10 @@ menus:
 -   cmd: taskkill /F /IM Putty.exe /IM Mintty.exe
     name: 关闭所有Putty程序
     type: menu
+notes: null
 program:
-    PuttyExecutable: D:\kitty\kitty.exe
+    PuttyExecutable: D:\Putty\PUTTY.EXE
     MinttyExecutable: D:\GitHub\ok-cmder\vendor\cygwin\bin\mintty.exe
-    PlinkExecutable: D:\kitty\klink.exe
+    PlinkExecutable: D:\Putty\PLINK.EXE
     ScpExecutable: D:\WinSCP\WinSCP.exe
-    KeyGeneratorExecutable: D:\kitty\kittygen.exe
+    KeyGeneratorExecutable: D:\Putty\PUTTYGEN.EXE

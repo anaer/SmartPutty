@@ -328,6 +328,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                     ConfigSession configSession = SessionManager.getInstance().getConfigSession(selected);
                     if (Objects.nonNull(configSession)) {
                         addSession(null, configSession);
+                        searchCombo.setText("");
                     }
                 }
             }
