@@ -67,7 +67,7 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         this.sessionDialog = sessionDialog;
         dialog = new Shell(MainFrame.SHELL, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialog.setImage(ButtonImage.NEW_IMAGE);
-        dialog.setSize(400, 160);
+        dialog.setSize(800, 350);
         dialog.setText(isEdit?"Edit Session Dialog":"New Session Dialog");
 
         SwtUtils.setDialogLocation(MainFrame.SHELL, dialog);
@@ -176,12 +176,12 @@ public class NewSessionDialog implements SelectionListener, MouseListener {
         index++;
         buttonOk = new Button(dialog, SWT.PUSH);
         buttonOk.setText("ok");
-        buttonOk.setBounds(2 * x / 3, index * y / 6, 50, y / 6);
+        buttonOk.setBounds(2 * x / 3, index * y / 6, 100, y / 6);
         buttonOk.addMouseListener(this);
 
         buttonCancel = new Button(dialog, SWT.PUSH);
         buttonCancel.setText("cancel");
-        buttonCancel.setBounds(2 * x / 3 + 60, index * y / 6, 50, y / 6);
+        buttonCancel.setBounds(2 * x / 3 + 100, index * y / 6, 100, y / 6);
         buttonCancel.addMouseListener(this);
 
         if (isEdit) {

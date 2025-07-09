@@ -75,12 +75,12 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
 
         dialog.setImage(ButtonImage.OPEN_IMAGE);
         dialog.setText("Open Session Dialog");
-        dialog.setSize(665, 300);
+        dialog.setSize(1500, 800);
 
         SwtUtils.setDialogLocation(parent, dialog);
 
         table = new Table(dialog, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-        table.setBounds(0, 0, 560, 257);
+        table.setBounds(0, 0, 900, 700);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         table.addMouseListener(this);
@@ -90,23 +90,23 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         tableNameColumn.setText("Name");
 
         TableColumn tableHostColumn = new TableColumn(table, SWT.NONE);
-        tableHostColumn.setWidth(110);
+        tableHostColumn.setWidth(200);
         tableHostColumn.setText("Host");
 
         TableColumn tableIntranetColumn = new TableColumn(table, SWT.NONE);
-        tableIntranetColumn.setWidth(110);
+        tableIntranetColumn.setWidth(200);
         tableIntranetColumn.setText("Intranet");
 
         TableColumn tablePortColumn = new TableColumn(table, SWT.NONE);
-        tablePortColumn.setWidth(50);
+        tablePortColumn.setWidth(100);
         tablePortColumn.setText("Port");
 
         TableColumn tableUserColumn = new TableColumn(table, SWT.NONE);
-        tableUserColumn.setWidth(50);
+        tableUserColumn.setWidth(100);
         tableUserColumn.setText("User");
 
         TableColumn tableTimeColumn = new TableColumn(table, SWT.NONE);
-        tableTimeColumn.setWidth(65);
+        tableTimeColumn.setWidth(100);
         tableTimeColumn.setText("Protocol");
 
         // 隐藏session列, 主要目前都没怎么用session
@@ -132,46 +132,46 @@ public class OpenSessionDialog implements SelectionListener, MouseListener {
         }
 
 
-        int xPos = 565;
+        int xPos = 910;
         // button
         addButton = new Button(dialog, SWT.NONE);
-        addButton.setBounds(xPos, 5, 80, 27);
+        addButton.setBounds(xPos, 5, 150, 35);
         addButton.setText("Add   ");
         addButton.setToolTipText("Add a new connection");
         addButton.addSelectionListener(this);
 
         editButton = new Button(dialog, SWT.NONE);
-        editButton.setBounds(xPos, 37, 80, 27);
+        editButton.setBounds(xPos, 45, 150, 35);
         editButton.setText("Edit ");
         editButton.setToolTipText("Edit selected connection");
         editButton.addSelectionListener(this);
 
         deleteButton = new Button(dialog, SWT.NONE);
-        deleteButton.setBounds(xPos, 69, 80, 27);
+        deleteButton.setBounds(xPos, 85, 150, 35);
         deleteButton.setText("Delete");
         deleteButton.setToolTipText("Delete selected connection/s");
         deleteButton.addSelectionListener(this);
 
         puttyWindow = new Button(dialog, SWT.NONE);
-        puttyWindow.setBounds(xPos, 101, 80, 27);
+        puttyWindow.setBounds(xPos, 125, 150, 35);
         puttyWindow.setText("Putty");
         puttyWindow.setToolTipText("Open selected connection in a single window");
         puttyWindow.addSelectionListener(this);
 
         btnUp = new Button(dialog, SWT.NONE);
-        btnUp.setBounds(xPos, 133, 80, 27);
+        btnUp.setBounds(xPos, 165, 150, 35);
         btnUp.setText("⬆ UP");
         btnUp.setToolTipText("");
         btnUp.addSelectionListener(this);
 
         btnDown = new Button(dialog, SWT.NONE);
-        btnDown.setBounds(xPos, 165, 80, 27);
+        btnDown.setBounds(xPos, 205, 150, 35);
         btnDown.setText("⬇ DOWN");
         btnDown.setToolTipText("");
         btnDown.addSelectionListener(this);
 
         connectButton = new Button(dialog, SWT.NONE);
-        connectButton.setBounds(xPos, 230, 80, 27);
+        connectButton.setBounds(xPos, 245, 150, 35);
         connectButton.setText("Connect");
         connectButton.setToolTipText("Open selected connection/s in a tab");
         connectButton.addSelectionListener(this);
