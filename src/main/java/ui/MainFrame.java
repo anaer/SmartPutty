@@ -21,6 +21,7 @@ import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
@@ -524,6 +525,9 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
         folder.addCTabFolder2Listener(this);
         folder.addMouseListener(this);
         folder.addSelectionListener(this);
+
+        Color color = new Color(Display.getCurrent(), 142, 193, 51);
+        folder.setSelectionBackground(color);
 
         Listener listener = new DragListener(DISPLAY, folder);
 
