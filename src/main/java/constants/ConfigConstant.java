@@ -71,6 +71,11 @@ public class ConfigConstant {
         public static final String DATABASE_PATH = "DatabasePath";
 
         /**
+         * 密码加解密key
+         */
+        public static final String ENCRYPT_KEY = "encryptKey";
+
+        /**
          * Windows系统盘路径.
          */
         public static final String WINDOWS_BASE_DRIVE = "WindowsBaseDrive";

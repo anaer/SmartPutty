@@ -179,6 +179,13 @@ public class Configuration {
     }
 
     /**
+     * 获取加解密key
+     */
+    public String getEncryptKey() {
+        return getConfiguration(ConfigConstant.Configuration.ENCRYPT_KEY, "");
+    }
+
+    /**
      * Customize win path base prefix when converting path from linux and windows.
      *
      * @return

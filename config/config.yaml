@@ -16,6 +16,7 @@ configuration:
     ViewBottomQuickBar: false
     DefaultPuttyUsername: root
     DatabasePath: D:\GitHub\notebook\01-工作\01-环境资源\ssh.csv
+    encryptKey: 1234567890987654
 feature:
     transfer: true
 menus:

@@ -8,15 +8,16 @@ import cn.hutool.core.text.csv.CsvUtil;
 import cn.hutool.core.text.csv.CsvWriter;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.symmetric.AES;
+import control.Configuration;
+import model.ConfigSession;
+import utils.Comms;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import control.Configuration;
-import model.ConfigSession;
-import utils.Comms;
 
 /**
  * 数据库管理.
@@ -26,10 +27,12 @@ public class SessionManager {
     private static SessionManager manager;
     private List<ConfigSession> list;
     private String databasePath;
+    private String key;
 
     private SessionManager() {
         Configuration configuration = new Configuration();
         databasePath = configuration.getDatabasePath();
+        key = configuration.getEncryptKey();
         list = readCsv();
     }
 
@@ -38,6 +41,28 @@ public class SessionManager {
             manager = new SessionManager();
         }
         return manager;
+    }
+
+    private String encrypt(String value){
+        if(StrUtil.isBlank(value) || StrUtil.startWith(value, "1:")){
+            return value;
+        }
+
+        // 使用AES加密，密钥为key字段
+        AES aes = SecureUtil.aes(key.getBytes());
+        String encrypted = aes.encryptBase64(value);
+        return "1:" + encrypted;
+    }
+
+    private String decrypt(String value){
+        if(StrUtil.isBlank(value) || !StrUtil.startWith(value, "1:")){
+            return value;
+        }
+
+        // 使用AES加密，密钥为key字段
+        AES aes = SecureUtil.aes(key.getBytes());
+        String encrypted = aes.decryptStr(value.substring(2), CharsetUtil.CHARSET_UTF_8);
+        return encrypted;
     }
 
     /**
@@ -52,6 +77,12 @@ public class SessionManager {
 
         if(Objects.isNull(configList)){
             configList = new ArrayList<>();
+        }
+
+        for(ConfigSession session : configList){
+            if(StrUtil.isNotBlank(session.getPassword())){
+                session.setPassword(decrypt(session.getPassword()));
+            }
         }
 
         return configList;
@@ -75,6 +106,8 @@ public class SessionManager {
                 "session"//
         );
         for (ConfigSession session : list) {
+            String password = encrypt(session.getPassword());
+
             writer.writeLine(//
                     session.getName(), //
                     session.getHost(), //
@@ -83,7 +116,7 @@ public class SessionManager {
                     session.getUser(), //
                     session.getProtocol(), //
                     session.getKey(), //
-                    session.getPassword(), //
+                    password, //
                     session.getSession() //
             );
         }
