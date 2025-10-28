@@ -283,7 +283,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
 
         // Quick Search:
         Combo searchCombo = new Combo(connectGroup, SWT.DOWN);
-        searchCombo.setLayoutData(new RowData(300, 20));
+        searchCombo.setLayoutData(new RowData(538, 20));
         searchCombo.setToolTipText("Filter by modification time");
 
         List<ConfigSession> configSessions = SessionManager.getInstance().getAllSessions();
