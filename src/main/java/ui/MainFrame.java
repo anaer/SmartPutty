@@ -33,6 +33,7 @@ import widgets.BorderLayout;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -318,7 +319,7 @@ public class MainFrame implements SelectionListener, CTabFolder2Listener, MouseL
                         searchCombo.remove(items[i]);
                     }
                     List<ConfigSession> configSessions = SessionManager.getInstance().getAllSessions();
-                    configSessions.stream().filter(item -> StrUtil.containsIgnoreCase(item.getName(), input) || StrUtil.containsIgnoreCase(item.getHost(), input) || StrUtil.containsIgnoreCase(item.getIntranet(), input)).limit(5).forEach(item -> {
+                    configSessions.stream().filter(item -> StrUtil.containsIgnoreCase(item.getName(), input) || StrUtil.containsIgnoreCase(item.getHost(), input) || StrUtil.containsIgnoreCase(item.getIntranet(), input)).sorted(Comparator.comparing(ConfigSession::getName).reversed()).limit(10).forEach(item -> {
                         searchCombo.add(Comms.formatName(item.getName(), item.getHost(), item.getIntranet()), 0);
                     });
 
